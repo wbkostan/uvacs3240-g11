@@ -12,5 +12,6 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self.sync()
     def sync(self):
         subprocess.call(['python', 'rsync.py', '--delete', '--recursive', self.source_dir, self.dest_dir])
+
 if __name__ == "__main__":
     print("Usage")

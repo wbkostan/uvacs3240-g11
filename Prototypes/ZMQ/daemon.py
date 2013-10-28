@@ -4,19 +4,19 @@ import sys
 import time
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
-from Prototypes.syncutils import SyncEventHandler
+from syncutils import SyncEventHandler
+from syncutils import SyncResponder
 
 class FileDaemon:
-    def __init__(self, target, sync_dest):
+    def __init__(self, target, msg_identifier, send_config):
         self.on = False
         self.target_dir = target
-        self.sync_dir = sync_dest
-    def monitor(self):
-        #logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-        #self.event_handler = LoggingEventHandler()
-        self.event_handler = SyncEventHandler(self.target_dir, self.sync_dir)
+        self.event_handler = SyncEventHandler(msg_identifier, send_config)
         self.observer = Observer()
+        print("Scheduling observation of " + self.target_dir + " tree...")
         self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
+    def monitor(self):
+        print("Monitoring " + self.target_dir)
         self.observer.start()
         try:
             while True:
@@ -27,9 +27,32 @@ class FileDaemon:
 
 
 if __name__ == "__main__":
+    msg_identifier = {
+        "FILESYNC":1,
+        "MKDIR":2,
+        "DELETE":3,
+        "MOVE":4
+    }
+
+    send_config = {
+        "REC_ADDRESS":"localhost",
+        "REC_PORT":"5555",
+        "PATH_BASE":"C:/Test1/OneDir/",
+    }
+
+    rec_config = {
+        "REC_PORT":"5555",
+        "SEND_ADDRESS":"localhost",
+        "SEND_PORT":"5556",
+        "PATH_BASE":"C:/Test2/",
+        "USER":"wbk3zd",
+    }
+    server = SyncResponder(msg_identifier, rec_config)
+    daemon = FileDaemon(send_config["PATH_BASE"], msg_identifier, send_config)
     try:
-        #daemon = FileDaemon(sys.argv[1])
-        daemon = FileDaemon(sys.argv[1], sys.argv[2])
+        server.listen()
         daemon.monitor()
+        server.teardown()
     except IndexError:
+        server.teardown()
         print("Usage")
