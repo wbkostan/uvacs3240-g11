@@ -16,7 +16,7 @@ class FileDaemon:
         print("Scheduling observation of " + self.target_dir + " tree...")
         self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
     def monitor(self):
-        print("Monitoring " + self.target_dir)
+        print("Client daemon is monitoring " + self.target_dir + "...")
         self.observer.start()
         try:
             while True:
@@ -28,10 +28,11 @@ class FileDaemon:
 
 if __name__ == "__main__":
     msg_identifier = {
-        "FILESYNC":1,
-        "MKDIR":2,
-        "DELETE":3,
-        "MOVE":4
+        "FILESYNC":"1",
+        "MKDIR":"2",
+        "DELETE":"3",
+        "MOVE":"4",
+        "ACK":"5"
     }
 
     send_config = {
