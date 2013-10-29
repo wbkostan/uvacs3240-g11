@@ -17,6 +17,7 @@ class FileDaemon:
         self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
     def monitor(self):
         print("Client daemon is monitoring " + self.target_dir + "...")
+        print("")
         self.observer.start()
         try:
             while True:
@@ -40,20 +41,8 @@ if __name__ == "__main__":
         "REC_PORT":"5555",
         "PATH_BASE":"C:/Test1/OneDir/",
     }
-
-    rec_config = {
-        "REC_PORT":"5555",
-        "SEND_ADDRESS":"localhost",
-        "SEND_PORT":"5556",
-        "PATH_BASE":"C:/Test2/",
-        "USER":"wbk3zd",
-    }
-    server = SyncResponder(msg_identifier, rec_config)
     daemon = FileDaemon(send_config["PATH_BASE"], msg_identifier, send_config)
     try:
-        server.listen()
         daemon.monitor()
-        server.teardown()
     except IndexError:
-        server.teardown()
         print("Usage")

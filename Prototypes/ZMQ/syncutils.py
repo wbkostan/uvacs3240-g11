@@ -7,6 +7,7 @@ import os
 import shutil
 import threading
 import encodings
+import time
 
 """
 msg_identifier = {
@@ -36,7 +37,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self.msg_identifier = msg_identifier
         self.send_config = send_config
         self._context = zmq.Context()
-        self._socket = self._context.socket(zmq.REQ)
+        self._socket = self._context.socket(zmq.PUSH)
         self._socket.connect("tcp://" + send_config["REC_ADDRESS"] + ":" + send_config["REC_PORT"])
         print("Client event responder connected over tcp to " + send_config["REC_ADDRESS"] + ":" + send_config["REC_PORT"] + "...")
         self._event_src_path = None
@@ -62,6 +63,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
     def on_modified(self, event):
         if os.path.isfile(self._event_src_path):
             self.file_sync()
+            self.on_moved()
         else:
             print("<handling a modified directory>")
         self.finish()
@@ -75,6 +77,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
     def file_sync(self):
         if self._event_src_path == None:
             print("Error: Told to sync, but sync source not set!")
+            return
         with open(self._event_src_path, 'rb') as user_file:
             content = user_file.read()
         print("Sending filesync command to server for file at " + self._event_rel_path)
@@ -86,13 +89,6 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
             msg_clone[i] = msg_clone[i].encode('ascii', 'replace')
         return msg_clone
     def finish(self):
-        print("Client awaiting reply from server...")
-        reply = self._socket.recv_multipart()
-        if not reply[0]:
-            print("Error: Server reply was empty")
-        else:
-            if reply[0] == self.msg_identifier["ACK"]:
-                print("Server acknowledgement received, changes synced")
         print("")
         self._event_src_path = None
 
@@ -101,18 +97,17 @@ class SyncResponder():
         self.msg_identifier = msg_identifier
         self.config = rec_config
         self._context = zmq.Context()
-        self._socket = self._context.socket(zmq.REP)
+        self._socket = self._context.socket(zmq.PULL)
         print("Binding server to socket at tcp port " + self.config["REC_PORT"] + "...")
         self._socket.bind("tcp://*:" + self.config["REC_PORT"])
         self.listen_flag = threading.Event()
         self.listen_flag.clear()
     def _listen(self):
         print("Server is listening over tcp port " + self.config["REC_PORT"])
+        print("")
         while(self.listen_flag.is_set()):
             try:
                 msg = self._socket.recv_multipart()
-                self._socket.send_multipart([self.msg_identifier["ACK"], "Message Received"])
-                print("Message received at tcp port " + self.config["REC_PORT"])
                 threading.Thread(target=self.dispatch, args=(msg,)).start()
             except KeyboardInterrupt:
                 return
@@ -193,4 +188,29 @@ class SyncResponder():
         return msg
 
 if __name__ == "__main__":
-    print("Usage")
+    msg_identifier = {
+        "FILESYNC":"1",
+        "MKDIR":"2",
+        "DELETE":"3",
+        "MOVE":"4",
+        "ACK":"5"
+    }
+
+    rec_config = {
+        "REC_PORT":"5555",
+        "SEND_ADDRESS":"localhost",
+        "SEND_PORT":"5556",
+        "PATH_BASE":"C:/Test2/",
+        "USER":"wbk3zd",
+    }
+    server = SyncResponder(msg_identifier, rec_config)
+    try:
+        server.listen()
+        while True:
+            time.sleep(1)
+    except IndexError:
+        server.teardown()
+        print("Usage")
+    except KeyboardInterrupt:
+        server.teardown()
+        print("Forcible keyboard interrupt, listening aborted")
