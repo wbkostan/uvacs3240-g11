@@ -41,7 +41,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self._socket.connect("tcp://" + send_config["REC_ADDRESS"] + ":" + send_config["REC_PORT"])
         print("Client event responder connected over tcp to " + send_config["REC_ADDRESS"] + ":" + send_config["REC_PORT"] + "...")
         self._event_src_path = None
-        self.sync_all()
+        self.dir_sync(self.send_config["PATH_BASE"])
     def sync_all(self):
         print("<executed full directory sync>")
     def on_any_event(self, event):
@@ -56,6 +56,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
             self.file_sync()
         self.finish()
     def on_deleted(self, event):
+        time.sleep(5) #allow any file restructuring and moving to take effect
         print("Sending delete command to server for file system object at " + self._event_rel_path)
         msg = self.ascii_encode([self.msg_identifier["DELETE"], self._event_rel_path])
         self._socket.send_multipart(msg)
@@ -63,7 +64,6 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
     def on_modified(self, event):
         if os.path.isfile(self._event_src_path):
             self.file_sync()
-            self.on_moved()
         else:
             print("<handling a modified directory>")
         self.finish()
@@ -83,6 +83,19 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         print("Sending filesync command to server for file at " + self._event_rel_path)
         msg = self.ascii_encode([self.msg_identifier["FILESYNC"], self._event_rel_path, content])
         self._socket.send_multipart(msg)
+    def dir_sync(self, top):
+        copy_src_path = self._event_src_path
+        msg = self.ascii_encode([self.msg_identifier["MKDIR"], os.path.relpath(top, self.send_config["PATH_BASE"])])
+        self._socket.send_multipart(msg)
+        for parent, sub_dirs, files in os.walk(top):
+            for user_file in files:
+                self._event_src_path = parent + user_file
+                self._event_rel_path = os.path.relpath(self._event_src_path, self.send_config["PATH_BASE"])
+                self.file_sync()
+                self.finish()
+            for sub_dir in sub_dirs:
+                self.dir_sync((parent+sub_dir))
+        self._event_src_path = copy_src_path
     def ascii_encode(self, msg):
         msg_clone = msg
         for i in range(0, len(msg_clone)):
@@ -136,13 +149,15 @@ class SyncResponder():
         else:
             print("Error: Unrecognized message. Closing without handle")
     def on_sync(self, msg=[]):
-        dest_path = self.config["PATH_BASE"] + self.config["USER"] + "/OneDir/" + msg[1]
+        dest_path = self.config["PATH_BASE"] + msg[1]
+        if not os.path.exists(os.path.dirname(dest_path)):
+            os.mkdir(os.path.dirname(dest_path))
         print("Updating file at " + dest_path)
         with open(dest_path, 'wb') as user_file:
             user_file.write(msg[2])
         self.on_finish()
     def on_mkdir(self, msg):
-        dest_path = self.config["PATH_BASE"] + self.config["USER"] + "/OneDir/" + msg[1]
+        dest_path = self.config["PATH_BASE"] + msg[1]
         print("Make directory command received, processing...")
         if(os.path.isdir(dest_path)):
             print("Directory already exists, ignoring make command...")
@@ -152,7 +167,7 @@ class SyncResponder():
             os.mkdir(dest_path)
         self.on_finish()
     def on_remove(self, msg):
-        dest_path = self.config["PATH_BASE"] + self.config["USER"] + "/OneDir/" + msg[1]
+        dest_path = self.config["PATH_BASE"] + msg[1]
         print("Remove command received, processing...")
         if not os.path.exists(dest_path):
             print("Error: " + dest_path + " does not exist. Can't remove.")
@@ -166,8 +181,8 @@ class SyncResponder():
         self.on_finish()
     def on_move(self, msg):
         print("Move command received, processing...")
-        src_path = self.config["PATH_BASE"] + self.config["USER"] + "/OneDir/" + msg[1]
-        dest_path = self.config["PATH_BASE"] + self.config["USER"] + "/OneDir/" + msg[2]
+        src_path = self.config["PATH_BASE"] + msg[1]
+        dest_path = self.config["PATH_BASE"] + msg[2]
         if not os.path.exists(src_path):
             print("Error: File system object at " + dest_path + " does not exist. Cannot move")
             return
