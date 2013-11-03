@@ -4,6 +4,72 @@ from daemon import FileDaemon
 from syncutils import SyncResponder
 import time
 import threading
+import zmq
+
+class ClientController:
+    def __init__(self):
+        self.msg_identifier = msg_identifier = {
+            "FILESYNC":"1",
+            "MKDIR":"2",
+            "DELETE":"3",
+            "MOVE":"4",
+            "ACK":"5",
+            "CONNECT":"6",
+            "LISTENING":"7",
+        }
+        self.responder_config = {
+            "REC_PORT":"5556",
+            "PATH_BASE":"C:/Test1/OneDir/",
+            "CONTROLLER":"5558",
+        }
+        self.sender_config = {
+            "REC_ADDRESS":"localhost",
+            "REC_PORT":"5555",
+            "PATH_BASE":"C:/Test1/OneDir/",
+            "CONTROLLER":"5558",
+        }
+        self.controller_config = {
+            "REC_ADDRESS":"localhost",
+            "REC_PORT":"5557",
+            "USER":"wbk3zd",
+            "CONTROLLER":"5558",
+        }
+        self.responder = SyncResponder(self.msg_identifier, self.responder_config)
+        self.daemon = FileDaemon(self.msg_identifier, self.sender_config)
+        self._context = zmq.Context()
+        self._socket = self._context.socket(zmq.REQ)
+        self._socket_local = self._context.socket(zmq.PULL)
+        self._socket.connect("tcp://" + self.controller_config["REC_ADDRESS"] + ":" + self.controller_config["REC_PORT"])
+        print("Client controller connected over tcp to " + self.controller_config["REC_ADDRESS"] + ":" + self.controller_config["REC_PORT"] + "...")
+        self._socket_local.bind("tcp://*:" + self.controller_config["REC_PORT"])
+        print("Client controller binded over tcp to " + self.controller_config["CONTROLLER"] + "...")
+        self._start_connection()
+        self._start_responder()
+        self._start_daemon()
+    def _start_connection(self):
+        msg = [self.msg_identifier["CONNECT"], self.controller_config["USER"]]
+        self._socket.send_multipart(self.ascii_encode(msg))
+        rep = self.decode(self._socket.recv_multipart())
+        if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.controller_config["USER"]:
+            print("Connection to server established, starting services...")
+        else:
+            print("Bad response from server, client going down")
+    def _start_responder(self):
+        self.responder.listen()
+        msg = ascii_encode([self.controller_config["LISTENING"]])
+        self._socket.send_multipart(msg)
+        rep = self.decode(self._socket.recv_multipart())
+    def _start_daemon(self):
+        #do some stuff
+    def ascii_encode(self, msg):
+        msg_clone = msg
+        for i in range(0, len(msg_clone)):
+            msg_clone[i] = msg_clone[i].encode('ascii', 'replace')
+        return msg_clone
+    def decode(self, msg):
+        for i in range(0, len(msg)):
+            msg[i] = unicode(msg[i])
+        return msg
 
 def start_server_responder(msg_identifiers, config, wait_flag, signal_flag):
     while not wait_flag.is_set:
