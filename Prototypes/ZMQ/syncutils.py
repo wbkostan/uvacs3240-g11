@@ -35,18 +35,26 @@ rec_config = {
 class SyncEventHandler(watchdog.events.FileSystemEventHandler):
     def __init__(self, msg_identifier, send_config):
         self.msg_identifier = msg_identifier
-        self.send_config = send_config
+        self.config = send_config
         self._context = zmq.Context()
         self._socket = self._context.socket(zmq.PUSH)
-        self._socket.connect("tcp://" + send_config["REC_ADDRESS"] + ":" + send_config["REC_PORT"])
-        print("Client event responder connected over tcp to " + send_config["REC_ADDRESS"] + ":" + send_config["REC_PORT"] + "...")
+        self._socket.connect("tcp://" + self.config["REC_ADDRESS"] + ":" + self.config["REC_PORT"])
+        print("Client event responder connected over tcp to " + self.config["REC_ADDRESS"] + ":" + self.config["REC_PORT"] + "...")
+        self._socket_local = self._context.socket(zmq.PUSH)
+        self._socket_local.connect("tcp://localhost:" + self.config["CONTROLLER"])
+        print("Daemon connected to controller over tcp port " + self.config["CONTROLLER"] + "...")
         self._event_src_path = None
-        self.dir_sync(self.send_config["PATH_BASE"])
+        msg = self.ascii_encode([self.msg_identifier["STOP_MONITORING"]])
+        self._socket_local.send_multipart(msg)
+        self.dir_sync(self.config["PATH_BASE"])
+        self.finish()
     def sync_all(self):
         print("<executed full directory sync>")
     def on_any_event(self, event):
+        msg = self.ascii_encode([self.msg_identifier["STOP_MONITORING"]])
+        self._socket_local.send_multipart(msg)
         self._event_src_path = event.src_path
-        self._event_rel_path = os.path.relpath(self._event_src_path, self.send_config["PATH_BASE"])
+        self._event_rel_path = os.path.relpath(self._event_src_path, self.config["PATH_BASE"])
     def on_created(self, event):
         if os.path.isdir(self._event_src_path):
             print("Sending mkdir command to server for directory at " + self._event_rel_path)
@@ -69,7 +77,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self.finish()
     def on_moved(self, event):
         event_dest_path = event.dest_path
-        rel_dest_path = os.path.relpath(event_dest_path, self.send_config["PATH_BASE"])
+        rel_dest_path = os.path.relpath(event_dest_path, self.config["PATH_BASE"])
         print("Sending move command to server from " + self._event_rel_path + " to " + rel_dest_path)
         msg = self.ascii_encode([self.msg_identifier["MOVE"], self._event_rel_path, rel_dest_path])
         self._socket.send_multipart(msg)
@@ -85,12 +93,12 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self._socket.send_multipart(msg)
     def dir_sync(self, top):
         copy_src_path = self._event_src_path
-        msg = self.ascii_encode([self.msg_identifier["MKDIR"], os.path.relpath(top, self.send_config["PATH_BASE"])])
+        msg = self.ascii_encode([self.msg_identifier["MKDIR"], os.path.relpath(top, self.config["PATH_BASE"])])
         self._socket.send_multipart(msg)
         for parent, sub_dirs, files in os.walk(top):
             for user_file in files:
                 self._event_src_path = parent + user_file
-                self._event_rel_path = os.path.relpath(self._event_src_path, self.send_config["PATH_BASE"])
+                self._event_rel_path = os.path.relpath(self._event_src_path, self.config["PATH_BASE"])
                 self.file_sync()
                 self.finish()
             for sub_dir in sub_dirs:
@@ -101,7 +109,13 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         for i in range(0, len(msg_clone)):
             msg_clone[i] = msg_clone[i].encode('ascii', 'replace')
         return msg_clone
+    def decode(self, msg):
+        for i in range(0, len(msg)):
+            msg[i] = unicode(msg[i])
+        return msg
     def finish(self):
+        msg = self.ascii_encode([self.msg_identifier["START_MONITORING"]])
+        self._socket_local.send_multipart(msg)
         print("")
         self._event_src_path = None
 

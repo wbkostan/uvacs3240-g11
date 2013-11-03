@@ -16,6 +16,9 @@ class ClientController:
             "ACK":"5",
             "CONNECT":"6",
             "LISTENING":"7",
+            "MONITORING":"8",
+            "START_MONITORING":"9",
+            "STOP_MONITORING":"10",
         }
         self.responder_config = {
             "REC_PORT":"5556",
@@ -43,6 +46,9 @@ class ClientController:
         print("Client controller connected over tcp to " + self.controller_config["REC_ADDRESS"] + ":" + self.controller_config["REC_PORT"] + "...")
         self._socket_local.bind("tcp://*:" + self.controller_config["REC_PORT"])
         print("Client controller binded over tcp to " + self.controller_config["CONTROLLER"] + "...")
+        self.listen_flag = threading.Event()
+        self.listen_flag.clear()
+        self.listen()
         self._start_connection()
         self._start_responder()
         self._start_daemon()
@@ -53,14 +59,35 @@ class ClientController:
         if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.controller_config["USER"]:
             print("Connection to server established, starting services...")
         else:
-            print("Bad response from server, client going down")
+            print("Error: Bad response from server...")
     def _start_responder(self):
         self.responder.listen()
-        msg = ascii_encode([self.controller_config["LISTENING"]])
+        msg = self.ascii_encode([self.controller_config["LISTENING"]])
         self._socket.send_multipart(msg)
         rep = self.decode(self._socket.recv_multipart())
+        if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.msg_identifier["LISTENING"]:
+            print("Responder service started, beginning file monitoring...")
+        else:
+            print("Error: No acknowledgement from server...")
     def _start_daemon(self):
-        #do some stuff
+        self.daemon.monitor()
+        msg = self.ascii_encode([self.controller_config["MONITORING"]])
+        self._socket.send_multipart(msg)
+        rep = self.decode(self._socket.recv_multipart())
+        if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.msg_identifier["MONITORING"]:
+            print("Monitoring file directories, full services online...")
+        else:
+            print("Error: No acknowledgement from server...")
+    def _listen(self):
+        while self.listen_flag.is_set():
+            msg = self.decode(self._socket_local.recv_multipart())
+            if msg[0] == self.msg_identifier["STOP_MONITOR"]:
+                self.daemon.pause()
+            elif msg[0] == self.msg_identifier["START_MONITOR"]:
+                self.daemon.resume()
+    def listen(self):
+        self.listen_flag.set()
+        threading.Thread(target=self._listen).start()
     def ascii_encode(self, msg):
         msg_clone = msg
         for i in range(0, len(msg_clone)):
@@ -103,7 +130,7 @@ def start_server_daemon(msg_identifiers, config, wait_flag, signal_flag):
     while not wait_flag.is_set():
         time.sleep(1)
     print("Server file daemon going online...")
-    daemon = FileDaemon(config["PATH_BASE"], msg_identifiers, config)
+    daemon = FileDaemon(msg_identifiers, config)
     try:
         signal_flag.set()
         daemon.monitor()
@@ -114,7 +141,7 @@ def start_client_daemon(msg_identifiers, config, wait_flag):
     while not wait_flag.is_set():
         time.sleep(1)
     print("Client daemon going online...")
-    daemon = FileDaemon(config["PATH_BASE"], msg_identifiers, config)
+    daemon = FileDaemon(msg_identifiers, config)
     try:
         daemon.monitor()
     except KeyboardInterrupt:
@@ -126,7 +153,23 @@ def main():
         "MKDIR":"2",
         "DELETE":"3",
         "MOVE":"4",
-        "ACK":"5"
+        "ACK":"5",
+        "CONNECT":"6",
+        "LISTENING":"7",
+        "MONITORING":"8",
+        "START_MONITORING":"9",
+        "STOP_MONITORING":"10",
+    }
+    client_rec_config = {
+        "REC_PORT":"5556",
+        "PATH_BASE":"C:/Test1/OneDir/",
+        "CONTROLLER":"5558",
+    }
+    client_sender_config = {
+        "REC_ADDRESS":"localhost",
+        "REC_PORT":"5555",
+        "PATH_BASE":"C:/Test1/OneDir/",
+        "CONTROLLER":"5558",
     }
 
     server_rec_config = {
@@ -134,20 +177,11 @@ def main():
         "PATH_BASE":"C:/Test2/wbk3zd/OneDir/",
     }
 
-    client_rec_config = {
-        "REC_PORT":"5556",
-        "PATH_BASE":"C:/Test1/OneDir/",
-    }
-
-    client_sender_config = {
-        "REC_ADDRESS":"localhost",
-        "REC_PORT":"5555",
-        "PATH_BASE":"C:/Test1/OneDir/",
-    }
     server_sender_config = {
         "REC_ADDRESS":"localhost",
         "REC_PORT":"5556",
         "PATH_BASE":"C:/Test2/wbk3zd/OneDir/",
+        "CONTROLLER":"5559",
     }
 
     server_rec_flag = threading.Event()
