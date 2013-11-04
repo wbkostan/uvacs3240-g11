@@ -6,25 +6,37 @@ from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
 from syncutils import SyncEventHandler
 from syncutils import SyncResponder
+import threading
 
 class FileDaemon:
-    def __init__(self, target, msg_identifier, send_config):
+    def __init__(self, msg_identifier, send_config):
         self.on = False
-        self.target_dir = target
+        self.target_dir = send_config["PATH_BASE"]
         self.event_handler = SyncEventHandler(msg_identifier, send_config)
         self.observer = Observer()
+        self.monitor_flag = threading.Event()
+        self.monitor_flag.clear()
         print("Scheduling observation of " + self.target_dir + " tree...")
         self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
-    def monitor(self):
+    def _monitor(self):
         print("Client daemon is monitoring " + self.target_dir + "...")
         print("")
         self.observer.start()
         try:
-            while True:
+            while (self.monitor_flag.is_set()):
                 time.sleep(1)
         except KeyboardInterrupt:
             self.observer.stop()
         self.observer.join()
+    def monitor(self):
+        self.monitor_flag.set()
+        threading.Thread(target=self._monitor).start()
+    def pause(self):
+        self.monitor_flag.clear()
+    def resume(self):
+        self.monitor()
+
+
 
 
 if __name__ == "__main__":
