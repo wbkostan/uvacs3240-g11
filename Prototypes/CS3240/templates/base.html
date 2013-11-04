@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/OneDir.css">
+{% block extrahead %}{% endblock %}
+<html lang="en">
+<head>
+    <title>{% block title %}OneDir{% endblock %}</title>
+</head>
+
+<body>
+<div id = "page_cont">
+<div id = "header">
+    <div id = "navbar">
+    </div>
+    <div id="nav_top_right">
+        {% if user.is_authenticated %}<p><a href="/logout/">Logout</a> | <a href="/loggedin/">{{ request.user.username.title }}</a></p>
+            {% else %}<p><a href="/login/">Login</a> | <a href = "/register/"> Register </a></p>{% endif %}
+    </div>
+</div>
+
+<div id="content">
+
+	{% if messages %}
+	<ul class="messages">
+	    {% for message in messages %}
+	    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	    {% endfor %}
+	</ul>
+	{% endif %}
+
+        {% block content %}This is the content area{% endblock %}
+
+</div>
+</div>
+</body>
+</html>
