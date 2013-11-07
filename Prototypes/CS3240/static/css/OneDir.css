@@ -1,0 +1,50 @@
+body{
+    background-attachment: scroll;
+    background-color: #FFFFFF;
+    background-image: url(/static/images/WebDesignLayout.jpg);
+    background-position: center top;
+    background-repeat: no-repeat;
+    color: #000000;
+    margin: 0;
+    padding: 0;
+    min-height: 1180px;
+
+}
+
+
+#page_cont {
+    margin: auto;
+    position: relative;
+    width: 910px;
+    top: 10px;
+    min-height: 1060px;
+    font-size: 10pt;
+}
+
+#nav_top_right {
+    margin: auto;
+    positon: relative;
+    top: 10px;
+    font-color: #ffffff;
+    font-size: 8pt;
+    text-align: right;
+    font-family: helvetica;
+}
+.top_right_links, a:link {color:#ABAAAA; text-decoration: none; font-family: helvetica; }      /* unvisited link */
+.top_right_links, a:visited {color:#ABAAAA; text-decoration: none; font-family: helvetica}  /* visited link */
+.top_right_links, a:hover {color:#DBD1BE;text-decoration: none; font-family: helvetica}  /* mouse over link */
+.top_right_links, a:active {color:#DBD1BE; text-decoration: none; font-family: helvetica}  /* selected link */
+
+
+#content {
+    background-position: center top;
+    background-attachment: scroll;
+    margin: auto;
+    position: relative;
+    width: 910px;
+    top: 120px;
+    min-height: 950px;
+    font-color:#2A2A2A;
+    font-family: Arial;
+    font-size: 10pt;
+}
