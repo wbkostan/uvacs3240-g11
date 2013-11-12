@@ -109,8 +109,12 @@ class FileDaemon:
             self.observer.stop()
         self.observer.stop()
         self.observer.join()
+    def full_sync(self):
+        self.event_handler.dir_sync(self.target_dir)
     def monitor(self):
         self.monitor_flag.set()
         threading.Thread(target=self._monitor).start()
+    def is_alive(self):
+        return self.monitor_flag.is_set()
     def stop(self):
         self.monitor_flag.clear()
