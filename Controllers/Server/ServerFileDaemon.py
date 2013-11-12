@@ -16,8 +16,8 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self.config = send_config
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.PUSH)
-        self.socket.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_CATCH_PORT"])
-        print("Daemon connected to server at " + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_CATCH_PORT"] + "...")
+        self.socket.connect("tcp://localhost:" + self.config["SYNC_PASSUP_PORT"])
+        print("Daemon connected to server at tcp://localhost:" + self.config["SYNC_PASSUP_PORT"] + "...")
         self.event_src_path = None
         self.event_rel_path = None
         self.dir_sync(self.config["PATH_BASE"])

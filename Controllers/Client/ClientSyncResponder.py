@@ -43,12 +43,13 @@ class SyncResponder():
         self.listen_flag.clear()
     def dispatch(self, msg):
         decode_msg = self.decode(msg)
+        msg.remove(msg[0]) #Remove topic from message
         if not decode_msg[0]:
             print("Error: Empty message received")
             return
         msg = [self.msg_identifier["STOP_MONITORING"], str(threading.get_ident())]
         self.internal_request_socket.send_multipart(self.ascii_encode(msg))
-        time.sleep(2) #wait for local activity to settle
+        time.sleep(1) #wait for local activity to settle
         if decode_msg[0] == self.msg_identifier["FILESYNC"]:
             self.on_sync(decode_msg)
         elif decode_msg[0] == self.msg_identifier["MKDIR"]:
@@ -57,6 +58,9 @@ class SyncResponder():
             self.on_remove(decode_msg)
         elif decode_msg[0] == self.msg_identifier["MOVE"]:
             self.on_move(decode_msg)
+        elif decode_msg[0] == self.msg_identifier["DISCONNECT"]:
+            msg = [self.msg_identifier["KILL"]]
+            self.internal_request_socket.send_multipart(self.ascii_encode(msg))
         else:
             print("Error: Unrecognized message. Closing without handle")
         self.on_finish()

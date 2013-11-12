@@ -36,6 +36,7 @@ class ServerController:
             "MONITORING":"8",
             "START_MONITORING":"9",
             "STOP_MONITORING":"10",
+            "KILL":"11",
         }
         self.config = config
         self.config["CLIENT_CONTACT_PORT"] = "5556"
@@ -77,23 +78,35 @@ class ServerController:
                     self.client_components[msg[1]][1].monitor()
     def _listen_client(self):
         while self.listen_flag.is_set():
-            msg = self.decode(self.internal_request_socket.recv_multipart())
+            msg = self.decode(self.client_contact_socket.recv_multipart())
             if msg[0] == self.msg_identifier["CONNECT"]:
                 self.connect_client(msg[1])
                 msg = [self.msg_identifier["ACK"], msg[1]]
-            if msg[0] == self.msg_identifier["LISTENING"]:
+            elif msg[0] == self.msg_identifier["LISTENING"]:
                 self.start_client_daemon(msg[1])
                 msg = [self.msg_identifier["ACK", msg[1]]]
             self.client_contact_socket.send_multipart(self.ascii_encode(msg))
+    def _listen_sync_catch(self):
+        while self.listen_flag.is_set():
+            msg = self.decode(self.sync_catch_socket.recv_multipart())
+            self.sync_passthru_socket.send_multipart(self.ascii_encode(msg))
+    def _listen_sync_passup(self):
+        while self.listen_flag.is_set():
+            msg = self.decode(self.sync_passup_socket.recv_multipart())
+            self.sync_throw_socket.send_multipart(self.ascii_encode(msg))
     def listen(self):
         self.listen_flag.set()
-        threading.Thread(target=self._listen).start()
+        threading.Thread(target=self._listen_internal).start()
+        threading.Thread(target=self._listen_client).start()
+        threading.Thread(target=self._listen_sync_catch).start()
+        threading.Thread(target=self._listen_sync_passup).start()
     def connect_client(self, username):
         if not username in client_components:
             daemon_config = responder_config = self.config
             daemon_config["USERNAME"] = responder_config["USERNAME"] = username
-            daemon = FileDaemon(daemon_config)
-            responder = SyncResponder(responder_config)
+            daemon_config["PATH_BASE"] = responder_config["PATH_BASE"] = self.config["PATH_BASE"] + username + "\\OneDir\\"
+            daemon = FileDaemon(self.msg_identifier, daemon_config)
+            responder = SyncResponder(self.msg_identifier, responder_config)
             responder.start()
             client_components[username] = (daemon, responder, 1)
         else:
@@ -113,29 +126,15 @@ class ServerController:
                 client_components[username][0].full_sync()
     def start(self):
         self.listen()
-        auth = False
-        while not auth:
-            auth = self.authenticate
-        self.start_connection()
-    def start_connection(self):
-        msg = [self.msg_identifier["CONNECT"], self.config["USERNAME"]]
-        self.server_contact_socket.send_multipart(self.ascii_encode(msg))
-        rep = self.decode(self.server_contact_socket.recv_multipart())
-        if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.config["USERNAME"]:
-            print("Connection to server established, starting services...")
-        else:
-            print("Error: Bad response from server...")
-            return
-        self.start_responder()
-    def start_responder(self):
-        self.responder.listen()
-        msg = [self.msg_identifier["LISTENING"], self.config["USERNAME"]]
-        self.server_contact_socket.send_multipart(self.ascii_encode(msg))
-        rep = self.decode(self.server_contact_socket.recv_multipart())
-        if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.msg_identifier["USERNAME"]:
-            print("Responder service started, monitoring file system, full services started...")
-        else:
-            print("Error: Bad response from server")
+    def teardown(self):
+        self.listen_flag.clear()
+        for key in client_components:
+            client_components[key][0].teardown()
+            client_components[key][1].teardown()
+            client_components[key][2] = 0
+            msg = [key, self.msg_identifier["DISCONNECT"]]
+            self.sync_throw_socket.send_multipart(self.ascii_encode(msg))
+            del client_components[key]
     def ascii_encode(self, msg):
         msg_clone = msg
         for i in range(0, len(msg_clone)):

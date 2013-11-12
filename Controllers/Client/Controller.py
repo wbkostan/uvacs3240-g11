@@ -40,6 +40,7 @@ class ClientController:
             "MONITORING":"8",
             "START_MONITORING":"9",
             "STOP_MONITORING":"10",
+            "KILL":"11",
         }
         self.config = config
         self.config["INTERNAL_REQUEST_PORT"] = "5555"
@@ -64,7 +65,8 @@ class ClientController:
         self.server_contact_socket.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_CONTACT_PORT"])
         print("Client controller connected to server at " + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_CONTACT_PORT"] + "...")
     def authenticate(self):
-        self.config["USERNAME"] = self.daemon_config["USERNAME"] = self.responder_config["USERNAME"] = "wbk3zd"
+        username = raw_input("Username: ")
+        self.config["USERNAME"] = self.daemon_config["USERNAME"] = self.responder_config["USERNAME"] = username
         return True
     def start(self):
         self.listen_flag = threading.Event()
@@ -94,14 +96,14 @@ class ClientController:
         else:
             print("Error: Bad response from server")
     def disconnect(self):
+        self.listen_flag.clear()
         msg = [self.msg_identifier["DISCONNECT"], self.config["USERNAME"]]
         self.server_contact_socket.send_multipart(self.ascii_encode(msg))
         rep = self.decode(self.server_contact_socket.recv_multipart())
         if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.config["USERNAME"]:
             print("Disconnected from server, going down")
-            self.responder.teardown()
-            self.daemon.teardown()
-            self.teardown()
+        self.responder.teardown()
+        self.daemon.teardown()
     def _listen(self):
         blocking_threads = []
         while self.listen_flag.is_set():
@@ -110,14 +112,19 @@ class ClientController:
                 blocking_threads.append(int(msg[1]))
                 self.daemon.pause()
             elif msg[0] == self.msg_identifier["START_MONITORING"]:
-                blocking_threads.remove(int(msg[1]))
+                if int(msg[1]) in blocking_threads:
+                    blocking_threads.remove(int(msg[1]))
                 if not blocking_threads:
                     self.daemon.monitor()
+            elif msg[0] == self.msg_identifier["KILL"]:
+                self.teardown()
     def listen(self):
         self.listen_flag.set()
         threading.Thread(target=self._listen).start()
     def teardown(self):
         self.listen_flag.clear()
+        self.responder.teardown()
+        self.daemon.teardown()
     def ascii_encode(self, msg):
         msg_clone = msg
         for i in range(0, len(msg_clone)):

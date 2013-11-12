@@ -16,15 +16,15 @@ class SyncResponder():
         self.context = zmq.Context()
         self.internal_request_socket = self.context.socket(zmq.PUSH)
         self.internal_request_socket.connect("tcp://localhost:" + self.config["INTERNAL_REQUEST_PORT"])
-        print("Connecting responder to internal client controller over tcp port " + self.config["INTERNAL_REQUEST_PORT"] + "...")
-        self.server_sync_throw_socket = self.context.socket(zmq.SUB)
-        self.server_sync_throw_socket.setsocketopt(zmq.SUBSCRIBE, self.config["USERNAME"])
-        self.server_sync_throw_socket.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"])
-        print("Subscribed to sync directives at " + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"] + "for user " + self.config["USERNAME"] + "...")
+        print("Connecting responder to internal server controller over tcp port " + self.config["INTERNAL_REQUEST_PORT"] + "...")
+        self.sync_passthru_socket = self.context.socket(zmq.SUB)
+        self.sync_passthru_socket.setsocketopt(zmq.SUBSCRIBE, self.config["USERNAME"])
+        self.sync_passthru_socket.connect("tcp://localhost:" + self.config["SYNC_PASSTHRU_PORT"])
+        print("Subscribed to sync directives at tcp://localhost:" + self.config["SYNC_PASSTHRU_PORT"] + "for user " + self.config["USERNAME"] + "...")
         self.listen_flag = threading.Event()
         self.listen_flag.clear()
     def _listen(self):
-        print("Responder is listening for sync directives at " + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"] + "for user " + self.config["USERNAME"] + "...")
+        print("Responder is listening for sync directives at tcp://localhost:" + self.config["SYNC_PASSTHRU_PORT"] + "for user " + self.config["USERNAME"] + "...")
         print("")
         while(self.listen_flag.is_set()):
             try:
@@ -43,12 +43,13 @@ class SyncResponder():
         self.listen_flag.clear()
     def dispatch(self, msg):
         decode_msg = self.decode(msg)
+        msg.remove(msg[0]) #Remove topic from message
         if not decode_msg[0]:
             print("Error: Empty message received")
             return
-        msg = [self.msg_identifier["STOP_MONITORING"]]
+        msg = [self.msg_identifier["STOP_MONITORING"], self.config["USERNAME"]]
         self.internal_request_socket.send_multipart(self.ascii_encode(msg))
-        time.sleep(2) #wait for local activity to settle
+        time.sleep(1) #wait for local activity to settle
         if decode_msg[0] == self.msg_identifier["FILESYNC"]:
             self.on_sync(decode_msg)
         elif decode_msg[0] == self.msg_identifier["MKDIR"]:
@@ -57,6 +58,9 @@ class SyncResponder():
             self.on_remove(decode_msg)
         elif decode_msg[0] == self.msg_identifier["MOVE"]:
             self.on_move(decode_msg)
+        elif decode_msg[0] == self.msg_identifier["DISCONNECT"]:
+            msg = [self.msg_identifier["KILL"]]
+            self.internal_request_socket.send_multipart(self.ascii_encode(msg))
         else:
             print("Error: Unrecognized message. Closing without handle")
         self.on_finish()
@@ -109,7 +113,7 @@ class SyncResponder():
         self.on_finish()
     def on_finish(self):
         print("")
-        msg = [self.msg_identifier["START_MONITORING"]]
+        msg = [self.msg_identifier["START_MONITORING"], self.config["USERNAME"]]
         self.internal_request_socket.send_multipart(self.ascii_encode(msg))
     def ascii_encode(self, msg):
         msg_clone = msg
