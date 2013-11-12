@@ -112,5 +112,7 @@ class FileDaemon:
     def monitor(self):
         self.monitor_flag.set()
         threading.Thread(target=self._monitor).start()
-    def stop(self):
+    def pause(self):
+        self.monitor_flag.clear()
+    def teardown(self):
         self.monitor_flag.clear()

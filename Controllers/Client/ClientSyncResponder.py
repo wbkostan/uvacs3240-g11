@@ -46,7 +46,7 @@ class SyncResponder():
         if not decode_msg[0]:
             print("Error: Empty message received")
             return
-        msg = [self.msg_identifier["STOP_MONITORING"]]
+        msg = [self.msg_identifier["STOP_MONITORING"], str(threading.get_ident())]
         self.internal_request_socket.send_multipart(self.ascii_encode(msg))
         time.sleep(2) #wait for local activity to settle
         if decode_msg[0] == self.msg_identifier["FILESYNC"]:
