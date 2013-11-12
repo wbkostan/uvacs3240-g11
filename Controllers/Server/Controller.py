@@ -91,6 +91,10 @@ class ServerController:
             msg = self.decode(self.sync_catch_socket.recv_multipart())
             self.sync_passthru_socket.send_multipart(self.ascii_encode(msg))
     def _listen_sync_passup(self):
+        """
+            Catches all sync requests sent up by file daemons and publishes them
+            to all clients subscribed to appropriate username
+        """
         while self.listen_flag.is_set():
             msg = self.decode(self.sync_passup_socket.recv_multipart())
             self.sync_throw_socket.send_multipart(self.ascii_encode(msg))
@@ -101,40 +105,40 @@ class ServerController:
         threading.Thread(target=self._listen_sync_catch).start()
         threading.Thread(target=self._listen_sync_passup).start()
     def connect_client(self, username):
-        if not username in client_components:
+        if not username in self.client_components:
             daemon_config = responder_config = self.config
             daemon_config["USERNAME"] = responder_config["USERNAME"] = username
             daemon_config["PATH_BASE"] = responder_config["PATH_BASE"] = self.config["PATH_BASE"] + username + "\\OneDir\\"
             daemon = FileDaemon(self.msg_identifier, daemon_config)
             responder = SyncResponder(self.msg_identifier, responder_config)
             responder.start()
-            client_components[username] = (daemon, responder, 1)
+            self.client_components[username] = (daemon, responder, 1)
         else:
-            client_components[username][2] += 1
+            self.client_components[username][2] += 1
     def disconnect_client(self, username):
-        if username in client_components:
-            client_components[username][2] -= 1
-            if(client_components[username][2] == 0):
-                client_components[username][0].teardown()
-                client_components[username][1].teardown()
-                del client_components[username]
+        if username in self.client_components:
+            self.client_components[username][2] -= 1
+            if(self.client_components[username][2] == 0):
+                self.client_components[username][0].teardown()
+                self.client_components[username][1].teardown()
+                del self.client_components[username]
     def start_client_daemon(self, username):
-        if username in client_components:
-            if not client_components[username][0].is_alive():
-                client_components[username][0].monitor()
+        if username in self.client_components:
+            if not self.client_components[username][0].is_alive():
+                self.client_components[username][0].monitor()
             else:
-                client_components[username][0].full_sync()
+                self.client_components[username][0].full_sync()
     def start(self):
         self.listen()
     def teardown(self):
         self.listen_flag.clear()
         for key in client_components:
-            client_components[key][0].teardown()
-            client_components[key][1].teardown()
-            client_components[key][2] = 0
+            self.client_components[key][0].teardown()
+            self.client_components[key][1].teardown()
+            self.client_components[key][2] = 0
             msg = [key, self.msg_identifier["DISCONNECT"]]
             self.sync_throw_socket.send_multipart(self.ascii_encode(msg))
-            del client_components[key]
+            del self.client_components[key]
     def ascii_encode(self, msg):
         msg_clone = msg
         for i in range(0, len(msg_clone)):
