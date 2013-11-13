@@ -11,15 +11,17 @@ import shutil
 import encodings
 
 class SyncEventHandler(watchdog.events.FileSystemEventHandler):
-    def __init__(self, msg_identifier, send_config):
+    def __init__(self, msg_identifier):
         self.msg_identifier = msg_identifier
-        self.config = send_config
+        self.config = None
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.PUSH)
-        self.socket.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_CATCH_PORT"])
-        print("Daemon connected to server at " + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_CATCH_PORT"] + "...")
         self.event_src_path = None
         self.event_rel_path = None
+    def initialize(self, config):
+        self.config = config
+        self.socket.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_CATCH_PORT"])
+        print("Daemon connected to server at " + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_CATCH_PORT"] + "...")
         self.dir_sync(self.config["PATH_BASE"])
         self.finish()
     def on_any_event(self, event):
@@ -90,14 +92,13 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         return msg
 
 class FileDaemon:
-    def __init__(self, msg_identifier, send_config):
-        self.target_dir = send_config["PATH_BASE"]
-        self.event_handler = SyncEventHandler(msg_identifier, send_config)
+    def __init__(self, msg_identifier):
+        self.config = None
+        self.target_dir = None
+        self.event_handler = SyncEventHandler(msg_identifier)
         self.observer = Observer()
         self.monitor_flag = threading.Event()
         self.monitor_flag.clear()
-        print("Scheduling observation of " + self.target_dir + " tree...")
-        self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
     def _monitor(self):
         print("Client daemon is monitoring " + self.target_dir + "...")
         print("")
@@ -112,6 +113,12 @@ class FileDaemon:
     def monitor(self):
         self.monitor_flag.set()
         threading.Thread(target=self._monitor).start()
+    def initialize(self, config):
+        self.config = config
+        self.target_dir = self.config["PATH_BASE"]
+        self.event_handler.initialize(self.config)
+        print("Scheduling observation of " + self.target_dir + " tree...")
+        self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
     def pause(self):
         self.monitor_flag.clear()
     def teardown(self):

@@ -15,20 +15,21 @@ class SyncResponder():
         self.config = rec_config
         self.context = zmq.Context()
         self.internal_request_socket = self.context.socket(zmq.PUSH)
-        self.internal_request_socket.connect("tcp://localhost:" + self.config["INTERNAL_REQUEST_PORT"])
-        print("Connecting responder to internal server controller over tcp port " + self.config["INTERNAL_REQUEST_PORT"] + "...")
         self.sync_passthru_socket = self.context.socket(zmq.SUB)
-        self.sync_passthru_socket.setsocketopt(zmq.SUBSCRIBE, self.config["USERNAME"])
-        self.sync_passthru_socket.connect("tcp://localhost:" + self.config["SYNC_PASSTHRU_PORT"])
-        print("Subscribed to sync directives at tcp://localhost:" + self.config["SYNC_PASSTHRU_PORT"] + "for user " + self.config["USERNAME"] + "...")
         self.listen_flag = threading.Event()
         self.listen_flag.clear()
+    def initialize(self):
+        self.internal_request_socket.connect("tcp://localhost:" + self.config["INTERNAL_REQUEST_PORT"])
+        print("Connecting responder to internal server controller over tcp port " + self.config["INTERNAL_REQUEST_PORT"] + "...")
+        self.sync_passthru_socket.setsockopt(zmq.SUBSCRIBE, self.config["USERNAME"].encode('ascii', 'replace'))
+        self.sync_passthru_socket.connect("tcp://localhost:" + self.config["SYNC_PASSTHRU_PORT"])
+        print("Subscribed to sync directives at tcp://localhost:" + self.config["SYNC_PASSTHRU_PORT"] + "for user " + self.config["USERNAME"] + "...")
     def _listen(self):
         print("Responder is listening for sync directives at tcp://localhost:" + self.config["SYNC_PASSTHRU_PORT"] + "for user " + self.config["USERNAME"] + "...")
         print("")
         while(self.listen_flag.is_set()):
             try:
-                msg = self.socket.recv_multipart()
+                msg = self.sync_passthru_socket.recv_multipart()
                 threading.Thread(target=self.dispatch, args=(msg,)).start()
             except KeyboardInterrupt:
                 return

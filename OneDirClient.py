@@ -14,9 +14,10 @@ def get_config():
     return config
 
 def launch():
+    controller = ClientController()
     config = get_config()
-    controller = ClientController(config)
-    controller.start_connection()
+    controller.initialize(config)
+    controller.start()
     try:
         while True:
             time.sleep(1)

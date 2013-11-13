@@ -16,12 +16,11 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self.config = send_config
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.PUSH)
-        self.socket.connect("tcp://localhost:" + self.config["SYNC_PASSUP_PORT"])
-        print("Daemon connected to server at tcp://localhost:" + self.config["SYNC_PASSUP_PORT"] + "...")
         self.event_src_path = None
         self.event_rel_path = None
-        self.dir_sync(self.config["PATH_BASE"])
-        self.finish()
+    def initialize(self):
+        self.socket.connect("tcp://localhost:" + self.config["SYNC_PASSUP_PORT"])
+        print("Daemon connected to server at tcp://localhost:" + self.config["SYNC_PASSUP_PORT"] + "...")
     def on_any_event(self, event):
         self.event_src_path = event.src_path
         self.event_rel_path = os.path.relpath(self.event_src_path, self.config["PATH_BASE"])
@@ -55,17 +54,20 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         if self.event_src_path == None:
             print("Error: Told to sync, but sync source not set!")
             return
+        print("Syncing file at " + self.event_src_path)
         with open(self.event_src_path, 'rb') as user_file:
             content = user_file.read()
         print("Sending filesync command to server for file at " + self.event_rel_path)
         msg = [self.config["USERNAME"], self.msg_identifier["FILESYNC"], self.event_rel_path, content]
         self.socket.send_multipart(self.ascii_encode(msg))
     def dir_sync(self, top):
+        print("Directory sync command received for " + top)
         copy_src_path = self.event_src_path
         copy_rel_path = self.event_rel_path
         msg = [self.config["USERNAME"], self.msg_identifier["MKDIR"], os.path.relpath(top, self.config["PATH_BASE"])]
         self.socket.send_multipart(self.ascii_encode(msg))
         for parent, sub_dirs, files in os.walk(top):
+            print("Iterating over " + parent + " including " + sub_dirs + " and " + files)
             for user_file in files:
                 self.event_src_path = parent + user_file
                 self.event_rel_path = os.path.relpath(self.event_src_path, self.config["PATH_BASE"])
@@ -75,6 +77,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
                 self.dir_sync((parent+sub_dir))
         self.event_src_path = copy_src_path
         self.event_rel_path = copy_rel_path
+        self.finish()
     def finish(self):
         print("")
         self.event_src_path = None
@@ -96,11 +99,11 @@ class FileDaemon:
         self.observer = Observer()
         self.monitor_flag = threading.Event()
         self.monitor_flag.clear()
+    def initialize(self):
         print("Scheduling observation of " + self.target_dir + " tree...")
         self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
     def _monitor(self):
-        print("Client daemon is monitoring " + self.target_dir + "...")
-        print("")
+        print("Server daemon is monitoring " + self.target_dir + "...")
         self.observer.start()
         try:
             while (self.monitor_flag.is_set()):
@@ -110,8 +113,10 @@ class FileDaemon:
         self.observer.stop()
         self.observer.join()
     def full_sync(self):
+        print("Throwing full directory sync directive from server...")
         self.event_handler.dir_sync(self.target_dir)
     def monitor(self):
+        print("Server daemon is monitoring at " + self.target_dir + " tree...")
         self.monitor_flag.set()
         threading.Thread(target=self._monitor).start()
     def is_alive(self):

@@ -10,25 +10,28 @@ import encodings
 import time
 
 class SyncResponder():
-    def __init__(self, msg_identifier, rec_config):
+    def __init__(self, msg_identifier):
         self.msg_identifier = msg_identifier
-        self.config = rec_config
+        self.config = None
         self.context = zmq.Context()
         self.internal_request_socket = self.context.socket(zmq.PUSH)
-        self.internal_request_socket.connect("tcp://localhost:" + self.config["INTERNAL_REQUEST_PORT"])
-        print("Connecting responder to internal client controller over tcp port " + self.config["INTERNAL_REQUEST_PORT"] + "...")
         self.server_sync_throw_socket = self.context.socket(zmq.SUB)
-        self.server_sync_throw_socket.setsocketopt(zmq.SUBSCRIBE, self.config["USERNAME"])
-        self.server_sync_throw_socket.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"])
-        print("Subscribed to sync directives at " + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"] + "for user " + self.config["USERNAME"] + "...")
         self.listen_flag = threading.Event()
         self.listen_flag.clear()
+    def initialize(self, config):
+        self.config = config
+        self.internal_request_socket.connect("tcp://localhost:" + self.config["INTERNAL_REQUEST_PORT"])
+        print("Connecting responder to internal client controller over tcp port " + self.config["INTERNAL_REQUEST_PORT"] + "...")
+        self.server_sync_throw_socket.setsockopt(zmq.SUBSCRIBE, self.config["USERNAME"].encode('ascii', 'replace'))
+        self.server_sync_throw_socket.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"])
+        print("Subscribed to sync directives at " + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"] + "for user " + self.config["USERNAME"] + "...")
     def _listen(self):
         print("Responder is listening for sync directives at " + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"] + "for user " + self.config["USERNAME"] + "...")
         print("")
         while(self.listen_flag.is_set()):
             try:
-                msg = self.socket.recv_multipart()
+                msg = self.server_sync_throw_socket.recv_multipart()
+                print("Message received! " + msg)
                 threading.Thread(target=self.dispatch, args=(msg,)).start()
             except KeyboardInterrupt:
                 return

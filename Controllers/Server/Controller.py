@@ -4,6 +4,8 @@ from ServerFileDaemon import FileDaemon
 from ServerSyncResponder import SyncResponder
 import threading
 import zmq
+#from django.contrib.auth.models import User
+#from django.contrib.auth import authenticate
 
 """
     self.msg_identifier = {
@@ -37,6 +39,9 @@ class ServerController:
             "START_MONITORING":"9",
             "STOP_MONITORING":"10",
             "KILL":"11",
+            "LOGIN":"12",
+            "TRUE":"13",
+            "FALSE":"14",
         }
         self.config = config
         self.config["CLIENT_CONTACT_PORT"] = "5556"
@@ -85,6 +90,11 @@ class ServerController:
             elif msg[0] == self.msg_identifier["LISTENING"]:
                 self.start_client_daemon(msg[1])
                 msg = [self.msg_identifier["ACK", msg[1]]]
+            elif msg[0] == self.msg_identifier["LOGIN"]:
+                if self.authenticate_client(msg[1], msg[2]):
+                    msg = [self.msg_identifier["ACK"], self.msg_identifier["TRUE"]]
+                else:
+                    msg = [self.msg_identifier["ACK"], self.msg_identifier["FALSE"]]
             self.client_contact_socket.send_multipart(self.ascii_encode(msg))
     def _listen_sync_catch(self):
         while self.listen_flag.is_set():
@@ -104,6 +114,20 @@ class ServerController:
         threading.Thread(target=self._listen_client).start()
         threading.Thread(target=self._listen_sync_catch).start()
         threading.Thread(target=self._listen_sync_passup).start()
+    def authenticate_client(self, username, password):
+        return True
+        """
+        user = authenticate(username = username, password = password)
+        if user is not None:
+            if user.is_active():
+                return True #Always authenticate until actual authentication is added.
+            else:
+                #Disabled account
+                return False
+        else:
+            #Bad user/pass combo
+            return False
+        """
     def connect_client(self, username):
         if not username in self.client_components:
             daemon_config = responder_config = self.config
@@ -111,7 +135,9 @@ class ServerController:
             daemon_config["PATH_BASE"] = responder_config["PATH_BASE"] = self.config["PATH_BASE"] + username + "\\OneDir\\"
             daemon = FileDaemon(self.msg_identifier, daemon_config)
             responder = SyncResponder(self.msg_identifier, responder_config)
-            responder.start()
+            responder.initialize()
+            daemon.initialize()
+            responder.listen()
             self.client_components[username] = (daemon, responder, 1)
         else:
             self.client_components[username][2] += 1
@@ -124,15 +150,14 @@ class ServerController:
                 del self.client_components[username]
     def start_client_daemon(self, username):
         if username in self.client_components:
+            self.client_components[username][0].full_sync()
             if not self.client_components[username][0].is_alive():
                 self.client_components[username][0].monitor()
-            else:
-                self.client_components[username][0].full_sync()
     def start(self):
         self.listen()
     def teardown(self):
         self.listen_flag.clear()
-        for key in client_components:
+        for key in self.client_components:
             self.client_components[key][0].teardown()
             self.client_components[key][1].teardown()
             self.client_components[key][2] = 0
