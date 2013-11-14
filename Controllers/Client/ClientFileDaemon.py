@@ -93,21 +93,27 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
 
 class FileDaemon:
     def __init__(self, msg_identifier):
-        self.config = None
-        self.target_dir = None
+        #Components
         self.event_handler = SyncEventHandler(msg_identifier)
         self.observer = Observer()
+
+        #Attributes
+        self.config = None
+        self.target_dir = None
+
+        #Flags
         self.monitor_flag = threading.Event()
         self.monitor_flag.clear()
     def _monitor(self):
+        """
+            Function run on separate thread which acts as parent to observer thread(s).
+            Used to control operation flow of observer using monitor_flag
+        """
         print("Client daemon is monitoring " + self.target_dir + "...")
         print("")
         self.observer.start()
-        try:
-            while (self.monitor_flag.is_set()):
-                time.sleep(1)
-        except KeyboardInterrupt:
-            self.observer.stop()
+        while (self.monitor_flag.is_set()):
+            time.sleep(1)
         self.observer.stop()
         self.observer.join()
     def monitor(self):
@@ -119,6 +125,8 @@ class FileDaemon:
         self.event_handler.initialize(self.config)
         print("Scheduling observation of " + self.target_dir + " tree...")
         self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
+    def full_sync(self):
+        self.event_handler.dir_sync(self.target_dir)
     def pause(self):
         self.monitor_flag.clear()
     def teardown(self):

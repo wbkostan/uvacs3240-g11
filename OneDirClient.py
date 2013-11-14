@@ -22,7 +22,7 @@ def launch():
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        controller.disconnect()
+        controller.stop()
 
 if __name__ == "__main__":
     launch()

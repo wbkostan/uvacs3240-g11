@@ -145,8 +145,8 @@ class ServerController:
         if username in self.client_components:
             self.client_components[username][2] -= 1
             if(self.client_components[username][2] == 0):
-                self.client_components[username][0].teardown()
-                self.client_components[username][1].teardown()
+                self.client_components[username][0]._teardown_()
+                self.client_components[username][1]._teardown_()
                 del self.client_components[username]
     def start_client_daemon(self, username):
         if username in self.client_components:
@@ -158,8 +158,8 @@ class ServerController:
     def teardown(self):
         self.listen_flag.clear()
         for key in self.client_components:
-            self.client_components[key][0].teardown()
-            self.client_components[key][1].teardown()
+            self.client_components[key][0]._teardown_()
+            self.client_components[key][1]._teardown_()
             self.client_components[key][2] = 0
             msg = [key, self.msg_identifier["DISCONNECT"]]
             self.sync_throw_socket.send_multipart(self.ascii_encode(msg))
