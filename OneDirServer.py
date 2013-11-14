@@ -9,8 +9,12 @@ def get_config():
     }
     return config
 
+def setup_django():
+    get_config()
+
 def launch():
     config = get_config()
+    setup_django()
     controller = ServerController(config)
     controller.listen()
     try:

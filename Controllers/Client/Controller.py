@@ -70,17 +70,6 @@ class ClientController:
             print("Bad response from server. Going down")
             self.teardown()
             return False
-        user = authenticate(username = username, password = password)
-        if user is not None:
-            if user.is_active:
-                self.config["USERNAME"] = username
-                return True #Always authenticate until actual authentication is added.
-            else:
-                print("The password is valid, but the account has been disabled.")
-                return False
-        else:
-            print("The username and password were incorrect.")
-            return False
     def start(self):
         """
             Brings the client controller online by establishing a connection with the server
