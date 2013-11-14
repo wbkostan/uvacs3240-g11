@@ -1,9 +1,10 @@
 __author__ = 'wbk3zd'
 
+import zmq
+import threading
+from Helpers.Encodings import *
 from ClientFileDaemon import FileDaemon
 from ClientSyncResponder import SyncResponder
-import threading
-import zmq
 
 """
     Sample of config dictionary which initializes controller:
@@ -49,13 +50,12 @@ class ClientController:
     """
         Public Methods for Controller Interface
     """
-    def initialize(self, config):
+    def configure(self, config):
         """
             Establish configuration values and bind sockets. Must be called before
             rest of controller is usable
         """
         self.config = config
-        self.config["INTERNAL_REQUEST_PORT"] = "5555" #Port for client components to request control actions
 
         #Port bindings
         self._internal_request_socket.bind("tcp://*:" + self.config["INTERNAL_REQUEST_PORT"]) #For internal control requests
@@ -128,8 +128,8 @@ class ClientController:
 
         #Package credentials, send to server, await response
         msg = [self.msg_identifier["LOGIN"], username, password]
-        self._server_contact_socket.send_multipart(self.__encode__(msg))
-        rep = self.__decode__(self._server_contact_socket.recv_multipart())
+        self._server_contact_socket.send_multipart(encode(msg))
+        rep = decode(self._server_contact_socket.recv_multipart())
 
         #Parse response, decide whether or not credentials were approved
         if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.msg_identifier["TRUE"]: #Golden case
@@ -151,8 +151,8 @@ class ClientController:
 
         #Establish connection (server starts pair components
         msg = [self.msg_identifier["CONNECT"], self.config["USERNAME"]]
-        self._server_contact_socket.send_multipart(self.__encode__(msg))
-        rep = self.__decode__(self._server_contact_socket.recv_multipart())
+        self._server_contact_socket.send_multipart(encode(msg))
+        rep = decode(self._server_contact_socket.recv_multipart())
 
         #Look at response, decide if client-side components can be started
         if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.config["USERNAME"]:
@@ -175,8 +175,8 @@ class ClientController:
 
         #Tell server that we're done
         msg = [self.msg_identifier["DISCONNECT"], self.config["USERNAME"]]
-        self._server_contact_socket.send_multipart(self.__encode__(msg))
-        rep = self.__decode__(self._server_contact_socket.recv_multipart())
+        self._server_contact_socket.send_multipart(encode(msg))
+        rep = decode(self._server_contact_socket.recv_multipart())
 
         #Decide whether disconnect was successful
         if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.config["USERNAME"]:
@@ -221,8 +221,8 @@ class ClientController:
         #Tell server we're ready for directory sync
         msg = [self.msg_identifier["LISTENING"], self.config["USERNAME"]]
         print("Sending acknowledgement to server, awaiting intial directory sync...")
-        self._server_contact_socket.send_multipart(self.__encode__(msg))
-        rep = self.__decode__(self._server_contact_socket.recv_multipart())
+        self._server_contact_socket.send_multipart(encode(msg))
+        rep = decode(self._server_contact_socket.recv_multipart())
 
         #Server is done syncing full directory, time to sync ours
         if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.config["USERNAME"]:
@@ -248,7 +248,7 @@ class ClientController:
         while self._listen_flag.is_set():
 
             #Get next internal request
-            msg = self.__decode__(self._internal_request_socket.recv_multipart())
+            msg = decode(self._internal_request_socket.recv_multipart())
 
             #Request to halt daemon services while responder is writing to directory
             if msg[0] == self.msg_identifier["STOP_MONITORING"]:
@@ -270,22 +270,3 @@ class ClientController:
 
         #Exited while loop. Someone killed our listen_flag
         print("Client stopped listening for internal requests")
-
-    def __encode__(self, msg):
-        """
-            Helper functions. ZMQ won't send unicode (default python string) over network.
-            Must recode to ascii before sending, then decode back for use in python.
-        """
-        msg_clone = msg
-        for i in range(0, len(msg_clone)):
-            msg_clone[i] = msg_clone[i].encode('ascii', 'replace')
-        return msg_clone
-
-    def __decode__(self, msg):
-        """
-            Helper functions. ZMQ won't send unicode (default python string) over network.
-            Must recode to ascii before sending, then decode back for use in python.
-        """
-        for i in range(0, len(msg)):
-            msg[i] = unicode(msg[i])
-        return msg

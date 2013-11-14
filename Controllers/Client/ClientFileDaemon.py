@@ -9,6 +9,7 @@ import subprocess
 import os
 import shutil
 import encodings
+from Helpers.Encodings import *
 
 class SyncEventHandler(watchdog.events.FileSystemEventHandler):
     def __init__(self, msg_identifier):
@@ -31,14 +32,14 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         if os.path.isdir(self.event_src_path):
             print("Sending mkdir command to server for directory at " + self.event_rel_path)
             msg = [self.config["USERNAME"], self.msg_identifier["MKDIR"], self.event_rel_path]
-            self.socket.send_multipart(self.ascii_encode(msg))
+            self.socket.send_multipart(encode(msg))
         else:
             self.file_sync()
         self.finish()
     def on_deleted(self, event):
         print("Sending delete command to server for file system object at " + self.event_rel_path)
         msg = [self.config["USERNAME"], self.msg_identifier["DELETE"], self.event_rel_path]
-        self.socket.send_multipart(self.ascii_encode(msg))
+        self.socket.send_multipart(encode(msg))
         self.finish()
     def on_modified(self, event):
         if os.path.isfile(self.event_src_path):
@@ -51,7 +52,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         rel_dest_path = os.path.relpath(event_dest_path, self.config["PATH_BASE"])
         print("Sending move command to server from " + self.event_rel_path + " to " + rel_dest_path)
         msg = [self.config["USERNAME"], self.msg_identifier["MOVE"], self.event_rel_path, rel_dest_path]
-        self.socket.send_multipart(self.ascii_encode(msg))
+        self.socket.send_multipart(encode(msg))
         self.finish()
     def file_sync(self):
         if self.event_src_path == None:
@@ -61,12 +62,12 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
             content = user_file.read()
         print("Sending filesync command to server for file at " + self.event_rel_path)
         msg = [self.config["USERNAME"], self.msg_identifier["FILESYNC"], self.event_rel_path, content]
-        self.socket.send_multipart(self.ascii_encode(msg))
+        self.socket.send_multipart(encode(msg))
     def dir_sync(self, top):
         copy_src_path = self.event_src_path
         copy_rel_path = self.event_rel_path
         msg = [self.config["USERNAME"], self.msg_identifier["MKDIR"], os.path.relpath(top, self.config["PATH_BASE"])]
-        self.socket.send_multipart(self.ascii_encode(msg))
+        self.socket.send_multipart(encode(msg))
         for parent, sub_dirs, files in os.walk(top):
             for user_file in files:
                 self.event_src_path = parent + user_file
@@ -81,7 +82,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         print("")
         self.event_src_path = None
         self.event_rel_path = None
-    def ascii_encode(self, msg):
+    def encode(self, msg):
         msg_clone = msg
         for i in range(0, len(msg_clone)):
             msg_clone[i] = msg_clone[i].encode('ascii', 'replace')

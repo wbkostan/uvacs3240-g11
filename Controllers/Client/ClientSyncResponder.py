@@ -8,6 +8,7 @@ import shutil
 import threading
 import encodings
 import time
+from Helpers.Encodings import *
 
 class SyncResponder():
     def __init__(self, msg_identifier):
@@ -45,7 +46,7 @@ class SyncResponder():
         print("Killing responder...")
         self.listen_flag.clear()
     def dispatch(self, msg):
-        decode_msg = self.decode(msg)
+        decode_msg = decode(msg)
         msg.remove(msg[0]) #Remove topic from message
         if not decode_msg[0]:
             print("Error: Empty message received")

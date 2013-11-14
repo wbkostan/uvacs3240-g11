@@ -8,67 +8,86 @@ import zmq
 #from django.contrib.auth import authenticate
 
 """
-    self.msg_identifier = {
-        "FILESYNC":"1",
-        "MKDIR":"2",
-        "DELETE":"3",
-        "MOVE":"4",
-        "ACK":"5",
-        "CONNECT":"6",
-        "LISTENING":"7",
-        "MONITORING":"8",
-        "START_MONITORING":"9",
-        "STOP_MONITORING":"10",
-    }
+    Sample of config dictionary which initializes controller
     config = {
         "PATH_BASE":"C:\Test2\\",
+        "CLIENT_CONTACT_PORT":"5556",
+        "SYNC_THROW_PORT":"5557",
+        "SYNC_CATCH_PORT":"5558",
+        "SYNC_PASSTHRU_PORT":"5559",
+        "INTERNAL_REQUEST_PORT":"5560",
+        "SYNC_PASSUP_PORT":"5561",
     }
 """
 
 class ServerController:
-    def __init__(self, config):
+    def __init__(self):
+        #Standardize message headers across all components
         self.msg_identifier = {
-            "FILESYNC":"1",
-            "MKDIR":"2",
-            "DELETE":"3",
-            "MOVE":"4",
-            "ACK":"5",
-            "CONNECT":"6",
-            "LISTENING":"7",
-            "MONITORING":"8",
-            "START_MONITORING":"9",
-            "STOP_MONITORING":"10",
-            "KILL":"11",
-            "LOGIN":"12",
-            "TRUE":"13",
-            "FALSE":"14",
+            "FILESYNC":"1", "MKDIR":"2", "DELETE":"3", "MOVE":"4", #Sync directive commands
+            "ACK":"5","CONNECT":"6","LISTENING":"7","MONITORING":"8", #Client-Server commands
+            "START_MONITORING":"9","STOP_MONITORING":"10","KILL":"11", #Internal request commands
+            "LOGIN":"12","TRUE":"13","FALSE":"14", #Authentication commands
         }
-        self.config = config
-        self.config["CLIENT_CONTACT_PORT"] = "5556"
-        self.config["SYNC_THROW_PORT"] = "5557"
-        self.config["SYNC_CATCH_PORT"] = "5558"
-        self.config["SYNC_PASSTHRU_PORT"] = "5559"
-        self.config["INTERNAL_REQUEST_PORT"] = "5560"
-        self.config["SYNC_PASSUP_PORT"] = "5561"
+
+        #Components
+        self.client_components = {}
+
+        #Networking
         self.context = zmq.Context()
-        self.internal_request_socket = self.context.socket(zmq.PULL)
-        self.client_contact_socket = self.context.socket(zmq.REP)
-        self.sync_throw_socket = self.context.socket(zmq.PUB)
-        self.sync_catch_socket = self.context.socket(zmq.PULL)
-        self.sync_passthru_socket = self.context.socket(zmq.PUB)
-        self.sync_passup_socket = self.context.socket(zmq.PULL)
-        self.internal_request_socket.bind("tcp://*:" + self.config["INTERNAL_REQUEST_PORT"])
-        print("Server controller listening for internal requests over tcp port " + self.config["INTERNAL_REQUEST_PORT"] + "...")
-        self.client_contact_socket.bind("tcp://*:" + self.config["CLIENT_CONTACT_PORT"])
-        print("Server controller listening for client requests at tcp://localhost:" + self.config["CLIENT_CONTACT_PORT"] + "...")
-        self.sync_throw_socket.bind("tcp://*:" + self.config["SYNC_THROW_PORT"])
-        self.sync_catch_socket.bind("tcp://*:" + self.config["SYNC_CATCH_PORT"])
-        self.sync_passthru_socket.bind("tcp://*:" + self.config["SYNC_PASSTHRU_PORT"])
-        self.sync_passup_socket.bind("tcp://*:" + self.config["SYNC_PASSUP_PORT"])
+        self.internal_request_socket = self.context.socket(zmq.PULL) #Handles super-level control requests by components
+        self.client_contact_socket = self.context.socket(zmq.REP) #P2P client-server communication
+        self.sync_throw_socket = self.context.socket(zmq.PUB) #Sends sync directives to subscribed clients
+        self.sync_catch_socket = self.context.socket(zmq.PULL) #Receives sync directives from subscribed clients
+        self.sync_passthru_socket = self.context.socket(zmq.PUB) #Sends received sync directives to correct responder
+        self.sync_passup_socket = self.context.socket(zmq.PULL) #Pulls sync directives and sends them to publisher
+
+        #Attributes
+        self.config = None
         self.listen_flag = threading.Event()
         self.listen_flag.clear()
-        self.client_components = {}
+
+    def configure(self, config):
+        """
+            Sets configuration values and binds sockets to ports.
+            Must be called before any other controller function can be called
+        """
+
+        #Set configuration values
+        self.config = config
+
+        ################################Server socket bindings######################################################
+        """
+            Internal communication sockets
+        """
+        self.internal_request_socket.bind("tcp://*:" + self.config["INTERNAL_REQUEST_PORT"])
+        print("Server controller listening for internal requests at tcp://localhost:" + self.config["INTERNAL_REQUEST_PORT"] + "...")
+
+        self.sync_passthru_socket.bind("tcp://*:" + self.config["SYNC_PASSTHRU_PORT"])
+        print("Server controller ready to pass client sync directives to responders at tcp://localhost:" + self.config["SYNC_PASSTHRU_PORT"] + "...")
+
+        self.sync_passup_socket.bind("tcp://*:" + self.config["SYNC_PASSUP_PORT"])
+        print("Server controller listening for daemon component sync directives at tcp://localhost:" + self.config["SYNC_PASSUP_PORT"] + "...")
+
+        """
+            External client-server communication sockets
+        """
+        self.client_contact_socket.bind("tcp://*:" + self.config["CLIENT_CONTACT_PORT"])
+        print("Server controller listening for client requests at tcp://localhost:" + self.config["CLIENT_CONTACT_PORT"] + "...")
+
+        self.sync_throw_socket.bind("tcp://*:" + self.config["SYNC_THROW_PORT"])
+        print("Server controller ready to publish sync directives at tcp://localhost:" + self.config["SYNC_THROW_PORT"] + "...")
+
+        self.sync_catch_socket.bind("tcp://*:" + self.config["SYNC_CATCH_PORT"])
+        print("Server controller listening for client sync directives at tcp://localhost:" + self.config["SYNC_CATCH_PORT"] + "...")
+        #################################End socket bindings########################################################
+
     def _listen_internal(self):
+        """
+            Run by a separate thread to listen for all super-level control requests made
+            by client components. Control requests include daemon start/stop requests and
+            kill commands.
+        """
         blocking_threads = {}
         while self.listen_flag.is_set():
             msg = self.decode(self.internal_request_socket.recv_multipart())
