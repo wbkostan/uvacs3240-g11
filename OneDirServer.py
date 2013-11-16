@@ -23,12 +23,12 @@ def launch():
     config = get_config()
     setup_django()
     controller.configure(config)
-    controller.listen()
+    controller.start()
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        controller.teardown()
+        controller.__teardown__()
 
 if __name__ == "__main__":
     launch()

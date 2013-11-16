@@ -8,6 +8,7 @@ import shutil
 import threading
 import encodings
 import time
+from Helpers.Encodings import *
 
 class SyncResponder():
     def __init__(self, msg_identifier, rec_config):
@@ -49,7 +50,7 @@ class SyncResponder():
             print("Error: Empty message received")
             return
         msg = [self.msg_identifier["STOP_MONITORING"], self.config["USERNAME"]]
-        self.internal_request_socket.send_multipart(self.ascii_encode(msg))
+        self.internal_request_socket.send_multipart(encode(msg))
         time.sleep(1) #wait for local activity to settle
         if decode_msg[0] == self.msg_identifier["FILESYNC"]:
             self.on_sync(decode_msg)
@@ -61,7 +62,7 @@ class SyncResponder():
             self.on_move(decode_msg)
         elif decode_msg[0] == self.msg_identifier["DISCONNECT"]:
             msg = [self.msg_identifier["KILL"]]
-            self.internal_request_socket.send_multipart(self.ascii_encode(msg))
+            self.internal_request_socket.send_multipart(encode(msg))
         else:
             print("Error: Unrecognized message. Closing without handle")
         self.on_finish()
@@ -115,13 +116,4 @@ class SyncResponder():
     def on_finish(self):
         print("")
         msg = [self.msg_identifier["START_MONITORING"], self.config["USERNAME"]]
-        self.internal_request_socket.send_multipart(self.ascii_encode(msg))
-    def ascii_encode(self, msg):
-        msg_clone = msg
-        for i in range(0, len(msg_clone)):
-            msg_clone[i] = msg_clone[i].encode('ascii', 'replace')
-        return msg_clone
-    def decode(self, msg):
-        for i in range(0, len(msg)):
-            msg[i] = unicode(msg[i])
-        return msg
+        self.internal_request_socket.send_multipart(encode(msg))

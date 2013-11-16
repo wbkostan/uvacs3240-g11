@@ -82,15 +82,6 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         print("")
         self.event_src_path = None
         self.event_rel_path = None
-    def encode(self, msg):
-        msg_clone = msg
-        for i in range(0, len(msg_clone)):
-            msg_clone[i] = msg_clone[i].encode('ascii', 'replace')
-        return msg_clone
-    def decode(self, msg):
-        for i in range(0, len(msg)):
-            msg[i] = unicode(msg[i])
-        return msg
 
 class FileDaemon:
     def __init__(self, msg_identifier):

@@ -29,9 +29,9 @@ class ClientController:
         #Standardize message headers across all components
         self.msg_identifier = {
             "FILESYNC":"1", "MKDIR":"2", "DELETE":"3", "MOVE":"4", #Sync directive commands
-            "ACK":"5","CONNECT":"6","LISTENING":"7","MONITORING":"8", #Client-Server commands
+            "ACK":"5","LISTENING":"7","MONITORING":"8", #Client-Server commands
             "START_MONITORING":"9","STOP_MONITORING":"10","KILL":"11", #Internal request commands
-            "LOGIN":"12","TRUE":"13","FALSE":"14", #Authentication commands
+            "LOGIN":"12","TRUE":"13","FALSE":"14","LOGOUT":"15", #Authentication commands
         }
 
         #Components
@@ -80,12 +80,6 @@ class ClientController:
         self._listen_flag.set()
         self._listen_()
 
-        #Authenticate current user
-        auth = False
-        while not auth:
-            auth = self._authenticate_()
-        print("Authenticated. Client going online...")
-
         #Open connection to server
         self._connect_()
 
@@ -116,10 +110,9 @@ class ClientController:
 
     def _authenticate_(self):
         """
-            Responsible for authenticating client with server. Eventually, successful authentication server side
-            will trigger a server_controller.connect_client() call to generate daemon/responder components for
-            this client to connect to. Currently that generation is a result of calls in self.start() without auth.
-            Also sets the username of the local client.
+            Responsible for authenticating client with server. Successful authentication
+            starts the pair daemon/responder components server side. With authentication,
+            there will be no components server side listening for this clients requests
         """
 
         #Prompt for username/password
@@ -140,7 +133,7 @@ class ClientController:
             return False
         elif rep[0] != self.msg_identifier["ACK"]: #Unknown message received
             print("Error: Bad response from server. Going down")
-            self._teardown_() #Kill everything!
+            self.__teardown__() #Kill everything!
             return False
 
     def _connect_(self):
@@ -149,19 +142,15 @@ class ClientController:
             clients name). When connection is acked, starts the clients own components
         """
 
-        #Establish connection (server starts pair components
-        msg = [self.msg_identifier["CONNECT"], self.config["USERNAME"]]
-        self._server_contact_socket.send_multipart(encode(msg))
-        rep = decode(self._server_contact_socket.recv_multipart())
+        #Authenticate current user
+        #Server starts pair components when user successfully authenticates
+        auth = False
+        while not auth:
+            auth = self._authenticate_()
+        print("Authenticated current user. Going online...")
 
-        #Look at response, decide if client-side components can be started
-        if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.config["USERNAME"]:
-            print("Connection to server established, starting services...")
-            self.__start_components__() #start a responder
-        else:
-            print("Error: Bad response from server. Beginning teardown...")
-            self._teardown_() #Something bad happened
-            return
+        #Start up the client responder and daemon
+        self.__start_components__() #start a responder
 
     def _disconnect_(self):
         """
@@ -188,7 +177,10 @@ class ClientController:
         self._responder.teardown()
         self._daemon.teardown()
 
-    def _teardown_(self):
+    """
+        Private Methods
+    """
+    def __teardown__(self):
         """
             Forceful exit of all services. Makes no attempt to peacefully disconnect from server.
             Used when internal errors are tripped.
@@ -201,9 +193,6 @@ class ClientController:
         self._responder.teardown()
         self._daemon.teardown()
 
-    """
-        Private Methods
-    """
     def __start_components__(self):
         """
             Starts the client-side components. Responder starts, then server is informed.
@@ -228,7 +217,8 @@ class ClientController:
         if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.config["USERNAME"]:
             print("Responder service started, monitoring file system, full services started...")
         else:
-            print("Error: Bad response from server")
+            print("Error: Bad response from server. Going down.")
+            self.__teardown__()
 
         #Set up our daemon
         self._daemon.initialize(self.config)
@@ -266,7 +256,7 @@ class ClientController:
             #Kill all services immediately. Don't ask questions. Don't pass go. Don't collect $200
             elif msg[0] == self.msg_identifier["KILL"]:
                 print("Error: Forceful interrupt command received from server. Killing all services")
-                self._teardown_()
+                self.__teardown__()
 
         #Exited while loop. Someone killed our listen_flag
         print("Client stopped listening for internal requests")
