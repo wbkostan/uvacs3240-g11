@@ -153,9 +153,11 @@ class ServerController:
                     blocking_threads[msg[1]] = []
                 #append this thread id to list of working threads for this client, pause daemon
                 blocking_threads[msg[1]].append(int(msg[2]))
+                print(str(blocking_threads))
                 self.client_components[msg[1]][0].stop()
             elif msg[0] == self.msg_identifier["START_MONITORING"]:
                 try:
+                    print(str(msg))
                     blocking_threads[msg[1]].remove(int(msg[2]))
                 except ValueError:
                     print("Warning: Thread never told controller to block, but asked for unblock")

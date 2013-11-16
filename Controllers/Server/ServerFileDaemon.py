@@ -91,28 +91,31 @@ class FileDaemon:
         self.observer = Observer()
         self.monitor_flag = threading.Event()
         self.monitor_flag.clear()
+        self.watch = None
     def initialize(self):
+        self.observer.start()
         self.event_handler.initialize()
-        print("Scheduling observation of " + self.target_dir + " tree...")
-        self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
     def _monitor(self):
+        print("Scheduling observation of " + self.target_dir + " tree...")
+        self.watch = self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
         print("Server daemon is monitoring " + self.target_dir + "...")
         self.observer.start()
-        try:
-            while (self.monitor_flag.is_set()):
-                time.sleep(1)
-        except KeyboardInterrupt:
-            self.observer.stop()
-        self.observer.stop()
-        self.observer.join()
+        while (self.monitor_flag.is_set()):
+            time.sleep(1)
+        self.observer.unschedule(self.watch)
     def full_sync(self):
         print("Throwing full directory sync directive from server...")
         self.event_handler.dir_sync(self.target_dir)
     def monitor(self):
-        print("Server daemon is monitoring at " + self.target_dir + " tree...")
-        self.monitor_flag.set()
-        threading.Thread(target=self._monitor).start()
+        if self.monitor_flag.is_set:
+            return
+        else:
+            print("Server daemon is monitoring at " + self.target_dir + " tree...")
+            self.monitor_flag.set()
+            threading.Thread(target=self._monitor).start()
     def is_alive(self):
         return self.monitor_flag.is_set()
     def stop(self):
         self.monitor_flag.clear()
+        self.observer.stop()
+        self.observer.join()

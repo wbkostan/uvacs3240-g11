@@ -5,11 +5,9 @@ import zmq
 from watchdog.observers import Observer
 import threading
 import watchdog.events
-import subprocess
 import os
-import shutil
-import encodings
 from Helpers.Encodings import *
+from Helpers.Logging.OneDirLogger import EventLogger
 
 class SyncEventHandler(watchdog.events.FileSystemEventHandler):
     def __init__(self, msg_identifier):
@@ -19,10 +17,12 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self.socket = self.context.socket(zmq.PUSH)
         self.event_src_path = None
         self.event_rel_path = None
+        self.logger = EventLogger()
     def initialize(self, config):
         self.config = config
+        self.logger.join_session(".\\daemon.log")
         self.socket.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_CATCH_PORT"])
-        print("Daemon connected to server at " + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_CATCH_PORT"] + "...")
+        self.logger.log("INFO","Daemon connected to server at " + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_CATCH_PORT"] + "...")
         self.dir_sync(self.config["PATH_BASE"])
         self.finish()
     def on_any_event(self, event):
@@ -30,14 +30,14 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self.event_rel_path = os.path.relpath(self.event_src_path, self.config["PATH_BASE"])
     def on_created(self, event):
         if os.path.isdir(self.event_src_path):
-            print("Sending mkdir command to server for directory at " + self.event_rel_path)
+            self.logger.log("INFO","Sending mkdir command to server for directory at " + self.event_rel_path)
             msg = [self.config["USERNAME"], self.msg_identifier["MKDIR"], self.event_rel_path]
             self.socket.send_multipart(encode(msg))
         else:
             self.file_sync()
         self.finish()
     def on_deleted(self, event):
-        print("Sending delete command to server for file system object at " + self.event_rel_path)
+        self.logger.log("INFO","Sending delete command to server for file system object at " + self.event_rel_path)
         msg = [self.config["USERNAME"], self.msg_identifier["DELETE"], self.event_rel_path]
         self.socket.send_multipart(encode(msg))
         self.finish()
@@ -45,22 +45,22 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         if os.path.isfile(self.event_src_path):
             self.file_sync()
         else:
-            print("<handling a modified directory>")
+            self.logger.log("INFO","<handling a modified directory>")
         self.finish()
     def on_moved(self, event):
         event_dest_path = event.dest_path
         rel_dest_path = os.path.relpath(event_dest_path, self.config["PATH_BASE"])
-        print("Sending move command to server from " + self.event_rel_path + " to " + rel_dest_path)
+        self.logger.log("INFO","Sending move command to server from " + self.event_rel_path + " to " + rel_dest_path)
         msg = [self.config["USERNAME"], self.msg_identifier["MOVE"], self.event_rel_path, rel_dest_path]
         self.socket.send_multipart(encode(msg))
         self.finish()
     def file_sync(self):
         if self.event_src_path == None:
-            print("Error: Told to sync, but sync source not set!")
+            self.logger.log("ERROR","File daemon attempted to execute a file sync without a source directory")
             return
         with open(self.event_src_path, 'rb') as user_file:
             content = user_file.read()
-        print("Sending filesync command to server for file at " + self.event_rel_path)
+        self.logger.log("INFO","Sending filesync command to server for file at " + self.event_rel_path)
         msg = [self.config["USERNAME"], self.msg_identifier["FILESYNC"], self.event_rel_path, content]
         self.socket.send_multipart(encode(msg))
     def dir_sync(self, top):
@@ -79,7 +79,6 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self.event_src_path = copy_src_path
         self.event_rel_path = copy_rel_path
     def finish(self):
-        print("")
         self.event_src_path = None
         self.event_rel_path = None
 
@@ -88,10 +87,12 @@ class FileDaemon:
         #Components
         self.event_handler = SyncEventHandler(msg_identifier)
         self.observer = Observer()
+        self.logger = EventLogger()
 
         #Attributes
         self.config = None
         self.target_dir = None
+        self.watch = None
 
         #Flags
         self.monitor_flag = threading.Event()
@@ -101,13 +102,11 @@ class FileDaemon:
             Function run on separate thread which acts as parent to observer thread(s).
             Used to control operation flow of observer using monitor_flag
         """
-        print("Client daemon is monitoring " + self.target_dir + "...")
-        print("")
-        self.observer.start()
+        self.logger.log("INFO","Scheduling observation of " + self.target_dir + " tree...")
+        self.watch = self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
         while (self.monitor_flag.is_set()):
             time.sleep(1)
-        self.observer.stop()
-        self.observer.join()
+        self.observer.observer.unschedule(self.watch)
     def monitor(self):
         if self.monitor_flag.is_set():
             return
@@ -117,12 +116,14 @@ class FileDaemon:
     def initialize(self, config):
         self.config = config
         self.target_dir = self.config["PATH_BASE"]
+        self.logger.init_session(".\\daemon.log")
         self.event_handler.initialize(self.config)
-        print("Scheduling observation of " + self.target_dir + " tree...")
-        self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
+        self.observer.start()
     def full_sync(self):
         self.event_handler.dir_sync(self.target_dir)
     def pause(self):
         self.monitor_flag.clear()
     def teardown(self):
         self.monitor_flag.clear()
+        self.observer.stop()
+        self.observer.join()
