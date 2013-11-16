@@ -68,7 +68,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         msg = [self.config["USERNAME"], self.msg_identifier["MKDIR"], os.path.relpath(top, self.config["PATH_BASE"])]
         self.socket.send_multipart(encode(msg))
         for parent, sub_dirs, files in os.walk(top):
-            print("Iterating over " + parent + " including " + sub_dirs + " and " + files)
+            print("Iterating over " + parent + " including " + str(sub_dirs) + " and " + str(files))
             for user_file in files:
                 self.event_src_path = parent + user_file
                 self.event_rel_path = os.path.relpath(self.event_src_path, self.config["PATH_BASE"])
@@ -92,6 +92,7 @@ class FileDaemon:
         self.monitor_flag = threading.Event()
         self.monitor_flag.clear()
     def initialize(self):
+        self.event_handler.initialize()
         print("Scheduling observation of " + self.target_dir + " tree...")
         self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
     def _monitor(self):

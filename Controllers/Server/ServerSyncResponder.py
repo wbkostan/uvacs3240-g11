@@ -44,12 +44,12 @@ class SyncResponder():
         print("Killing responder...")
         self.listen_flag.clear()
     def dispatch(self, msg):
-        decode_msg = self.decode(msg)
+        decode_msg = decode(msg)
         msg.remove(msg[0]) #Remove topic from message
         if not decode_msg[0]:
             print("Error: Empty message received")
             return
-        msg = [self.msg_identifier["STOP_MONITORING"], self.config["USERNAME"]]
+        msg = [self.msg_identifier["STOP_MONITORING"], self.config["USERNAME"], str(threading.current_thread().ident)]
         self.internal_request_socket.send_multipart(encode(msg))
         time.sleep(1) #wait for local activity to settle
         if decode_msg[0] == self.msg_identifier["FILESYNC"]:
@@ -115,5 +115,5 @@ class SyncResponder():
         self.on_finish()
     def on_finish(self):
         print("")
-        msg = [self.msg_identifier["START_MONITORING"], self.config["USERNAME"]]
+        msg = [self.msg_identifier["START_MONITORING"], self.config["USERNAME"], str(threading.current_thread().ident)]
         self.internal_request_socket.send_multipart(encode(msg))

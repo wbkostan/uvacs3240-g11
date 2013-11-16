@@ -12,12 +12,12 @@ from Helpers.Encodings import *
     Sample of config dictionary which initializes controller
     config = {
         "PATH_BASE":"C:\Test2\\",
-        "CLIENT_CONTACT_PORT":"5556",
-        "SYNC_THROW_PORT":"5557",
-        "SYNC_CATCH_PORT":"5558",
-        "SYNC_PASSTHRU_PORT":"5559",
-        "INTERNAL_REQUEST_PORT":"5560",
-        "SYNC_PASSUP_PORT":"5561",
+        "CLIENT_CONTACT_PORT":"3240",
+        "SYNC_THROW_PORT":"3241",
+        "SYNC_CATCH_PORT":"3242",
+        "SYNC_PASSTHRU_PORT":"3243",
+        "INTERNAL_REQUEST_PORT":"3244",
+        "SYNC_PASSUP_PORT":"3245",
     }
 """
 
@@ -153,11 +153,14 @@ class ServerController:
                     blocking_threads[msg[1]] = []
                 #append this thread id to list of working threads for this client, pause daemon
                 blocking_threads[msg[1]].append(int(msg[2]))
-                self.client_components[msg[1]][1].stop()
+                self.client_components[msg[1]][0].stop()
             elif msg[0] == self.msg_identifier["START_MONITORING"]:
-                blocking_threads[msg[1]].remove(int(msg[2]))
+                try:
+                    blocking_threads[msg[1]].remove(int(msg[2]))
+                except ValueError:
+                    print("Warning: Thread never told controller to block, but asked for unblock")
                 if not blocking_threads[msg[1]]:
-                    self.client_components[msg[1]][1].monitor()
+                    self.client_components[msg[1]][0].monitor()
 
     def _listen_client_(self):
         """
@@ -183,7 +186,7 @@ class ServerController:
             #Client has started responder, requesting full directory sync
             elif msg[0] == self.msg_identifier["LISTENING"]:
                 self.__start_client_daemon__(msg[1]) #client is listening? good, start up daemon and full sync
-                msg = [self.msg_identifier["ACK", msg[1]]]
+                msg = [self.msg_identifier["ACK"], msg[1]]
 
             #No matter the message, send a response
             self.client_contact_socket.send_multipart(encode(msg))

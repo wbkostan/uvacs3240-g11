@@ -6,12 +6,12 @@ import time
 def get_config():
     config = {
         "PATH_BASE":"C:\Test2\\",
-        "CLIENT_CONTACT_PORT":"5556",
-        "SYNC_THROW_PORT":"5557",
-        "SYNC_CATCH_PORT":"5558",
-        "SYNC_PASSTHRU_PORT":"5559",
-        "INTERNAL_REQUEST_PORT":"5560",
-        "SYNC_PASSUP_PORT":"5561",
+        "CLIENT_CONTACT_PORT":"3240",
+        "SYNC_THROW_PORT":"3241",
+        "SYNC_CATCH_PORT":"3242",
+        "SYNC_PASSTHRU_PORT":"3243",
+        "INTERNAL_REQUEST_PORT":"3244",
+        "SYNC_PASSUP_PORT":"3245",
     }
     return config
 

@@ -25,14 +25,14 @@ class SyncResponder():
         print("Connecting responder to internal client controller over tcp port " + self.config["INTERNAL_REQUEST_PORT"] + "...")
         self.server_sync_throw_socket.setsockopt(zmq.SUBSCRIBE, self.config["USERNAME"].encode('ascii', 'replace'))
         self.server_sync_throw_socket.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"])
-        print("Subscribed to sync directives at " + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"] + "for user " + self.config["USERNAME"] + "...")
+        print("Subscribed to sync directives at tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"] + " for user " + self.config["USERNAME"] + "...")
     def _listen(self):
-        print("Responder is listening for sync directives at " + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"] + "for user " + self.config["USERNAME"] + "...")
+        print("Responder is listening for sync directives at tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"] + " for user " + self.config["USERNAME"] + "...")
         print("")
         while(self.listen_flag.is_set()):
             try:
                 msg = self.server_sync_throw_socket.recv_multipart()
-                print("Message received! " + msg)
+                print("Message received! " + str(msg))
                 threading.Thread(target=self.dispatch, args=(msg,)).start()
             except KeyboardInterrupt:
                 return
@@ -51,7 +51,7 @@ class SyncResponder():
         if not decode_msg[0]:
             print("Error: Empty message received")
             return
-        msg = [self.msg_identifier["STOP_MONITORING"], str(threading.get_ident())]
+        msg = [self.msg_identifier["STOP_MONITORING"], str(threading.current_thread().ident)]
         self.internal_request_socket.send_multipart(encode(msg))
         time.sleep(1) #wait for local activity to settle
         if decode_msg[0] == self.msg_identifier["FILESYNC"]:
@@ -117,5 +117,5 @@ class SyncResponder():
         self.on_finish()
     def on_finish(self):
         print("")
-        msg = [self.msg_identifier["START_MONITORING"]]
+        msg = [self.msg_identifier["START_MONITORING"],str(threading.current_thread().ident)]
         self.internal_request_socket.send_multipart(encode(msg))

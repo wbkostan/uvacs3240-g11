@@ -109,8 +109,11 @@ class FileDaemon:
         self.observer.stop()
         self.observer.join()
     def monitor(self):
-        self.monitor_flag.set()
-        threading.Thread(target=self._monitor).start()
+        if self.monitor_flag.is_set():
+            return
+        else:
+            self.monitor_flag.set()
+            threading.Thread(target=self._monitor).start()
     def initialize(self, config):
         self.config = config
         self.target_dir = self.config["PATH_BASE"]

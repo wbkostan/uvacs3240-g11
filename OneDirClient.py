@@ -7,10 +7,10 @@ def get_config():
     config = {
         "SERVER_ADDR":"localhost",
         "PATH_BASE":"C:\Test1\OneDir\\",
-        "INTERNAL_REQUEST_PORT":"5555",
-        "SERVER_SYNC_CATCH_PORT":"5558",
-        "SERVER_SYNC_THROW_PORT":"5557",
-        "SERVER_CONTACT_PORT":"5556"
+        "INTERNAL_REQUEST_PORT":"3246",
+        "SERVER_SYNC_CATCH_PORT":"3242",
+        "SERVER_SYNC_THROW_PORT":"3241",
+        "SERVER_CONTACT_PORT":"3240"
     }
     return config
 
