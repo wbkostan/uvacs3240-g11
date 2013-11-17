@@ -19,10 +19,12 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self.socket = self.context.socket(zmq.PUSH)
         self.event_src_path = None
         self.event_rel_path = None
+        self.lock = threading.RLock()
     def initialize(self):
         self.socket.connect("tcp://localhost:" + self.config["SYNC_PASSUP_PORT"])
         print("Daemon connected to server at tcp://localhost:" + self.config["SYNC_PASSUP_PORT"] + "...")
     def on_any_event(self, event):
+        self.lock.acquire()
         self.event_src_path = event.src_path
         self.event_rel_path = os.path.relpath(self.event_src_path, self.config["PATH_BASE"])
     def on_created(self, event):
@@ -62,6 +64,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         msg = [self.config["USERNAME"], self.msg_identifier["FILESYNC"], self.event_rel_path, content]
         self.socket.send_multipart(encode(msg))
     def dir_sync(self, top):
+        self.lock.acquire()
         print("Directory sync command received for " + top)
         copy_src_path = self.event_src_path
         copy_rel_path = self.event_rel_path
@@ -78,9 +81,9 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
                 self.dir_sync((parent+sub_dir))
         self.event_src_path = copy_src_path
         self.event_rel_path = copy_rel_path
-        self.finish()
+        self.lock.release()
     def finish(self):
-        print("")
+        self.lock.release()
         self.event_src_path = None
         self.event_rel_path = None
 

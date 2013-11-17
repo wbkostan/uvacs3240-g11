@@ -162,7 +162,7 @@ class ServerController:
                 except ValueError:
                     print("Warning: Thread never told controller to block, but asked for unblock")
                 if not blocking_threads[msg[1]]:
-                    self.client_components[msg[1]][0].monitor()
+                    self.client_components[msg[1]][0].start()
 
     def _listen_client_(self):
         """
@@ -269,7 +269,7 @@ class ServerController:
         if username in self.client_components:
             self.client_components[username][0].full_sync()
             if not self.client_components[username][0].is_alive():
-                self.client_components[username][0].monitor()
+                self.client_components[username][0].start()
 
     def __teardown__(self):
         """

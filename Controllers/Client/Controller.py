@@ -182,7 +182,7 @@ class ClientController:
 
         #Bring client components offline
         self._responder_.teardown()
-        self._daemon_.teardown()
+        self._daemon_.stop()
 
     """
         Private Methods
@@ -200,7 +200,7 @@ class ClientController:
 
         #Kill client components
         self._responder_.teardown()
-        self._daemon_.teardown()
+        self._daemon_.stop()
 
     def __start_components__(self):
         """
@@ -262,7 +262,7 @@ class ClientController:
                 if int(msg[1]) in blocking_threads:
                     blocking_threads.remove(int(msg[1])) #Remove this thread from the list of blocking
                 if not blocking_threads: #Pythonic notation for empty array
-                    self._daemon_.monitor() #Resume daemon once no more threads are blocking
+                    self._daemon_.start() #Resume daemon once no more threads are blocking
 
             #Passup message. Server is trying to get in contact with client. Something bad happened
             #Kill all services immediately. Don't ask questions. Don't pass go. Don't collect $200

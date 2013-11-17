@@ -3,14 +3,17 @@ __author__ = 'wbk3zd'
 import time
 
 class EventLogger:
-    def __init__(self, path_to_logfile="log.txt"):
+    def __init__(self):
+        self.logfile = None
+    def init_session(self, path_to_logfile=".\log.txt"):
         self.logfile = path_to_logfile
-    def init_session(self):
         message = "============================{}============================\n".format(time.asctime())
         with open(self.logfile, "a") as logfile:
             logfile.write(message)
-    def log(self, client_id, originator, message):
-        message = ("SOURCE: {}\tCLIENT: {}\tDATE: {}\t" + message + "\n").format(originator, client_id, time.strftime("%m/%d/%Y %H:%M:%S", time.localtime()))
+    def join_session(self, path_to_logfile=".\log.txt"):
+        self.logfile = path_to_logfile
+    def log(self, status, message):
+        message = ("STATUS: {}\tDATE: {}\t" + message + "\n").format(status, time.strftime("%m/%d/%Y %H:%M:%S", time.localtime()))
         with open(self.logfile, "a") as logfile:
             logfile.write(message)
 
