@@ -28,7 +28,7 @@ class EventLogger:
 if __name__ == "__main__":
     logger = EventLogger()
     logger.init_session()
-    logger.log("system", "main", "Logging successful")
+    logger.log("INFO", "Logging successful")
 
     #Admin commands, how to check if user type is admin
     # if (user_type == "admin"):

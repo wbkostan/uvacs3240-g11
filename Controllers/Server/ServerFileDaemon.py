@@ -110,7 +110,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
 class FileDaemon:
     def __init__(self, msg_identifier, send_config):
         self.target_dir = send_config["PATH_BASE"]
-        self._logger_ = EventLogger
+        self._logger_ = EventLogger()
         self.event_handler = SyncEventHandler(msg_identifier, send_config)
         self.observer = Observer()
         self.monitor_flag = threading.Event()
@@ -119,7 +119,7 @@ class FileDaemon:
     def initialize(self):
         self.observer.start()
         self.event_handler.initialize()
-        self._logger_.init_session(os.path.dirname(self.config["PATH_BASE"][:-1]) + "\\daemon.log")
+        self._logger_.init_session(os.path.dirname(self.target_dir[:-1]) + "\\daemon.log")
 
         #Logging
         if (self._logger_.file_info == True):
