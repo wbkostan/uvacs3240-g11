@@ -79,7 +79,7 @@ class SyncResponder():
         print("Make directory command received, processing...")
         if(os.path.isdir(dest_path)):
             print("Directory already exists, ignoring make command...")
-            return
+            self.on_finish()
         else:
             print("Creating directory at " + dest_path)
             os.mkdir(dest_path)
@@ -89,6 +89,7 @@ class SyncResponder():
         print("Remove command received, processing...")
         if not os.path.exists(dest_path):
             print("Error: " + dest_path + " does not exist. Can't remove.")
+            self.on_finish()
             return
         if(os.path.isdir(dest_path)):
             print("Removing entire file tree at " + dest_path)
@@ -103,6 +104,7 @@ class SyncResponder():
         dest_path = self.config["PATH_BASE"] + msg[2]
         if not os.path.exists(src_path):
             print("Error: File system object at " + dest_path + " does not exist. Cannot move")
+            self.on_finish()
             return
         if(os.path.isdir(src_path)):
             print("Moving directory at " + src_path + " to " + dest_path)

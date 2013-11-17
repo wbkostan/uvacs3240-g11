@@ -181,7 +181,7 @@ class ClientController:
             self._logger_.log("ERROR","Unknown message received from server during disconnect. Exiting anyway: " + str(rep))
 
         #Bring client components offline
-        self._responder_.teardown()
+        self._responder_.stop()
         self._daemon_.stop()
 
     """
@@ -199,7 +199,7 @@ class ClientController:
         self._listen_flag_.clear()
 
         #Kill client components
-        self._responder_.teardown()
+        self._responder_.stop()
         self._daemon_.stop()
 
     def __start_components__(self):
@@ -214,7 +214,7 @@ class ClientController:
         self._logger_.log("INFO","Client responder going online")
 
         #Bring responder online. Ready to respond to sync directives
-        self._responder_.listen()
+        self._responder_.start()
 
         #Tell server we're ready for directory sync
         msg = [self.msg_identifier["LISTENING"], self.config["USERNAME"]]
