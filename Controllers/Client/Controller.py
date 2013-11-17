@@ -61,7 +61,6 @@ class ClientController:
 
         #Setup logging
         logfile = ".\\controller.log"
-        print(logfile)
         self._logger_.init_session(logfile)
 
         #Port bindings
@@ -211,6 +210,7 @@ class ClientController:
 
         #Setup responder
         self._responder_.initialize(self.config)
+        self._daemon_.initialize(self.config)
         self._logger_.log("INFO","Client responder going online")
 
         #Bring responder online. Ready to respond to sync directives
@@ -231,7 +231,7 @@ class ClientController:
 
         #Set up our daemon
         self._logger_.log("INFO","Client daemon going online")
-        self._daemon_.initialize(self.config)
+        self._daemon_.start()
 
         #Execute full sync back to server
         self._logger_.log("INFO","Client executing full directory sync in server direction")

@@ -76,7 +76,6 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
                 self.event_src_path = parent + user_file
                 self.event_rel_path = os.path.relpath(self.event_src_path, self.config["PATH_BASE"])
                 self.file_sync()
-                self.finish()
             for sub_dir in sub_dirs:
                 self.dir_sync((parent+sub_dir))
         self.event_src_path = copy_src_path
@@ -109,7 +108,7 @@ class FileDaemon:
     def full_sync(self):
         print("Throwing full directory sync directive from server...")
         self.event_handler.dir_sync(self.target_dir)
-    def monitor(self):
+    def start(self):
         if self.monitor_flag.is_set:
             return
         else:

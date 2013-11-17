@@ -88,7 +88,7 @@ class SyncResponder():
             msg.remove(msg[0])
 
             #Strip away file contents before logging message
-            if msg[1] == self.config["FILESYNC"]:
+            if msg[1] == self.msg_identifier["FILESYNC"]:
                 msg[-1] = "<contents omitted from log>"
             self.logger.log("INFO","Sync Directive received: " + str(msg))
 
@@ -120,7 +120,7 @@ class SyncResponder():
             self._on_remove_(msg)
         elif msg[0] == self.msg_identifier["MOVE"]:
             self._on_move_(msg)
-        elif msg[0] == self.msg_identifier["DISCONNECT"]:
+        elif msg[0] == self.msg_identifier["KILL"]:
             #Server is trying to get in touch with client controller
             #We need to terminate immediately
             msg = [self.msg_identifier["KILL"]]

@@ -60,7 +60,7 @@ class SyncResponder():
             self.on_remove(decode_msg)
         elif decode_msg[0] == self.msg_identifier["MOVE"]:
             self.on_move(decode_msg)
-        elif decode_msg[0] == self.msg_identifier["DISCONNECT"]:
+        elif decode_msg[0] == self.msg_identifier["KILL"]:
             msg = [self.msg_identifier["KILL"]]
             self.internal_request_socket.send_multipart(encode(msg))
         else:

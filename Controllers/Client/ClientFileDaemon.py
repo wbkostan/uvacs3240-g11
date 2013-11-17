@@ -62,7 +62,6 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
                 self._event_src_path_ = parent + user_file
                 self._event_rel_path_ = os.path.relpath(self._event_src_path_, self.config["PATH_BASE"])
                 self._file_sync_()
-                self._finish_()
             #Recurse into sub-directories
             for sub_dir in sub_dirs:
                 self.dir_sync((parent+sub_dir))
@@ -243,4 +242,4 @@ class FileDaemon:
         self.__watch__ = self._observer_.schedule(self._event_handler_, self.target_dir, recursive=True)
         while (self._monitor_flag_.is_set()):
             time.sleep(1)
-        self._observer_.observer.unschedule(self.__watch__)
+        self._observer_.unschedule(self.__watch__)
