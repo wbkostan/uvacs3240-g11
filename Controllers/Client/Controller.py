@@ -60,7 +60,7 @@ class ClientController:
         self.config = config
 
         #Setup logging
-        logfile = ".\\controller.log"
+        logfile = ".\\c_controller.log"
         self._logger_.init_session(logfile)
 
         #Port bindings

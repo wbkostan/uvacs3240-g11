@@ -5,6 +5,7 @@ from ServerSyncResponder import SyncResponder
 import threading
 import zmq
 from Helpers.Encodings import *
+from Helpers.Logging.OneDirLogger import EventLogger
 #from django.contrib.auth.models import User
 #from django.contrib.auth import authenticate
 
@@ -33,6 +34,7 @@ class ServerController:
 
         #Components
         self.client_components = {}
+        self._logger_ = EventLogger()
 
         #Networking
         self.context = zmq.Context()
@@ -59,31 +61,32 @@ class ServerController:
 
         #Set configuration values
         self.config = config
+        self._logger_.init_session(".\\s_controller.log")
 
         ################################Server socket bindings######################################################
         """
             Internal communication sockets
         """
         self.internal_request_socket.bind("tcp://*:" + self.config["INTERNAL_REQUEST_PORT"])
-        print("Server controller listening for internal requests at tcp://localhost:" + self.config["INTERNAL_REQUEST_PORT"] + "...")
+        self._logger_.log("INFO", "Server controller listening for internal requests at tcp://localhost:" + self.config["INTERNAL_REQUEST_PORT"] + "...")
 
         self.sync_passthru_socket.bind("tcp://*:" + self.config["SYNC_PASSTHRU_PORT"])
-        print("Server controller ready to pass client sync directives to responders at tcp://localhost:" + self.config["SYNC_PASSTHRU_PORT"] + "...")
+        self._logger_.log("INFO", "Server controller ready to pass client sync directives to responders at tcp://localhost:" + self.config["SYNC_PASSTHRU_PORT"] + "...")
 
         self.sync_passup_socket.bind("tcp://*:" + self.config["SYNC_PASSUP_PORT"])
-        print("Server controller listening for daemon component sync directives at tcp://localhost:" + self.config["SYNC_PASSUP_PORT"] + "...")
+        self._logger_.log("INFO", "Server controller listening for daemon component sync directives at tcp://localhost:" + self.config["SYNC_PASSUP_PORT"] + "...")
 
         """
             External client-server communication sockets
         """
         self.client_contact_socket.bind("tcp://*:" + self.config["CLIENT_CONTACT_PORT"])
-        print("Server controller listening for client requests at tcp://localhost:" + self.config["CLIENT_CONTACT_PORT"] + "...")
+        self._logger_.log("INFO", "Server controller listening for client requests at tcp://localhost:" + self.config["CLIENT_CONTACT_PORT"] + "...")
 
         self.sync_throw_socket.bind("tcp://*:" + self.config["SYNC_THROW_PORT"])
-        print("Server controller ready to publish sync directives at tcp://localhost:" + self.config["SYNC_THROW_PORT"] + "...")
+        self._logger_.log("INFO", "Server controller ready to publish sync directives at tcp://localhost:" + self.config["SYNC_THROW_PORT"] + "...")
 
         self.sync_catch_socket.bind("tcp://*:" + self.config["SYNC_CATCH_PORT"])
-        print("Server controller listening for client sync directives at tcp://localhost:" + self.config["SYNC_CATCH_PORT"] + "...")
+        self._logger_.log("INFO", "Server controller listening for client sync directives at tcp://localhost:" + self.config["SYNC_CATCH_PORT"] + "...")
         #################################End socket bindings########################################################
 
     def start(self):
@@ -160,7 +163,7 @@ class ServerController:
                     print(str(msg))
                     blocking_threads[msg[1]].remove(int(msg[2]))
                 except ValueError:
-                    print("Warning: Thread never told controller to block, but asked for unblock")
+                    self._logger_.log("WARNING", "Thread never told controller to block, but asked for unblock")
                 if not blocking_threads[msg[1]]:
                     self.client_components[msg[1]][0].start()
 
