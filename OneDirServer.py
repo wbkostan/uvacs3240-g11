@@ -2,6 +2,7 @@ __author__ = 'wbk3zd'
 
 from Controllers.Server.Controller import ServerController
 import time
+import sys
 
 def get_config():
     config = {
@@ -19,10 +20,16 @@ def setup_django():
     get_config()
 
 def launch():
+
     controller = ServerController()
     config = get_config()
     setup_django()
     controller.configure(config)
+    #Turn automatic syncing on and off
+    # print " Automatic Syncing? (yes/no): "
+    # sys.stdout.flush()
+    # sync = raw_input()
+    # if (sync == "yes"):
     controller.start()
     try:
         while True:

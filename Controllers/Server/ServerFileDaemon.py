@@ -34,6 +34,11 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         #Connect sockets
         self.socket.connect("tcp://localhost:" + self.config["SYNC_PASSUP_PORT"])
         self._logger_.log("INFO", "Daemon connected to server at tcp://localhost:" + self.config["SYNC_PASSUP_PORT"] + "...")
+    def print_files(self, top):
+        self.lock.acquire()
+        self._logger_.log("INFO", "Printing files belonging to " + top)
+        for parent, sub_dirs, files in os.walk(top):
+            self._logger_.log("INFO", "Containing " + parent + "including " + str(sub_dirs) + " and " + str(files))
     def dir_sync(self, top):
         self.lock.acquire()
         self._logger_.log("INFO", "Directory sync command received for " + top)
@@ -115,6 +120,11 @@ class FileDaemon:
         self.observer.start()
         self.event_handler.initialize()
         self._logger_.init_session(os.path.dirname(self.config["PATH_BASE"][:-1]) + "\\daemon.log")
+
+        #Logging
+        if (self._logger_.file_info == True):
+            self.event_handler.print_files(self.target_dir)
+
     def _monitor(self):
         self._logger_.log("INFO", "Scheduling observation of " + self.target_dir + " tree...")
         self.watch = self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
