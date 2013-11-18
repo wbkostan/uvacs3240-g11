@@ -246,6 +246,18 @@ class ServerController:
             #Bump up count of logged in clients
             self.client_components[username][2] += 1
 
+    # Prints all files associated with a given user
+    def print_user_files(self, username):
+        if not username in self.client_components:
+            #Set up configuration values
+            daemon_config = responder_config = self.config
+            daemon_config["USERNAME"] = responder_config["USERNAME"] = username
+            daemon_config["PATH_BASE"] = responder_config["PATH_BASE"] = self.config["PATH_BASE"] + username + "\\OneDir\\"
+
+            #Create new components
+            daemon = FileDaemon(self.msg_identifier, daemon_config)
+            daemon.print_user_files()
+
     def _disconnect_client_(self, username):
         """
             Brings client safely offline. Stops components if no online clients with same username
@@ -260,6 +272,9 @@ class ServerController:
                 self.client_components[username][0].__teardown__()
                 self.client_components[username][1].__teardown__()
                 del self.client_components[username] #Remove client username as key from dict
+
+    def print_files(self):
+        self._logger_.user_info()
 
     """
         Private Methods
