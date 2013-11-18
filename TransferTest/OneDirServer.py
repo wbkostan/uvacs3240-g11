@@ -4,6 +4,9 @@ from Controllers.Server.Controller import ServerController
 import time
 import sys
 
+def __init__(self):
+    self.controller = ServerController()
+
 def get_config():
     config = {
         "PATH_BASE":"C:\Test2\\",
@@ -19,23 +22,41 @@ def get_config():
 def setup_django():
     get_config()
 
-def launch():
-
-    controller = ServerController()
+#Turns automatic syncing on
+def sync(self):
     config = get_config()
     setup_django()
-    controller.configure(config)
-    #Turn automatic syncing on and off
-    # print " Automatic Syncing? (yes/no): "
-    # sys.stdout.flush()
-    # sync = raw_input()
-    # if (sync == "yes"):
-    controller.start()
+    self.controller.configure(config)
+    self.controller.start()
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        controller.__teardown__()
+        self.controller.__teardown__()
+
+#Prints files associated with a user
+def print_user_files(self, username):
+    self.controller.print_user_files(username)
+
+#PRINTS USER DATABASE
+#def users_info(self):
+    #print all user info
+
+def launch():
+    #Starts command line prompt
+    print "List of commands: Sync, PrintUserFiles, UserInfo"
+    sys.stdout.flush()
+    response = raw_input()
+    if (response == "Sync"):
+        sync()
+    elif (response == "PrintUserFiles"):
+        print "Enter username:"
+        sys.stdout.flush()
+        userresponse = raw_input()
+        print_user_files(userresponse)
+#    elif (response == "UserInfo"):
+#        users_info()
 
 if __name__ == "__main__":
     launch()
+
