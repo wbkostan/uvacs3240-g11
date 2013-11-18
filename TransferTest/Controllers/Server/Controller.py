@@ -115,13 +115,14 @@ class ServerController:
         """
 
         #Currently, this method always returns true because the database isn't set up yet
-        """authenticated = True
+        """
+        authenticated = True
         return authenticated
         """
 
         user = authenticate(username = username, password = password)
         if user is not None:
-            if user.is_active():
+            if user.is_active:
                 return True #Always authenticate until actual authentication is added.
             else:
                 #Disabled account
@@ -129,7 +130,6 @@ class ServerController:
         else:
             #Bad user/pass combo
             return False
-
 
     def _listen_internal_(self):
         """
