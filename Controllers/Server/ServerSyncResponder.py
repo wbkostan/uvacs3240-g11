@@ -31,11 +31,15 @@ class SyncResponder():
     def _listen(self):
         self._logger_.log("INFO", "Responder is listening for sync directives at tcp://localhost:" + self.config["SYNC_PASSTHRU_PORT"] + "for user " + self.config["USERNAME"] + "...")
         while(self.listen_flag.is_set()):
-            try:
-                msg = self.sync_passthru_socket.recv_multipart()
-                threading.Thread(target=self.dispatch, args=(msg,)).start()
-            except KeyboardInterrupt:
-                return
+            msg = self.sync_passthru_socket.recv_multipart()
+            threading.Thread(target=self.dispatch, args=(msg,)).start()
+            #Remove topic from message where topic is username
+            msg.remove(msg[0])
+            msg = decode(msg)
+            #Strip away file contents before logging message
+            if msg[0] == self.msg_identifier["FILESYNC"]:
+                msg[-1] = "<contents omitted from log>"
+            self._logger_.log("INFO","Sync Directive received: " + str(msg))
     def listen(self):
         self.listen_flag.set()
         threading.Thread(target=self._listen).start()
@@ -45,9 +49,7 @@ class SyncResponder():
     def teardown(self):
         self._logger_.log("INFO", "Killing responder...")
         self.listen_flag.clear()
-    def dispatch(self, msg):
-        decode_msg = decode(msg)
-        msg.remove(msg[0]) #Remove topic from message
+    def dispatch(self, decode_msg):
         if not decode_msg[0]:
             self._logger_.log("ERROR", "Empty message received")
             return

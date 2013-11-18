@@ -88,7 +88,7 @@ class SyncResponder():
             msg.remove(msg[0])
 
             #Strip away file contents before logging message
-            if msg[1] == self.msg_identifier["FILESYNC"]:
+            if msg[0] == self.msg_identifier["FILESYNC"]:
                 msg[-1] = "<contents omitted from log>"
             self.logger.log("INFO","Sync Directive received: " + str(msg))
 
