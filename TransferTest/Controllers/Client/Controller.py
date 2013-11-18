@@ -6,6 +6,7 @@ from Helpers.Encodings import *
 from ClientFileDaemon import FileDaemon
 from ClientSyncResponder import SyncResponder
 from Helpers.Logging.OneDirLogger import EventLogger
+from getpass import getpass
 
 """
     Sample of config dictionary which initializes controller:
@@ -141,7 +142,6 @@ class ClientController:
             self._logger_.log("ERROR","Unknown response from server received during logon: " + str(rep))
             self.__teardown__() #Kill everything!
             return False
-
     def _connect_(self):
         """
             Opens a connection to the server (which establishes a responder/daemon component set in this
