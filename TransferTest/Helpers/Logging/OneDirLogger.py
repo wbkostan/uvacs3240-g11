@@ -19,11 +19,26 @@ class EventLogger:
         with open(self.logfile, "a") as logfile:
             logfile.write(message)
 
+    #Log user information from user database, how to access database
+    def user_info(self):
+        message = ("Users: ...")
+        with open(self.logfile, "a") as logfile:
+            logfile.write(message)
+
 if __name__ == "__main__":
     logger = EventLogger()
     logger.init_session()
     logger.log("INFO", "Logging successful")
 
+    #Admin commands, how to check if user type is admin
+    # if (user_type == "admin"):
+    #     print "List of admin commands: userinfo, fileinfo"
+    #     sys.stdout.flush()
+    #     response = raw_input()
+    #     if (response == "userinfo"):
+    #         logger.user_info()
+    #     if (response == "fileinfo"):
+    #         logger.file_info = True
 
 
 
