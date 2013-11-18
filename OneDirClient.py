@@ -5,7 +5,7 @@ import time
 
 def get_config():
     config = {
-        "SERVER_ADDR":"172.25.99.145",
+        "SERVER_ADDR":"172.25.108.129",
         "PATH_BASE":"C:\Test1\OneDir\\",
         "INTERNAL_REQUEST_PORT":"3246",
         "SERVER_SYNC_CATCH_PORT":"3242",
