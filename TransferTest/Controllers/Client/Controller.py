@@ -169,7 +169,7 @@ class ClientController:
         self._listen_flag_.clear()
 
         #Tell server that we're done
-        msg = [self.msg_identifier["DISCONNECT"], self.config["USERNAME"]]
+        msg = [self.msg_identifier["LOGOUT"], self.config["USERNAME"]]
         self._server_contact_socket_.send_multipart(encode(msg))
         rep = decode(self._server_contact_socket_.recv_multipart())
 
