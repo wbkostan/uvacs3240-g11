@@ -5,8 +5,8 @@ import os
 import shutil
 import threading
 import time
-from Helpers.Encodings import *
-from Helpers.Logging.OneDirLogger import EventLogger
+from TransferTest.Helpers.Encodings import *
+from TransferTest.Helpers.Logging.OneDirLogger import EventLogger
 
 class SyncResponder():
     def __init__(self, msg_identifier):

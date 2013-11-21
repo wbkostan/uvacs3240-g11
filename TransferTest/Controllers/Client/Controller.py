@@ -2,10 +2,10 @@ __author__ = 'wbk3zd'
 
 import zmq
 import threading
-from Helpers.Encodings import *
+from TransferTest.Helpers.Encodings import *
 from ClientFileDaemon import FileDaemon
 from ClientSyncResponder import SyncResponder
-from Helpers.Logging.OneDirLogger import EventLogger
+from TransferTest.Helpers.Logging.OneDirLogger import EventLogger
 from getpass import getpass
 
 """
@@ -33,7 +33,7 @@ class ClientController:
             "FILESYNC":"1", "MKDIR":"2", "DELETE":"3", "MOVE":"4", #Sync directive commands
             "ACK":"5","LISTENING":"7","MONITORING":"8", #Client-Server commands
             "START_MONITORING":"9","STOP_MONITORING":"10","KILL":"11", #Internal request commands
-            "LOGIN":"12","TRUE":"13","FALSE":"14","LOGOUT":"15", #Authentication commands
+            "LOGIN":"12","TRUE":"13","FALSE":"14","LOGOUT":"15","REGISTER":"16" #Authentication commands
         }
 
         #Components
@@ -142,6 +142,13 @@ class ClientController:
             self._logger_.log("ERROR","Unknown response from server received during logon: " + str(rep))
             self.__teardown__() #Kill everything!
             return False
+
+    def _register_(self):
+        #Prompt for register
+        username = raw_input("Username: ")
+        password = raw_input("Password: ")
+        email = raw_input("E-mail: ")
+
     def _connect_(self):
         """
             Opens a connection to the server (which establishes a responder/daemon component set in this

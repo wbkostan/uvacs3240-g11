@@ -6,8 +6,8 @@ from watchdog.observers import Observer
 import threading
 import watchdog.events
 import os
-from Helpers.Encodings import *
-from Helpers.Logging.OneDirLogger import EventLogger
+from TransferTest.Helpers.Encodings import *
+from TransferTest.Helpers.Logging.OneDirLogger import EventLogger
 
 class SyncEventHandler(watchdog.events.FileSystemEventHandler):
     def __init__(self, msg_identifier, send_config):

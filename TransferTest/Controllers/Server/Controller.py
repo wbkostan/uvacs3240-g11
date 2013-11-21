@@ -4,8 +4,8 @@ from ServerFileDaemon import FileDaemon
 from ServerSyncResponder import SyncResponder
 import threading
 import zmq
-from Helpers.Encodings import *
-from Helpers.Logging.OneDirLogger import EventLogger
+from TransferTest.Helpers.Encodings import *
+from TransferTest.Helpers.Logging.OneDirLogger import EventLogger
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
@@ -29,7 +29,7 @@ class ServerController:
             "FILESYNC":"1", "MKDIR":"2", "DELETE":"3", "MOVE":"4", #Sync directive commands
             "ACK":"5","LISTENING":"7","MONITORING":"8", #Client-Server commands
             "START_MONITORING":"9","STOP_MONITORING":"10","KILL":"11", #Internal request commands
-            "LOGIN":"12","TRUE":"13","FALSE":"14", "LOGOUT":"15", #Authentication commands
+            "LOGIN":"12","TRUE":"13","FALSE":"14", "LOGOUT":"15", "REGISTER":"16" #Authentication commands
         }
 
         #Components
@@ -114,12 +114,6 @@ class ServerController:
             return false otherwise.
         """
 
-        #Currently, this method always returns true because the database isn't set up yet
-        """
-        authenticated = True
-        return authenticated
-        """
-
         user = authenticate(username = username, password = password)
         if user is not None:
             if user.is_active:
@@ -130,6 +124,14 @@ class ServerController:
         else:
             #Bad user/pass combo
             return False
+
+    def _register_client_(self, username, password, email):
+        User.objects.create_user(username,password,email)
+
+    def _change_client_password_(self, username, newPassword):
+        user = User.objects.get(username__exact = username)
+        user.set_password(newPassword)
+        user.save()
 
     def _listen_internal_(self):
         """
@@ -187,6 +189,10 @@ class ServerController:
             #Disconnection request
             elif msg[0] == self.msg_identifier["LOGOUT"]:
                 self._disconnect_client_(msg[1])
+                msg = [self.msg_identifier["ACK"], msg[1]]
+
+            elif msg[0] == self.msg_identifier["REGISTER"]:
+                self._register_client_(msg[1], msg[2], msg[3])
                 msg = [self.msg_identifier["ACK"], msg[1]]
 
             #Client has started responder, requesting full directory sync
