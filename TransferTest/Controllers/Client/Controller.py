@@ -2,10 +2,10 @@ __author__ = 'wbk3zd'
 
 import zmq
 import threading
-from TransferTest.Helpers.Encodings import *
+from Helpers.Encodings import *
 from ClientFileDaemon import FileDaemon
 from ClientSyncResponder import SyncResponder
-from TransferTest.Helpers.Logging.OneDirLogger import EventLogger
+from Helpers.Logging.OneDirLogger import EventLogger
 from getpass import getpass
 
 """

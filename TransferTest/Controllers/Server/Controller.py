@@ -4,8 +4,8 @@ from ServerFileDaemon import FileDaemon
 from ServerSyncResponder import SyncResponder
 import threading
 import zmq
-from TransferTest.Helpers.Encodings import *
-from TransferTest.Helpers.Logging.OneDirLogger import EventLogger
+from Helpers.Encodings import *
+from Helpers.Logging.OneDirLogger import EventLogger
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
