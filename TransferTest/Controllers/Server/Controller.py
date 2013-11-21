@@ -61,7 +61,13 @@ class ServerController:
 
         #Set configuration values
         self.config = config
-        self._logger_.init_session(".\\s_controller.log")
+
+        #Ensure our path base ends in a slash
+        if config["PATH_BASE"][-1] != SLASH:
+            config["PATH_BASE"] = config["PATH_BASE"] + SLASH
+
+        logfile = "." + SLASH + "s_controller.log"
+        self._logger_.init_session(logfile)
 
         ################################Server socket bindings######################################################
         """
@@ -234,7 +240,7 @@ class ServerController:
             #Set up configuration values
             daemon_config = responder_config = self.config
             daemon_config["USERNAME"] = responder_config["USERNAME"] = username
-            daemon_config["PATH_BASE"] = responder_config["PATH_BASE"] = self.config["PATH_BASE"] + username + "\\OneDir\\"
+            daemon_config["PATH_BASE"] = responder_config["PATH_BASE"] = self.config["PATH_BASE"] + username + SLASH + "OneDir" + SLASH
 
             #Create new components
             daemon = FileDaemon(self.msg_identifier, daemon_config)
@@ -259,10 +265,10 @@ class ServerController:
             or currently logged in.
         """
         if username in self.client_components:
-            #Decrement count of online users
+            #Decrement count of online users under this name
             self.client_components[username][2] -= 1
 
-            #If no more online users, shutdown everything
+            #If no more online users under this client name, shutdown this client
             if(self.client_components[username][2] == 0):
                 self.client_components[username][0].__teardown__()
                 self.client_components[username][1].__teardown__()

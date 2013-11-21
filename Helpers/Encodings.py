@@ -1,5 +1,11 @@
 __author__ = 'wbk3zd'
 
+from platform import system
+
+SLASH = "/"
+if system() == "Windows":
+    SLASH = "\\"
+
 def encode(msg):
     """
         Helper functions. ZMQ won't send unicode (default python string) over network.

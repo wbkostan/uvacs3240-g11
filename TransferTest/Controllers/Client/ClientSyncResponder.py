@@ -34,7 +34,8 @@ class SyncResponder():
         self.config = config
 
         #Initialize components
-        self.logger.init_session(".\\responder.log")
+        logfile = "." + SLASH + "responder.log"
+        self.logger.init_session(logfile)
 
         #Socket connections
         self.internal_request_socket.connect("tcp://localhost:" + self.config["INTERNAL_REQUEST_PORT"])
@@ -82,15 +83,19 @@ class SyncResponder():
             #Receive and dispatch until the end of time (or until listen_flag is cleared)
             msg = self.server_sync_throw_socket.recv_multipart()
             msg = decode(msg)
-            threading.Thread(target=self._dispatch_, args=(msg,)).start()
 
             #Remove topic from message where topic is username
             msg.remove(msg[0])
 
+            #Dispatch command
+            threading.Thread(target=self._dispatch_, args=(msg,)).start()
+
             #Strip away file contents before logging message
+            msg_for_log = msg
             if msg[0] == self.msg_identifier["FILESYNC"]:
-                msg[-1] = "<contents omitted from log>"
-            self.logger.log("INFO","Sync Directive received: " + str(msg))
+                msg_for_log = msg[:-1]
+                msg_for_log.append("<contents omitted from log>")
+            self.logger.log("INFO","Sync Directive received: " + str(msg_for_log))
 
 
     def _dispatch_(self, msg):

@@ -22,7 +22,8 @@ class SyncResponder():
         self.listen_flag = threading.Event()
         self.listen_flag.clear()
     def initialize(self):
-        self._logger_.init_session(os.path.dirname(self.config["PATH_BASE"][:-1]) + "\\responder.log")
+        logfile = os.path.dirname(self.config["PATH_BASE"][:-1]) + SLASH + "responder.log"
+        self._logger_.init_session(logfile)
         self.internal_request_socket.connect("tcp://localhost:" + self.config["INTERNAL_REQUEST_PORT"])
         self._logger_.log("INFO", "Connecting responder to internal server controller over tcp port " + self.config["INTERNAL_REQUEST_PORT"] + "...")
         self.sync_passthru_socket.setsockopt(zmq.SUBSCRIBE, self.config["USERNAME"].encode('ascii', 'replace'))

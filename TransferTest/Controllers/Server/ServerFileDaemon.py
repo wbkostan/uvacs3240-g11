@@ -29,7 +29,8 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         """
 
         #Initialize components
-        self._logger_.join_session(os.path.dirname(self.config["PATH_BASE"][:-1]) + "\\daemon.log")
+        logfile = os.path.dirname(self.config["PATH_BASE"][:-1]) + SLASH + "daemon.log"
+        self._logger_.join_session(logfile)
 
         #Connect sockets
         self.socket.connect("tcp://localhost:" + self.config["SYNC_PASSUP_PORT"])
@@ -119,7 +120,8 @@ class FileDaemon:
     def initialize(self):
         self.observer.start()
         self.event_handler.initialize()
-        self._logger_.init_session(os.path.dirname(self.target_dir[:-1]) + "\\daemon.log")
+        logfile = os.path.dirname(self.target_dir[:-1]) + SLASH + "daemon.log"
+        self._logger_.init_session(logfile)
 
         #Logging
         if (self._logger_.file_info == True):

@@ -60,8 +60,12 @@ class ClientController:
         """
         self.config = config
 
-        #Setup logging
-        logfile = ".\\c_controller.log"
+        #Ensure our path base ends in a slash
+        if config["PATH_BASE"][-1] != SLASH:
+            config["PATH_BASE"] = config["PATH_BASE"] + SLASH
+
+        #Setup logging at install path
+        logfile = "." + SLASH + "c_controller.log"
         self._logger_.init_session(logfile)
 
         #Port bindings

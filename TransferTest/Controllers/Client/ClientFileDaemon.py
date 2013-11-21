@@ -32,7 +32,8 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self.config = config
 
         #Initialize components
-        self._logger_.join_session(".\\daemon.log")
+        logfile = "." + SLASH + "daemon.log"
+        self._logger_.join_session(logfile)
 
         #Setup networking
         self._socket_.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_CATCH_PORT"])
@@ -194,7 +195,8 @@ class FileDaemon:
         self.target_dir = self.config["PATH_BASE"]
 
         #Initialize components
-        self._logger_.init_session(".\\daemon.log")
+        logfile = "." + SLASH + "daemon.log"
+        self._logger_.init_session(logfile)
         self._event_handler_.initialize(self.config)
         self._observer_.start()
 
