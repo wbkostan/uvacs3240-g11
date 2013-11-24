@@ -29,7 +29,7 @@ class ServerController:
             "FILESYNC":"1", "MKDIR":"2", "DELETE":"3", "MOVE":"4", #Sync directive commands
             "ACK":"5","LISTENING":"7","MONITORING":"8", #Client-Server commands
             "START_MONITORING":"9","STOP_MONITORING":"10","KILL":"11", #Internal request commands
-            "LOGIN":"12","TRUE":"13","FALSE":"14", "LOGOUT":"15", "REGISTER":"16" #Authentication commands
+            "LOGIN":"12","TRUE":"13","FALSE":"14", "LOGOUT":"15", "REGISTER":"16", "PASSCHANGE":"17" #Authentication commands
         }
 
         #Components
@@ -133,11 +133,13 @@ class ServerController:
 
     def _register_client_(self, username, password, email):
         User.objects.create_user(username,password,email)
+        return True
 
     def _change_client_password_(self, username, newPassword):
         user = User.objects.get(username__exact = username)
         user.set_password(newPassword)
         user.save()
+        return True
 
     def _listen_internal_(self):
         """
@@ -199,7 +201,7 @@ class ServerController:
 
             elif msg[0] == self.msg_identifier["REGISTER"]:
                 self._register_client_(msg[1], msg[2], msg[3])
-                msg = [self.msg_identifier["ACK"], msg[1]]
+                msg = [self.msg_identifier["ACK"], self.msg_identifier["TRUE"]]
 
             #Client has started responder, requesting full directory sync
             elif msg[0] == self.msg_identifier["LISTENING"]:

@@ -3,6 +3,7 @@ __author__ = 'wbk3zd'
 from Controllers.Server.Controller import ServerController
 import time
 import sys
+from django.db import connection
 import threading
 
 class OneDirServer():
@@ -89,6 +90,12 @@ def get_config():
 def setup_django():
     get_config()
 
+def users_info():
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM auth_user")
+    row = cursor.fetchone()
+    print row
+
 def launch():
     server = OneDirServer()
     #Starts command line prompt
@@ -100,13 +107,13 @@ def launch():
             server.create_account()
             response = raw_input()
         elif (response == "Sync"):
-            server.sync(server)
+            server.sync()
             response = raw_input()
         elif (response == "ChangePassword"):
             server.change_pass()
             response = raw_input()
         elif (response == "UserInfo"):
-            server.all_users()
+            users_info()
             response = raw_input()
         elif (response == "PrintUserFiles"):
             server.print_user_files()

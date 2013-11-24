@@ -33,7 +33,7 @@ class ClientController:
             "FILESYNC":"1", "MKDIR":"2", "DELETE":"3", "MOVE":"4", #Sync directive commands
             "ACK":"5","LISTENING":"7","MONITORING":"8", #Client-Server commands
             "START_MONITORING":"9","STOP_MONITORING":"10","KILL":"11", #Internal request commands
-            "LOGIN":"12","TRUE":"13","FALSE":"14","LOGOUT":"15","REGISTER":"16" #Authentication commands
+            "LOGIN":"12","TRUE":"13","FALSE":"14","LOGOUT":"15","REGISTER":"16", "PASSCHANGE":"17" #Authentication commands
         }
 
         #Components
@@ -149,9 +149,42 @@ class ClientController:
 
     def _register_(self):
         #Prompt for register
-        username = raw_input("Username: ")
-        password = raw_input("Password: ")
-        email = raw_input("E-mail: ")
+        answer = raw_input("Register new account?: ")
+        if answer == "Yes":
+            username = raw_input("New Username: ")
+            password = raw_input("New Password: ")
+            email = raw_input("E-mail: ")
+
+            #Package credentials, send to server, await response
+            msg = [self.msg_identifier["REGISTER"], username, password, email]
+            self._server_contact_socket_.send_multipart(encode(msg))
+            rep = decode(self._server_contact_socket_.recv_multipart())
+
+            #Parse response, decide whether or not credentials were approved
+            if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.msg_identifier["TRUE"]: #Golden case
+                self.config["USERNAME"] = username #Set the active user at this controller
+                return True
+        elif answer == "No":
+            response = self._authenticate_()
+            return response
+        else:
+            print("Improper input, please enter 'Yes' or 'No'")
+            return False
+
+    def _changePass_(self):
+        #Prompt for changing password
+        username = raw_input("Your Username: ")
+        password = raw_input("New Password: ")
+
+        #Package credentials, send to server, await response
+        msg = [self.msg_identifier["PASSCHANGE"], username, password]
+        self._server_contact_socket_.send_multipart(encode(msg))
+        rep = decode(self._server_contact_socket_.recv_multipart())
+
+        #Parse response, decide whether or not credentials were approved
+        if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.msg_identifier["TRUE"]: #Golden case
+            self.config["USERNAME"] = username #Set the active user at this controller
+            return True
 
     def _connect_(self):
         """
