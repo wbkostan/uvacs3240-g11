@@ -3,10 +3,13 @@ __author__ = 'wbk3zd'
 from Controllers.Server.Controller import ServerController
 import time
 import sys
+import threading
 
 class OneDirServer():
     def __init__(self):
         self.controller = ServerController()
+        self.sync_flag = threading.Event()
+        self.sync_flag.clear()
 
     #Creates account
     def create_account(self):
@@ -19,7 +22,7 @@ class OneDirServer():
     #######
 
     #Turns automatic syncing on
-    def sync(self):
+    def _sync(self):
         config = get_config()
         setup_django()
         self.controller.configure(config)
@@ -29,6 +32,10 @@ class OneDirServer():
                 time.sleep(1)
         except KeyboardInterrupt:
             self.controller.__teardown__()
+
+    def sync(self):
+        self.sync_flag.set()
+        threading.Thread(target=self._sync).start()
 
     #User command that changes signed on user's password
     def change_pass(self):
