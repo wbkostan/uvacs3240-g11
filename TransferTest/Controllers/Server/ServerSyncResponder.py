@@ -40,9 +40,10 @@ class SyncResponder():
             threading.Thread(target=self.dispatch, args=(msg,)).start()
 
             #Strip away file contents before logging message
-            if msg[0] == self.msg_identifier["FILESYNC"]:
-                msg[-1] = "<contents omitted from log>"
-            self._logger_.log("INFO","Sync Directive received: " + str(msg))
+            msg_clone = msg
+            if msg_clone[0] == self.msg_identifier["FILESYNC"]:
+                msg_clone[-1] = "<contents omitted from log>"
+            self._logger_.log("INFO","Sync Directive received: " + str(msg_clone))
     def listen(self):
         self.listen_flag.set()
         threading.Thread(target=self._listen).start()

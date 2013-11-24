@@ -22,6 +22,7 @@ class OneDirClient:
     #######
 
     #Turns automatic syncing on
+    """
     def _sync(self):
         config = get_config()
         self.controller.configure(config)
@@ -29,11 +30,23 @@ class OneDirClient:
         while self.sync_flag.is_set():
             time.sleep(1)
         self.controller.__teardown__()
+    """
 
-
+    """
     def sync(self):
         self.sync_flag.set()
         threading.Thread(target=self._sync).start()
+    """
+
+    def sync(self):
+        config = get_config()
+        self.controller.configure(config)
+        self.controller.start()
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            self.controller.__teardown__()
 
     #User command that changes signed on user's password
     def change_pass(self):
@@ -88,39 +101,31 @@ def get_config():
     return config
 
 def launch():
-    server = OneDirClient()
+    client = OneDirClient()
     #Starts command line prompt
     print "List of commands: CreateAccount, Sync, ChangePassword, UserInfo, PrintUserFiles, RemoveUser, ChangeUserPassword, History, Exit"
     sys.stdout.flush()
-    response = raw_input()
+    response = raw_input(">>")
     while (response != "Exit"):
         if (response == "CreateAccount"):
-            server.create_account()
-            response = raw_input()
+            client.create_account()
         elif (response == "Sync"):
-            server.sync(server)
-            response = raw_input()
+            client.sync()
         elif (response == "ChangePassword"):
-            server.change_pass()
-            response = raw_input()
+            client.change_pass()
         elif (response == "UserInfo"):
-            server.all_users()
-            response = raw_input()
+            client.all_users()
         elif (response == "PrintUserFiles"):
-            server.print_user_files()
-            response = raw_input()
+            client.print_user_files()
         elif (response == "RemoveUser"):
-            server.remove()
-            response = raw_input()
+            client.remove()
         elif (response == "ChangeUserPassword"):
-            server.change_user_pass()
-            response = raw_input()
+            client.change_user_pass()
         elif (response == "History"):
-            server.history()
-            response = raw_input()
+            client.history()
         else:
-            print "Invalid Command"
-            response = raw_input()
+            print("Invalid Command")
+        response = raw_input(">>")
     print("Exited")
 
 if __name__ == "__main__":
