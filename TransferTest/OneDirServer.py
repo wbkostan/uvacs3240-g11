@@ -3,6 +3,7 @@ __author__ = 'wbk3zd'
 from Controllers.Server.Controller import ServerController
 import time
 import sys
+from django.db import connection
 import threading
 
 def get_config():

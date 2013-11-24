@@ -32,11 +32,13 @@ class SyncResponder():
     def _listen(self):
         self._logger_.log("INFO", "Responder is listening for sync directives at tcp://localhost:" + self.config["SYNC_PASSTHRU_PORT"] + "for user " + self.config["USERNAME"] + "...")
         while(self.listen_flag.is_set()):
-            msg = self.sync_passthru_socket.recv_multipart()
-            threading.Thread(target=self.dispatch, args=(msg,)).start()
+            msg = decode(self.sync_passthru_socket.recv_multipart())
             #Remove topic from message where topic is username
             msg.remove(msg[0])
-            msg = decode(msg)
+
+            #Dispatch
+            threading.Thread(target=self.dispatch, args=(msg,)).start()
+
             #Strip away file contents before logging message
             if msg[0] == self.msg_identifier["FILESYNC"]:
                 msg[-1] = "<contents omitted from log>"

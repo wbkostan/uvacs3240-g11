@@ -77,9 +77,9 @@ class OneDirClient:
 
 def get_config():
     config = {
-        "SERVER_ADDR":"172.25.98.175",
+        "SERVER_ADDR":"172.25.99.208",
         #"SERVER_ADDR":"localhost",
-        "PATH_BASE":"/home/twi/Documents/OneDir/",
+        "PATH_BASE":"C:\Test1\OneDir\\",
         "INTERNAL_REQUEST_PORT":"3246",
         "SERVER_SYNC_CATCH_PORT":"3242",
         "SERVER_SYNC_THROW_PORT":"3241",
