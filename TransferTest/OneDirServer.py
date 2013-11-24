@@ -46,12 +46,14 @@ def sync(self):
 
 #User command that changes signed on user's password
 def change_pass(self):
+    print("Nothing yet")
 #######
     #Code goes here
 #######
 
 #Prints user database
 def all_users(self):
+    print("Nothing yet")
 #######
     #Code goes here
 #######
@@ -76,6 +78,7 @@ def change_user_pass(self):
     username = raw_input()
 
 def history(self):
+    print("Nothing yet")
 #######
     #Code goes here
 #######
