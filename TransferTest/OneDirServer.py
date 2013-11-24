@@ -27,11 +27,9 @@ class OneDirServer():
         setup_django()
         self.controller.configure(config)
         self.controller.start()
-        try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            self.controller.__teardown__()
+        while self.sync_flag.is_set():
+            time.sleep(1)
+        self.controller.__teardown__()
 
     def sync(self):
         self.sync_flag.set()
