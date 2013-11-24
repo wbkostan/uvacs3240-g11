@@ -94,7 +94,7 @@ def launch():
     #Starts command line prompt
     print "List of commands: CreateAccount, Sync, ChangePassword, UserInfo, PrintUserFiles, RemoveUser, ChangeUserPassword, History, Exit"
     sys.stdout.flush()
-    response = raw_input()
+    response = raw_input(">>")
     while (response != "Exit"):
         if (response == "CreateAccount"):
             server.create_account()
@@ -122,7 +122,7 @@ def launch():
             response = raw_input()
         else:
             print "Invalid Command"
-            response = raw_input()
+            response = raw_input(">>")
     print("Exited")
 
 if __name__ == "__main__":
