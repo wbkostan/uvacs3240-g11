@@ -117,8 +117,8 @@ class OneDirClient:
 
 def get_config():
     config = {
-        #"SERVER_ADDR":"172.25.99.208",
-        "SERVER_ADDR":"localhost",
+        "SERVER_ADDR":"172.25.108.164",
+        #"SERVER_ADDR":"localhost",
         "PATH_BASE":"C:\Test1\OneDir\\",
         "INTERNAL_REQUEST_PORT":"3246",
         "SERVER_SYNC_CATCH_PORT":"3242",

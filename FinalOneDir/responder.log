@@ -28,3 +28,9 @@ STATUS: INFO	DATE: 11/24/2013 19:00:27	Sync Directive received: [u'2', u'Hello']
 STATUS: ERROR	DATE: 11/24/2013 19:00:28	Unrecognized message. Closing without handle: ['10', '2004']
 STATUS: ERROR	DATE: 11/24/2013 19:00:28	Unrecognized message. Closing without handle: ['10', '6804']
 STATUS: ERROR	DATE: 11/24/2013 19:00:28	Unrecognized message. Closing without handle: ['10', '11092']
+============================Mon Nov 25 16:39:06 2013============================
+STATUS: INFO	DATE: 11/25/2013 16:39:06	Connecting responder to internal client controller over tcp port 3246...
+STATUS: INFO	DATE: 11/25/2013 16:39:06	Subscribed to sync directives at tcp://172.25.108.164:3241 for user test1...
+STATUS: INFO	DATE: 11/25/2013 16:39:06	Responder is listening for sync directives at tcp://172.25.108.164:3241 for user test1...
+STATUS: INFO	DATE: 11/25/2013 16:39:06	Sync Directive received: [u'2', u'.']
+STATUS: ERROR	DATE: 11/25/2013 16:39:07	Unrecognized message. Closing without handle: ['10', '5564']

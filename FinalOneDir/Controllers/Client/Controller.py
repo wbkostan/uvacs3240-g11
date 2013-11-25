@@ -6,7 +6,8 @@ from Helpers.Encodings import *
 from ClientFileDaemon import FileDaemon
 from ClientSyncResponder import SyncResponder
 from Helpers.Logging.OneDirLogger import EventLogger
-from getpass import getpass
+from Tkinter import *
+import tkMessageBox
 
 """
     Sample of config dictionary which initializes controller:
@@ -41,6 +42,16 @@ class ClientController:
         self._daemon_ = FileDaemon(self.msg_identifier) #Monitors file system and sends sync directives
         self._logger_ = EventLogger()
 
+        #For Tkinter login
+        self.username = ""
+        self.password = ""
+        self.root = Tk()
+        self.L1 = Label(self.root, text="User Name")
+        self.E1 = Entry(self.root, bd=5)
+        self.L2 = Label(self.root, text="Password")
+        self.E2 = Entry(self.root, bd=5, show="*")
+        self.B1 = Button(self.root, text="Login", command=self._authenticate_)
+
         #Networking
         self._context_ = zmq.Context()
         self._internal_request_socket_ = self._context_.socket(zmq.PULL) #Listens for control requests from child components
@@ -49,6 +60,7 @@ class ClientController:
         #Attributes
         self.config = None
         self._listen_flag_ = threading.Event()
+        self._login_flag_ = threading.Condition()
 
     """
         Public Methods for Controller Interface
@@ -125,25 +137,27 @@ class ClientController:
             starts the pair daemon/responder components server side. With authentication,
             there will be no components server side listening for this clients requests
         """
-
-        #Prompt for username/password
-        username = raw_input("Username: ")
-        password = raw_input("Password: ")
+        self.username = self.E1.get()
+        self.password = self.E2.get()
+        print(self.username)
+        print(self.password)
 
         #Package credentials, send to server, await response
-        msg = [self.msg_identifier["LOGIN"], username, password]
+        msg = [self.msg_identifier["LOGIN"], self.username, self.password]
         self._server_contact_socket_.send_multipart(encode(msg))
         rep = decode(self._server_contact_socket_.recv_multipart())
 
         #Parse response, decide whether or not credentials were approved
         if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.msg_identifier["TRUE"]: #Golden case
-            self.config["USERNAME"] = username #Set the active user at this controller
+            self.config["USERNAME"] = self.username #Set the active user at this controller
+            self.root.destroy()
             return True
         elif rep[1] == self.msg_identifier["FALSE"]: #Bad username/password combination
-            print("Warning: Bad username/password. Try again.")
+            tkMessageBox.showinfo("Failure", "Bad username/password combination. Try again.")
             return False
         elif rep[0] != self.msg_identifier["ACK"]: #Unknown message received
             self._logger_.log("ERROR","Unknown response from server received during logon: " + str(rep))
+            self.root.destroy()
             self.__teardown__() #Kill everything!
             return False
 
@@ -155,10 +169,17 @@ class ClientController:
 
         #Authenticate current user
         #Server starts pair components when user successfully authenticates
-        auth = False
-        while not auth:
-            auth = self._authenticate_()
-        self._logger_.log("INFO","Successfully authenticated user " + self.config["USERNAME"] + ". Going online")
+        self.L1.grid(row=0, column=0)
+        self.E1.grid(row=0, column=1)
+        self.L2.grid(row=1, column=0)
+        self.E2.grid(row=1, column=1)
+        self.B1.grid(row=1, column=2)
+        self.root.mainloop()
+        if(self.username == ""):
+            self.__teardown__()
+            return
+        else:
+            self._logger_.log("INFO","Successfully authenticated user " + self.config["USERNAME"] + ". Going online")
 
         #Start up the client responder and daemon
         self.__start_components__() #start a responder
