@@ -79,6 +79,9 @@ class OneDirClient:
 
     #Prints user database
     def all_users(self):
+        """
+        ADMIN ONLY
+        """
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM auth_user")
         row = cursor.fetchall()
@@ -87,12 +90,18 @@ class OneDirClient:
 
     #Prints files associated with a user
     def print_user_files(self):
+        """
+        ADMIN ONLY
+        """
         print("Enter username:")
         username = raw_input()
         self.controller.print_user_files(username)
 
     #Removes user
     def remove(self):
+        """
+        ADMIN ONLY
+        """
         print("Enter username:")
         username = raw_input()
     #######
@@ -101,6 +110,9 @@ class OneDirClient:
 
     #Admin command that changes the password of the given user
     def change_user_pass(self):
+        """
+        ADMIN ONLY
+        """
         username = raw_input("Enter username: ")
         newPassword = raw_input("Enter new password: ")
 
@@ -109,6 +121,9 @@ class OneDirClient:
         user.save()
 
     def history(self):
+        """
+        ADMIN ONLY
+        """
         print("Nothing yet")
     #######
         #Code goes here
