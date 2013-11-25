@@ -122,11 +122,10 @@ class OneDirClient:
         """
         ADMIN ONLY
         """
-        print("Nothing yet")
-    #######
-        #Code goes here
-    #######
-
+        fileClientLog = open("c_controller.log", "r")
+        print (fileClientLog.readall())
+        fileServerLog = open("s_controller.log", "r")
+        print (fileServerLog.readall())
 
 def get_config():
     config = {
