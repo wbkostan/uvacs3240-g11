@@ -39,6 +39,40 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self._socket_.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_CATCH_PORT"])
         self._logger_.log("INFO","Daemon connected to server at " + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_CATCH_PORT"] + "...")
 
+    def print_files(self, top):
+        """
+            Prints all files on user machine
+        """
+
+        #Acquire access to source and dest paths
+        self.__lock__.acquire()
+
+        #Preserve source absolute and relative paths
+        copy_src_path = self._event_src_path_
+        copy_rel_path = self._event_rel_path_
+
+        #Tell server this top level directory should exist
+        msg = [self.config["USERNAME"], self.msg_identifier["MKDIR"], os.path.relpath(top, self.config["PATH_BASE"])]
+        self._socket_.send_multipart(encode(msg))
+
+        #Recurse over objects in this directory
+        for parent, sub_dirs, files in os.walk(top):
+            #Synchronize all files
+            for user_file in files:
+                self._event_src_path_ = parent + user_file
+                self._event_rel_path_ = os.path.relpath(self._event_src_path_, self.config["PATH_BASE"])
+                print(user_file)
+            #Recurse into sub-directories
+            for sub_dir in sub_dirs:
+                self.print_files((parent+sub_dir))
+
+        #Restore saved values for src and dest paths
+        self._event_src_path_ = copy_src_path
+        self._event_rel_path_ = copy_rel_path
+
+        #Give up source paths
+        self.__lock__.release()
+
     def dir_sync(self, top):
         """
             Recursively synchronizes a directory on the client side. Creates any structure which does not

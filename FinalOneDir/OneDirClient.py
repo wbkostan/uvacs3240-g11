@@ -93,9 +93,7 @@ class OneDirClient:
         """
         ADMIN ONLY
         """
-        print("Enter username:")
-        username = raw_input()
-        self.controller.print_user_files(username)
+        self.controller.print_user_files()
 
     #Removes user
     def remove(self):
