@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$USER_HOME$/PycharmProjects/Tkinter/.idea/Tkinter.iml" filepath="$USER_HOME$/PycharmProjects/Tkinter/.idea/Tkinter.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/uvacs3240-g11.iml" filepath="$PROJECT_DIR$/.idea/uvacs3240-g11.iml" />
     </modules>
   </component>
