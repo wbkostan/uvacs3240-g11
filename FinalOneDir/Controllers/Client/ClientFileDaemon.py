@@ -234,6 +234,9 @@ class FileDaemon:
         self._event_handler_.initialize(self.config)
         self._observer_.start()
 
+    def print_files(self, target):
+        self._event_handler_.print_files(self.target_dir)
+
     def start(self):
         """
             Starts/resumes observing a target directory. Wraps up the monitor method
