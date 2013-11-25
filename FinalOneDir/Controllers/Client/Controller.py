@@ -119,6 +119,9 @@ class ClientController:
         #Disconnect from server
         self._disconnect_()
 
+    def print_user_files(self):
+        self._daemon_.print_files()
+
     """
         Protected methods
     """
