@@ -1,4 +1,4 @@
-# Django settings for TransferTest project.
+# Django settings for FinalOneDir project.
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -12,7 +12,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'C:\Users\Faye\PycharmProjects\TransferTest\Database\temp.db',                      # Or path to database file if using sqlite3.
+        'NAME': 'C:/Users/Faye/PycharmProjects/FinalOneDir/Database/temp.db',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
@@ -83,7 +83,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = ')h9#vghx$lrqjx#b*av0%y((st(uj+-#+_wbwpbo0e=ts$qfzf'
+SECRET_KEY = '4)q=^qp04__(&zh1npr=k0+bh6_60sfp=kb_5f^1$zgw=uiiyl'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -102,10 +102,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'TransferTest.urls'
+ROOT_URLCONF = 'FinalOneDir.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'TransferTest.wsgi.application'
+WSGI_APPLICATION = 'FinalOneDir.wsgi.application'
 
 import os
 TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), '..', 'templates').replace('\\','/'),)
