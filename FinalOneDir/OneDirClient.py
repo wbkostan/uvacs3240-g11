@@ -96,7 +96,15 @@ class OneDirClient:
         """
         ADMIN ONLY
         """
-        self.controller.print_user_files()
+        config = get_config()
+        self.controller.configure(config)
+        self.controller.print_flag = True
+        self.controller.start()
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            self.controller.__teardown__()
 
     #Removes user
     def remove(self):
