@@ -25,6 +25,9 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         #Networking
         self._socket_ = self._context_.socket(zmq.PUSH)
 
+        #Counter number of files
+        self.counter = 0
+
     def initialize(self, config):
         """
             Sets configuration values, connects sockets, and initializes components
@@ -61,10 +64,13 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
             for user_file in files:
                 self._event_src_path_ = parent + user_file
                 self._event_rel_path_ = os.path.relpath(self._event_src_path_, self.config["PATH_BASE"])
-                print(user_file)
+                self.counter += 1
+                self._print_contents_()
             #Recurse into sub-directories
             for sub_dir in sub_dirs:
                 self.print_files((parent+sub_dir))
+
+        print ("Total number of files: " + self.counter)
 
         #Restore saved values for src and dest paths
         self._event_src_path_ = copy_src_path
@@ -195,6 +201,19 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self._logger_.log("INFO","Sending filesync command to server for file at " + self._event_rel_path_)
         msg = [self.config["USERNAME"], self.msg_identifier["FILESYNC"], self._event_rel_path_, content]
         self._socket_.send_multipart(encode(msg))
+
+    def _print_contents_(self):
+        """
+            Prints size of each file
+        """
+
+        #If someone tries to call this method without setting a path
+        if self._event_src_path_ == None:
+            self._logger_.log("ERROR","File daemon attempted to execute a print without a source directory")
+            return
+
+        with open(self._event_src_path_, 'rb') as user_file:
+            print("File size: " + user_file.st_size())
 
     def _finish_(self):
         """
