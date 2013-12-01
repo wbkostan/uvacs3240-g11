@@ -62,7 +62,8 @@ class OneDirClient:
                 time.sleep(1)
         except KeyboardInterrupt:
             self.controller.__teardown__()
-        sync_response = raw_input("Command to stop sync: Quit")
+        print ("Command to stop sync: Quit")
+        sync_response = raw_input(">>")
         if (sync_response == "Quit"):
             self.controller.stop()
 

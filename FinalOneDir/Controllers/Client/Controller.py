@@ -248,27 +248,27 @@ class ClientController:
         #Bring responder online. Ready to respond to sync directives
         self._responder_.start()
 
+        #Tell server we're ready for directory sync
+        msg = [self.msg_identifier["LISTENING"], self.config["USERNAME"]]
+        self._logger_.log("INFO","Awaiting full directory sync from server")
+        self._server_contact_socket_.send_multipart(encode(msg))
+        rep = decode(self._server_contact_socket_.recv_multipart())
+
+        #Server is done syncing full directory, time to sync ours
+        if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.config["USERNAME"]:
+            self._logger_.log("INFO","Server has successfully synced entire directory")
+        else:
+            self._logger_.log("ERROR","Unknown response from server received during directory sync. Terminating: " + str(rep))
+            self.__teardown__()
+
+        #Set up our daemon
+        self._logger_.log("INFO","Client daemon going online")
+        self._daemon_.start()
+
         if (self.print_flag == True):
             self.print_user_files()
 
         else:
-            #Tell server we're ready for directory sync
-            msg = [self.msg_identifier["LISTENING"], self.config["USERNAME"]]
-            self._logger_.log("INFO","Awaiting full directory sync from server")
-            self._server_contact_socket_.send_multipart(encode(msg))
-            rep = decode(self._server_contact_socket_.recv_multipart())
-
-            #Server is done syncing full directory, time to sync ours
-            if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.config["USERNAME"]:
-                self._logger_.log("INFO","Server has successfully synced entire directory")
-            else:
-                self._logger_.log("ERROR","Unknown response from server received during directory sync. Terminating: " + str(rep))
-                self.__teardown__()
-
-            #Set up our daemon
-            self._logger_.log("INFO","Client daemon going online")
-            self._daemon_.start()
-
             #Execute full sync back to server
             self._logger_.log("INFO","Client executing full directory sync in server direction")
             self._daemon_.full_sync()
