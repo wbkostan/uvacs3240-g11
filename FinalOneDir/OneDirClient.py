@@ -62,6 +62,9 @@ class OneDirClient:
                 time.sleep(1)
         except KeyboardInterrupt:
             self.controller.__teardown__()
+        sync_response = raw_input("Command to stop sync: Quit")
+        if (sync_response == "Quit"):
+            self.controller.stop()
 
     #User command that changes signed on user's password
     def change_pass(self):
