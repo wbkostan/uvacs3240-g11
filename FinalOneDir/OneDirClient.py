@@ -37,22 +37,22 @@ class OneDirClient:
         user = User.objects.create_user(username,email,password)
 
     #Turns automatic syncing on
-    """
     def _sync(self):
         config = get_config()
         self.controller.configure(config)
         self.controller.start()
         while self.sync_flag.is_set():
             time.sleep(1)
-        self.controller.__teardown__()
-    """
+        self.controller.stop()
 
-    """
-    def sync(self):
+    def syncon(self):
         self.sync_flag.set()
         threading.Thread(target=self._sync).start()
-    """
 
+    def syncoff(self):
+        self.sync_flag.clear()
+
+    """
     def sync(self):
         config = get_config()
         self.controller.configure(config)
@@ -66,6 +66,7 @@ class OneDirClient:
         sync_response = raw_input(">>")
         if (sync_response == "Quit"):
             self.controller.stop()
+    """
 
     #User command that changes signed on user's password
     def change_pass(self):
@@ -141,9 +142,9 @@ class OneDirClient:
 
 def get_config():
     config = {
-        "SERVER_ADDR":"172.25.108.164",
-        #"SERVER_ADDR":"localhost",
-        "PATH_BASE":"C:\Test1\OneDir\\",
+        #"SERVER_ADDR":"172.25.108.164",
+        "SERVER_ADDR":"localhost",
+        "PATH_BASE":"F:\Test1\OneDir\\",
         "INTERNAL_REQUEST_PORT":"3246",
         "SERVER_SYNC_CATCH_PORT":"3242",
         "SERVER_SYNC_THROW_PORT":"3241",
@@ -154,14 +155,16 @@ def get_config():
 def launch():
     client = OneDirClient()
     #Starts command line prompt
-    print "List of commands: CreateAccount, Sync, ChangePassword, UserInfo, PrintUserFiles, RemoveUser, ChangeUserPassword, History, Exit"
+    print "List of commands: CreateAccount, SyncOn, SyncOff, ChangePassword, UserInfo, PrintUserFiles, RemoveUser, ChangeUserPassword, History, Exit"
     sys.stdout.flush()
     response = raw_input(">>")
     while (response != "Exit"):
         if (response == "CreateAccount"):
             client.create_account()
-        elif (response == "Sync"):
-            client.sync()
+        elif (response == "SyncOn"):
+            client.syncon()
+        elif (response == "SyncOff"):
+            client.syncoff()
         elif (response == "ChangePassword"):
             client.change_pass()
         elif (response == "UserInfo"):

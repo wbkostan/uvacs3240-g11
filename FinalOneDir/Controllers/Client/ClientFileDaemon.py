@@ -285,8 +285,8 @@ class FileDaemon:
             End observation with no intent to resume
         """
         self._monitor_flag_.clear()
-        self._observer_.stop() #stop observing
         self._observer_.join() #wait for all threads to be done
+        self._observer_.stop() #stop observing
 
     """
         Protected methods

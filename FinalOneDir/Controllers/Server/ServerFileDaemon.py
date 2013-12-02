@@ -13,13 +13,18 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
     def __init__(self, msg_identifier, send_config):
         #Components
         self._logger_ = EventLogger()
+        self.__lock__ = threading.RLock()
+
+        #Attributes
+        self._event_src_path_ = None
+        self._event_rel_path_ = None
         self.msg_identifier = msg_identifier
+
+        #Networking
         self.config = send_config
-        self.context = zmq.Context()
-        self.socket = self.context.socket(zmq.PUSH)
-        self.event_src_path = None
-        self.event_rel_path = None
-        self.lock = threading.RLock()
+        self._context_ = zmq.Context()
+        self._socket_ = self._context_.socket(zmq.PUSH)
+
     """
         Public Methods
     """
@@ -33,121 +38,253 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self._logger_.join_session(logfile)
 
         #Connect sockets
-        self.socket.connect("tcp://localhost:" + self.config["SYNC_PASSUP_PORT"])
+        self._socket_.connect("tcp://localhost:" + self.config["SYNC_PASSUP_PORT"])
         self._logger_.log("INFO", "Daemon connected to server at tcp://localhost:" + self.config["SYNC_PASSUP_PORT"] + "...")
+
     def print_files(self, top):
-        self.lock.acquire()
+        self.__lock__.acquire()
         self._logger_.log("INFO", "Printing files belonging to " + top)
         for parent, sub_dirs, files in os.walk(top):
             self._logger_.log("INFO", "Containing " + parent + "including " + str(sub_dirs) + " and " + str(files))
+
     def dir_sync(self, top):
-        self.lock.acquire()
-        self._logger_.log("INFO", "Directory sync command received for " + top)
-        copy_src_path = self.event_src_path
-        copy_rel_path = self.event_rel_path
+        """
+            Recursively synchronizes a directory on the client side. Creates any structure which does not
+            exist. Does not send delete commands for file system objects server side which should not exist.
+        """
+
+        #Acquire access to source and dest paths
+        self.__lock__.acquire()
+
+        #Preserve source absolute and relative paths
+        copy_src_path = self._event_src_path_
+        copy_rel_path = self._event_rel_path_
+
+        #Tell server this top level directory should exist
         msg = [self.config["USERNAME"], self.msg_identifier["MKDIR"], os.path.relpath(top, self.config["PATH_BASE"])]
-        self.socket.send_multipart(encode(msg))
+        self._socket_.send_multipart(encode(msg))
+
+        #Recurse over objects in this directory
         for parent, sub_dirs, files in os.walk(top):
-            self._logger_.log("INFO", "Iterating over " + parent + " including " + str(sub_dirs) + " and " + str(files))
+            #Synchronize all files
             for user_file in files:
-                self.event_src_path = parent + user_file
-                self.event_rel_path = os.path.relpath(self.event_src_path, self.config["PATH_BASE"])
+                self._event_src_path_ = parent + user_file
+                self._event_rel_path_ = os.path.relpath(self._event_src_path_, self.config["PATH_BASE"])
                 self._file_sync_()
+            #Recurse into sub-directories
             for sub_dir in sub_dirs:
                 self.dir_sync((parent+sub_dir))
-        self.event_src_path = copy_src_path
-        self.event_rel_path = copy_rel_path
-        self.lock.release()
+
+        #Restore saved values for src and dest paths
+        self._event_src_path_ = copy_src_path
+        self._event_rel_path_ = copy_rel_path
+
+        #Give up source paths
+        self.__lock__.release()
+
     def on_any_event(self, event):
-        self.lock.acquire()
-        self.event_src_path = event.src_path
-        self.event_rel_path = os.path.relpath(self.event_src_path, self.config["PATH_BASE"])
+        """
+            Called by a watchdog.observer whenever a filesystem event occurs
+            Record references to source path of event, deduce the relative path
+            that the server cares about
+        """
+
+        #Access source paths
+        self.__lock__.acquire()
+
+        self._event_src_path_ = event.src_path
+        self._event_rel_path_ = os.path.relpath(self._event_src_path_, self.config["PATH_BASE"]) #Chop off the path base
+
     def on_created(self, event):
-        if os.path.isdir(self.event_src_path):
-            self._logger_.log("INFO", "Sending mkdir command to server for directory at " + self.event_rel_path)
-            msg = [self.config["USERNAME"], self.msg_identifier["MKDIR"], self.event_rel_path]
-            self.socket.send_multipart(encode(msg))
+        """
+            Called by a watchdog.observer whenever a new filesystem object is created
+            in the observed directory. Sends the creation command to the server
+        """
+        if os.path.isdir(self._event_src_path_):
+            self._logger_.log("INFO","Sending mkdir command to client for directory at " + self._event_rel_path_)
+            msg = [self.config["USERNAME"], self.msg_identifier["MKDIR"], self._event_rel_path_]
+            self._socket_.send_multipart(encode(msg))
         else:
+            #Synchronizing a file will also create if file doesn't exist
             self._file_sync_()
-        self._finish_()
+        self._finish_() #Cleanup
+
     def on_deleted(self, event):
-        self._logger_.log("INFO", "Sending delete command to server for file system object at " + self.event_rel_path)
-        msg = [self.config["USERNAME"], self.msg_identifier["DELETE"], self.event_rel_path]
-        self.socket.send_multipart(encode(msg))
+        """
+            Called by a watchdog.observer whenever a filesystem object is deleted
+            in the observed directory. Sends a delete command to the server
+        """
+        self._logger_.log("INFO","Sending delete command to client for file system object at " + self._event_rel_path_)
+        msg = [self.config["USERNAME"], self.msg_identifier["DELETE"], self._event_rel_path_]
+        self._socket_.send_multipart(encode(msg))
         self._finish_()
+
     def on_modified(self, event):
-        if os.path.isfile(self.event_src_path):
+        """
+            Called by a watchdog.observer whenever a filesystem object is modified
+            in the observed directory. Sends the modification information to the server.
+        """
+        if os.path.isfile(self._event_src_path_):
             self._file_sync_()
         else:
-            self._logger_.log("INFO", "<handling a modified directory>")
+            #Currently don't know how to react to this command
+            self._logger_.log("INFO","<handling a modified directory>")
         self._finish_()
+
     def on_moved(self, event):
+        """
+            Called by a watchdog.observer whenever a filesystem object is moved
+            in the observed directory. Sends the source and dest information to the server.
+        """
+
+        #Record absolute and relative path information for the destination
         event_dest_path = event.dest_path
         rel_dest_path = os.path.relpath(event_dest_path, self.config["PATH_BASE"])
-        self._logger_.log("INFO", "Sending move command to server from " + self.event_rel_path + " to " + rel_dest_path)
-        msg = [self.config["USERNAME"], self.msg_identifier["MOVE"], self.event_rel_path, rel_dest_path]
-        self.socket.send_multipart(encode(msg))
+
+        #Log and send
+        self._logger_.log("INFO","Sending move command to server from " + self._event_rel_path_ + " to " + rel_dest_path)
+        msg = [self.config["USERNAME"], self.msg_identifier["MOVE"], self._event_rel_path_, rel_dest_path]
+        self._socket_.send_multipart(encode(msg))
         self._finish_()
+
+    """
+        Protected Methods
+    """
+    def _file_sync_(self):
+        """
+            Sends the contents of the file in self.event_src_path to the server.
+            If file does not exist on server it is created. If file exists, it is
+            overwritten with these contents
+        """
+
+        #If someone tries to call this method without setting a path
+        if self._event_src_path_ == None:
+            self._logger_.log("ERROR","File daemon attempted to execute a file sync without a source directory")
+            return
+
+        #Read as bytes
+        with open(self._event_src_path_, 'rb') as user_file:
+            content = user_file.read()
+
+        #Log and send
+        self._logger_.log("INFO","Sending filesync command to client for file at " + self._event_rel_path_)
+        msg = [self.config["USERNAME"], self.msg_identifier["FILESYNC"], self._event_rel_path_, content]
+        self._socket_.send_multipart(encode(msg))
+
+    def _print_contents_(self):
+        """
+            Prints size of each file
+        """
+
+        #If someone tries to call this method without setting a path
+        if self._event_src_path_ == None:
+            self._logger_.log("ERROR","File daemon attempted to execute a print without a source directory")
+            return
+
+        with open(self._event_src_path_, 'rb') as user_file:
+            print("File size: " + os.path.getsize(user_file))
+
+    def _finish_(self):
+        """
+            Must be called after any event. Releases the lock held by the managing thread
+            and resets source and destination paths
+        """
+        self._event_src_path_ = None
+        self._event_rel_path_ = None
+        self.__lock__.release()
 
     """
         Protected methods
     """
     def _file_sync_(self):
-        if self.event_src_path == None:
+        if self._event_src_path_ == None:
             self._logger_.log("ERROR", "Told to sync, but sync source not set!")
             return
-        self._logger_.log("INFO", "Syncing file at " + self.event_src_path)
-        with open(self.event_src_path, 'rb') as user_file:
+        self._logger_.log("INFO", "Syncing file at " + self._event_src_path_)
+        with open(self._event_src_path_, 'rb') as user_file:
             content = user_file.read()
-        self._logger_.log("INFO", "Sending filesync command to server for file at " + self.event_rel_path)
-        msg = [self.config["USERNAME"], self.msg_identifier["FILESYNC"], self.event_rel_path, content]
-        self.socket.send_multipart(encode(msg))
+        self._logger_.log("INFO", "Sending filesync command to server for file at " + self._event_rel_path_)
+        msg = [self.config["USERNAME"], self.msg_identifier["FILESYNC"], self._event_rel_path_, content]
+        self._socket_.send_multipart(encode(msg))
 
     def _finish_(self):
-        self.event_src_path = None
-        self.event_rel_path = None
-        self.lock.release()
+        self._event_src_path_ = None
+        self._event_rel_path_ = None
+        self.__lock__.release()
 
 class FileDaemon:
     def __init__(self, msg_identifier, send_config):
+        #Attributes
         self.target_dir = send_config["PATH_BASE"]
-        self._logger_ = EventLogger()
-        self.event_handler = SyncEventHandler(msg_identifier, send_config)
-        self.observer = Observer()
-        self.monitor_flag = threading.Event()
-        self.monitor_flag.clear()
+        self._monitor_flag_ = threading.Event()
         self.watch = None
+
+        #Components
+        self._logger_ = EventLogger()
+        self._event_handler_ = SyncEventHandler(msg_identifier, send_config)
+        self._observer_ = Observer()
+
+    """
+        Public methods
+    """
     def initialize(self):
-        self.observer.start()
-        self.event_handler.initialize()
+        """
+            Initializes components, starts logging
+        """
+        #Prep for monitor
+        self._monitor_flag_.clear()
+
+        #Initialize components
         logfile = os.path.dirname(self.target_dir[:-1]) + SLASH + "daemon.log"
         self._logger_.init_session(logfile)
+        self._event_handler_.initialize()
+        self._observer_.start()
 
-        #Logging
-        if (self._logger_.file_info == True):
-            self.event_handler.print_files(self.target_dir)
-
-    def _monitor(self):
-        self._logger_.log("INFO", "Scheduling observation of " + self.target_dir + " tree...")
-        self.watch = self.observer.schedule(self.event_handler, self.target_dir, recursive=True)
-        self._logger_.log("INFO", "Server daemon is monitoring " + self.target_dir + "...")
-        self.observer.start()
-        while (self.monitor_flag.is_set()):
-            time.sleep(1)
-        self.observer.unschedule(self.watch)
-    def full_sync(self):
-        self._logger_.log("INFO", "Throwing full directory sync directive from server...")
-        self.event_handler.dir_sync(self.target_dir)
     def start(self):
-        if self.monitor_flag.is_set:
-            return
+        """
+            Starts/resumes observing a target directory. Wraps up the monitor method
+            which is used as the target for a separate thread.
+        """
+        if self._monitor_flag_.is_set():
+            return #Already running
         else:
-            self._logger_.log("INFO", "Server daemon is monitoring at " + self.target_dir + " tree...")
-            self.monitor_flag.set()
-            threading.Thread(target=self._monitor).start()
-    def is_alive(self):
-        return self.monitor_flag.is_set()
+            self._monitor_flag_.set()
+            threading.Thread(target=self._monitor_).start()
+
+    def full_sync(self):
+        """
+            Handle for the directory sync method of event_handler which
+            allows controller to request a sync of entire directory
+        """
+        self._event_handler_.dir_sync(self.target_dir)
+
+    def pause(self):
+        """
+            Pause observation with intent to resume
+        """
+        self._monitor_flag_.clear()
+
     def stop(self):
-        self.monitor_flag.clear()
-        self.observer.stop()
-        self.observer.join()
+        """
+            End observation with no intent to resume
+        """
+        self._monitor_flag_.clear()
+        self._observer_.join() #wait for all threads to be done
+        self._observer_.stop() #stop observing
+
+    def is_alive(self):
+        return self._monitor_flag_.is_set()
+
+    """
+        Protected methods
+    """
+    def _monitor_(self):
+        """
+            Function run on separate thread which acts as parent to observer thread(s).
+            Used to control operation flow of observer using monitor_flag
+        """
+        self._logger_.log("INFO","Scheduling observation of " + self.target_dir + " tree...")
+        self.__watch__ = self._observer_.schedule(self._event_handler_, self.target_dir, recursive=True)
+        while (self._monitor_flag_.is_set()):
+            time.sleep(1)
+        self._observer_.unschedule(self.__watch__)

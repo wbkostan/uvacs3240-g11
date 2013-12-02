@@ -8,12 +8,13 @@ from ClientSyncResponder import SyncResponder
 from Helpers.Logging.OneDirLogger import EventLogger
 from Tkinter import *
 import tkMessageBox
+import os
 
 """
     Sample of config dictionary which initializes controller:
     config = {
         "SERVER_ADDR":"localhost",
-        "PATH_BASE":"C:\Test1\OneDir\\",
+        "PATH_BASE":"F:\Test1\OneDir\\",
         "SERVER_SYNC_CATCH_PORT":"5558",
         "SERVER_SYNC_THROW_PORT":"5557",
         "SERVER_CONTACT_PORT":"5556"
@@ -75,8 +76,14 @@ class ClientController:
         self.config = config
 
         #Ensure our path base ends in a slash
-        if config["PATH_BASE"][-1] != SLASH:
-            config["PATH_BASE"] = config["PATH_BASE"] + SLASH
+        if self.config["PATH_BASE"][-1] != SLASH:
+            self.config["PATH_BASE"] = self.config["PATH_BASE"] + SLASH
+
+        #Check if OneDir directory exists and is valid. Create if needed.
+        if not os.path.exists(self.config["PATH_BASE"]):
+            os.makedirs(self.config["PATH_BASE"])
+        elif not os.path.isdir(self.config["PATH_BASE"]):
+            self._logger_.log("ERROR", "Attempted to start session using a file as base directory")
 
         #Setup logging at install path
         logfile = "." + SLASH + "c_controller.log"
@@ -145,8 +152,6 @@ class ClientController:
         """
         self.username = self.E1.get()
         self.password = self.E2.get()
-        print(self.username)
-        print(self.password)
 
         #Package credentials, send to server, await response
         msg = [self.msg_identifier["LOGIN"], self.username, self.password]
@@ -305,6 +310,9 @@ class ClientController:
             elif msg[0] == self.msg_identifier["KILL"]:
                 self._logger_.log("ERROR","Forceful interrupt command received from server. Killing all services")
                 self.__teardown__()
+
+            else:
+                self._logger_.log("ERROR", "Unrecognized message. Closing without handle: " + str(msg))
 
         #Exited while loop. Someone killed our listen_flag
         self._logger_.log("INFO","Client stopped listening for internal requests")

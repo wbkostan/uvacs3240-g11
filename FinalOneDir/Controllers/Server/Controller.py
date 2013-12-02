@@ -122,6 +122,7 @@ class ServerController:
         user = authenticate(username = username, password = password)
         if user is not None:
             if user.is_active:
+                print("Connecting new client: " + username)
                 return True #Always authenticate until actual authentication is added.
             else:
                 #Disabled account
@@ -146,7 +147,11 @@ class ServerController:
 
         #listen flag set by controller. allows control over thread execution
         while self.listen_flag.is_set():
+            #Get latest message
             msg = decode(self.internal_request_socket.recv_multipart())
+
+            #Log that message for records
+            self._logger_.log("INFO", "Internal request received: " + str(msg))
 
             #Sync responder has received a request to write to client directory
             #Please stop monitoring directory while we write!
@@ -156,16 +161,16 @@ class ServerController:
                     blocking_threads[msg[1]] = []
                 #append this thread id to list of working threads for this client, pause daemon
                 blocking_threads[msg[1]].append(int(msg[2]))
-                print(str(blocking_threads))
-                self.client_components[msg[1]][0].stop()
+                self.client_components[msg[1]][0].pause()
             elif msg[0] == self.msg_identifier["START_MONITORING"]:
                 try:
-                    print(str(msg))
                     blocking_threads[msg[1]].remove(int(msg[2]))
                 except ValueError:
                     self._logger_.log("WARNING", "Thread never told controller to block, but asked for unblock")
                 if not blocking_threads[msg[1]]:
                     self.client_components[msg[1]][0].start()
+            else:
+                self._logger_.log("ERROR", "Unrecognized message. Closing without handle: " + str(msg))
 
     def _listen_client_(self):
         """
@@ -174,6 +179,7 @@ class ServerController:
         """
         while self.listen_flag.is_set():
             msg = decode(self.client_contact_socket.recv_multipart())
+            self._logger_.log("INFO", "Client request received: " + str(msg))
 
             #New connection request
             if msg[0] == self.msg_identifier["LOGIN"]:
@@ -197,6 +203,10 @@ class ServerController:
                 self.__start_client_daemon__(msg[1]) #client is listening? good, start up daemon and full sync
                 msg = [self.msg_identifier["ACK"], msg[1]]
 
+            else:
+                self._logger_.log("ERROR", "Unrecognized message. Closing without handle: " + str(msg))
+                msg = [self.msg_identifier["KILL"], msg[1]]
+
             #No matter the message, send a response
             self.client_contact_socket.send_multipart(encode(msg))
 
@@ -209,6 +219,7 @@ class ServerController:
         """
         while self.listen_flag.is_set():
             msg = self.sync_catch_socket.recv_multipart()
+            print("Catching new sync orders")
             self.sync_passthru_socket.send_multipart(msg)
 
     def _listen_sync_passup_(self):
@@ -220,6 +231,7 @@ class ServerController:
         """
         while self.listen_flag.is_set():
             msg = self.sync_passup_socket.recv_multipart()
+            print("Sending new sync orders")
             self.sync_throw_socket.send_multipart(msg)
 
     def _connect_client_(self, username):
@@ -242,13 +254,13 @@ class ServerController:
             daemon.initialize()
 
             #Start the responder
-            responder.listen()
+            responder.start()
 
             #Map these components to the client username
             self.client_components[username] = (daemon, responder, 1)
         else:
             #Bump up count of logged in clients
-            self.client_components[username][2] += 1
+            self.client_components[username] = self.client_components[username][:2] + ((self.client_components[username][2] + 1),)
 
     def _disconnect_client_(self, username):
         """
@@ -257,12 +269,12 @@ class ServerController:
         """
         if username in self.client_components:
             #Decrement count of online users under this name
-            self.client_components[username][2] -= 1
+            self.client_components[username] = self.client_components[username][:2] + ((self.client_components[username][2] - 1),)
 
             #If no more online users under this client name, shutdown this client
             if(self.client_components[username][2] == 0):
-                self.client_components[username][0].__teardown__()
-                self.client_components[username][1].__teardown__()
+                self.client_components[username][0].stop()
+                self.client_components[username][1].stop()
                 del self.client_components[username] #Remove client username as key from dict
 
     """
@@ -285,9 +297,8 @@ class ServerController:
         """
         self.listen_flag.clear()
         for key in self.client_components:
-            self.client_components[key][0].__teardown__()
-            self.client_components[key][1].__teardown__()
-            self.client_components[key][2] = 0
+            self.client_components[key][0].stop()
+            self.client_components[key][1].stop()
             msg = [key, self.msg_identifier["DISCONNECT"]]
             self.sync_throw_socket.send_multipart(encode(msg))
             del self.client_components[key]

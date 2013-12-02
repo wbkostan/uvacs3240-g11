@@ -8,7 +8,7 @@ import threading
 
 def get_config():
     config = {
-        "PATH_BASE":"C:\Test2\\",
+        "PATH_BASE":"F:\Test2\\",
         "CLIENT_CONTACT_PORT":"3240",
         "SYNC_THROW_PORT":"3241",
         "SYNC_CATCH_PORT":"3242",

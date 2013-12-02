@@ -5,6 +5,7 @@ import os
 import shutil
 import threading
 import time
+from copy import deepcopy
 from Helpers.Encodings import *
 from Helpers.Logging.OneDirLogger import EventLogger
 
@@ -91,11 +92,12 @@ class SyncResponder():
             threading.Thread(target=self._dispatch_, args=(msg,)).start()
 
             #Strip away file contents before logging message
-            msg_for_log = msg
-            if msg[0] == self.msg_identifier["FILESYNC"]:
-                msg_for_log = msg[:-1]
-                msg_for_log.append("<contents omitted from log>")
-            self.logger.log("INFO","Sync Directive received: " + str(msg_for_log))
+            msg_clone = deepcopy(msg)
+            if msg_clone[0] == self.msg_identifier["FILESYNC"]:
+                msg_clone[-1] = "<contents omitted from log>"
+
+            #Log
+            self.logger.log("INFO","Sync Directive received: " + str(msg_clone))
 
 
     def _dispatch_(self, msg):
@@ -110,8 +112,8 @@ class SyncResponder():
             return
 
         #Send internal request to controller to stop daemon monitoring of directory, we are about to write
-        msg = [self.msg_identifier["STOP_MONITORING"], str(threading.current_thread().ident)]
-        self.internal_request_socket.send_multipart(encode(msg))
+        out = [self.msg_identifier["STOP_MONITORING"], str(threading.current_thread().ident)]
+        self.internal_request_socket.send_multipart(encode(out))
 
         #Give controller and daemon a moment to get their affairs in order
         time.sleep(1)
@@ -126,10 +128,8 @@ class SyncResponder():
         elif msg[0] == self.msg_identifier["MOVE"]:
             self._on_move_(msg)
         elif msg[0] == self.msg_identifier["KILL"]:
-            #Server is trying to get in touch with client controller
-            #We need to terminate immediately
             msg = [self.msg_identifier["KILL"]]
-            self.internal_request_socket.send_multipart(encode(msg))
+            self.internal_request_socket.send_multipart(encode(msg)) #Notify controller of impending doom
         else:
             self.logger.log("ERROR","Unrecognized message. Closing without handle: " + str(msg))
 
@@ -146,15 +146,13 @@ class SyncResponder():
 
         #Create the target directory if it does not exist
         if not os.path.exists(os.path.dirname(dest_path)):
-            os.mkdir(os.path.dirname(dest_path))
+            os.makedirs(os.path.dirname(dest_path))
 
         #Log and write
         self.logger.log("INFO","Updating file at " + dest_path)
         with open(dest_path, 'wb') as user_file:
             user_file.write(msg[2])
 
-        #Cleanup
-        self._on_finish_()
     def _on_mkdir_(self, msg):
         """
             Creates a directory at the specified relative path if it does not exist
@@ -167,10 +165,7 @@ class SyncResponder():
             self.logger.log("INFO","Directory already exists, ignoring make command: " + str(msg))
         else:
             self.logger.log("INFO","Creating directory at " + dest_path)
-            os.mkdir(dest_path)
-
-        #Cleanup
-        self._on_finish_()
+            os.makedirs(dest_path)
 
     def _on_remove_(self, msg):
         """
@@ -180,7 +175,7 @@ class SyncResponder():
 
         #If object does not exist, all done
         if not os.path.exists(dest_path):
-            self.logger.log("ERROR", dest_path + " does not exist. Can't remove: " + str(msg))
+            self.logger.log("WARNING", dest_path + " does not exist. Can't remove: " + str(msg))
         #Otherwise, remove as appropriate
         elif(os.path.isdir(dest_path)):
             self.logger.log("INFO","Removing entire file tree at " + dest_path)
@@ -188,9 +183,6 @@ class SyncResponder():
         else:
             self.logger.log("INFO","Removing file at" + dest_path)
             os.remove(dest_path)
-
-        #Cleanup
-        self._on_finish_()
 
     def _on_move_(self, msg):
         """
@@ -213,7 +205,6 @@ class SyncResponder():
             self.logger.log("INFO","Moving file at" + src_path + "to" + dest_path)
             shutil.copy2(src_path, dest_path)
             os.remove(src_path)
-        self._on_finish_()
 
     def _on_finish_(self):
         """
