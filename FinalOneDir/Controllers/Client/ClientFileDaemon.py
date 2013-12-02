@@ -213,7 +213,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
             return
 
         with open(self._event_src_path_, 'rb') as user_file:
-            print("File size: " + os.path.getsize(user_file))
+            print("File size: " + str(os.path.getsize(user_file)))
 
     def _finish_(self):
         """
