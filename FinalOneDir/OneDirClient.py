@@ -70,9 +70,11 @@ class OneDirClient:
 
     #User command that changes signed on user's password
     def change_pass(self):
+        print ("Please authenticate: ")
         auth = self.authenticate()
 
         if auth == True:
+            print ("Please confirm: ")
             username = raw_input("Enter your username: ")
             newPassword = raw_input("Enter new password: ")
 
@@ -87,11 +89,23 @@ class OneDirClient:
         """
         ADMIN ONLY
         """
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM auth_user")
-        row = cursor.fetchall()
-        for entries in row:
-            print entries
+        print("Please log in.")
+        username = raw_input("Enter username: ")
+        password = raw_input("Enter password: ")
+        user = authenticate(username = username, password = password)
+        if user is not None:
+            if user.is_superuser:
+                cursor = connection.cursor()
+                cursor.execute("SELECT username FROM auth_user")
+                row = cursor.fetchall()
+                for entries in row:
+                    print entries
+            else:
+                #Disabled account
+                print ("You are not an admin!")
+        else:
+            #Bad user/pass combo
+            print ("Incorrect username and/or password")
 
     #Prints files associated with a user
     def print_user_files(self):
@@ -113,38 +127,82 @@ class OneDirClient:
         """
         ADMIN ONLY
         """
-        print("Enter username:")
-        username = raw_input()
-    #######
-        #Code goes here
-    #######
+        print("Please log in.")
+        username = raw_input("Enter username: ")
+        password = raw_input("Enter password: ")
+        user = authenticate(username = username, password = password)
+        if user is not None:
+            if user.is_superuser:
+                delUser = raw_input("Enter username of User: ")
+
+                confirm = raw_input("Are you sure you want to delete this user? (y/n): ")
+                if confirm == "y":
+                    dUser = User.objects.get(username__exact = delUser)
+                    dUser.delete()
+                    print delUser + " has been deleted."
+                elif confirm == "n":
+                    print "No users have been deleted."
+                else:
+                    print "Please enter y or n"
+            else:
+                #Disabled account
+                print ("You are not an admin!")
+        else:
+            #Bad user/pass combo
+            print ("Incorrect username and/or password")
 
     #Admin command that changes the password of the given user
     def change_user_pass(self):
         """
         ADMIN ONLY
         """
-        username = raw_input("Enter username: ")
-        newPassword = raw_input("Enter new password: ")
 
-        user = User.objects.get(username__exact = username)
-        user.set_password(newPassword)
-        user.save()
+        print("Please log in.")
+        username = raw_input("Enter username: ")
+        password = raw_input("Enter password: ")
+        user = authenticate(username = username, password = password)
+        if user is not None:
+            if user.is_superuser:
+                username = raw_input("Enter username of User: ")
+                newPassword = raw_input("Enter new password: ")
+
+                user = User.objects.get(username__exact = username)
+                user.set_password(newPassword)
+                user.save()
+            else:
+                #Disabled account
+                print ("You are not an admin!")
+        else:
+            #Bad user/pass combo
+            print ("Incorrect username and/or password")
 
     def history(self):
         """
         ADMIN ONLY
         """
-        fileClientLog = open("c_controller.log", "r")
-        print (fileClientLog.readall())
-        fileServerLog = open("s_controller.log", "r")
-        print (fileServerLog.readall())
+
+        print("Please log in.")
+        username = raw_input("Enter username: ")
+        password = raw_input("Enter password: ")
+        user = authenticate(username = username, password = password)
+        if user is not None:
+            if user.is_superuser:
+                fileClientLog = open("c_controller.log", "r")
+                print (fileClientLog.read())
+                fileServerLog = open("s_controller.log", "r")
+                print (fileServerLog.read())
+            else:
+                #Disabled account
+                print ("You are not an admin!")
+        else:
+            #Bad user/pass combo
+            print ("Incorrect username and/or password")
 
 def get_config():
     config = {
         #"SERVER_ADDR":"172.25.108.164",
         "SERVER_ADDR":"localhost",
-        "PATH_BASE":"F:\Test1\OneDir\\",
+        "PATH_BASE":"C:\Test1\OneDir\\",
         "INTERNAL_REQUEST_PORT":"3246",
         "SERVER_SYNC_CATCH_PORT":"3242",
         "SERVER_SYNC_THROW_PORT":"3241",

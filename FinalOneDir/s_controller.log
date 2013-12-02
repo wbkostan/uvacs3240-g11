@@ -121,3 +121,58 @@ STATUS: INFO	DATE: 12/01/2013 23:25:24	Internal request received: [u'9', u'test1
 STATUS: INFO	DATE: 12/01/2013 23:25:24	Internal request received: [u'10', u'test1', u'6216']
 STATUS: INFO	DATE: 12/01/2013 23:25:25	Internal request received: [u'9', u'test1', u'6216']
 STATUS: INFO	DATE: 12/01/2013 23:25:44	Client request received: [u'15', u'test1']
+============================Mon Dec 02 16:25:57 2013============================
+STATUS: INFO	DATE: 12/02/2013 16:25:57	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/02/2013 16:25:57	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/02/2013 16:25:57	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/02/2013 16:25:57	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/02/2013 16:25:57	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/02/2013 16:25:57	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/02/2013 16:28:51	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/02/2013 16:28:54	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/02/2013 16:28:54	Internal request received: [u'10', u'test1', u'3772']
+STATUS: INFO	DATE: 12/02/2013 16:28:54	Internal request received: [u'10', u'test1', u'7068']
+STATUS: INFO	DATE: 12/02/2013 16:28:55	Internal request received: [u'9', u'test1', u'3772']
+STATUS: INFO	DATE: 12/02/2013 16:28:55	Internal request received: [u'9', u'test1', u'7068']
+STATUS: INFO	DATE: 12/02/2013 16:28:55	Internal request received: [u'10', u'test1', u'248']
+STATUS: INFO	DATE: 12/02/2013 16:28:56	Internal request received: [u'9', u'test1', u'248']
+STATUS: INFO	DATE: 12/02/2013 16:28:59	Client request received: [u'15', u'test1']
+============================Mon Dec 02 16:31:04 2013============================
+STATUS: INFO	DATE: 12/02/2013 16:31:04	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/02/2013 16:31:04	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/02/2013 16:31:04	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/02/2013 16:31:04	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/02/2013 16:31:04	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/02/2013 16:31:04	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/02/2013 16:31:17	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/02/2013 16:31:18	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/02/2013 16:31:19	Internal request received: [u'10', u'test1', u'8772']
+STATUS: INFO	DATE: 12/02/2013 16:31:20	Internal request received: [u'9', u'test1', u'8772']
+STATUS: INFO	DATE: 12/02/2013 16:31:21	Internal request received: [u'10', u'test1', u'7284']
+STATUS: INFO	DATE: 12/02/2013 16:31:22	Internal request received: [u'9', u'test1', u'7284']
+STATUS: INFO	DATE: 12/02/2013 16:31:23	Internal request received: [u'10', u'test1', u'8284']
+STATUS: INFO	DATE: 12/02/2013 16:31:24	Internal request received: [u'9', u'test1', u'8284']
+STATUS: INFO	DATE: 12/02/2013 16:31:25	Internal request received: [u'10', u'test1', u'9212']
+STATUS: INFO	DATE: 12/02/2013 16:31:26	Internal request received: [u'9', u'test1', u'9212']
+STATUS: INFO	DATE: 12/02/2013 16:31:27	Internal request received: [u'10', u'test1', u'7268']
+STATUS: INFO	DATE: 12/02/2013 16:31:28	Internal request received: [u'9', u'test1', u'7268']
+STATUS: INFO	DATE: 12/02/2013 16:31:29	Internal request received: [u'10', u'test1', u'7772']
+STATUS: INFO	DATE: 12/02/2013 16:31:30	Internal request received: [u'9', u'test1', u'7772']
+STATUS: INFO	DATE: 12/02/2013 16:31:31	Internal request received: [u'10', u'test1', u'7828']
+STATUS: INFO	DATE: 12/02/2013 16:31:32	Internal request received: [u'9', u'test1', u'7828']
+STATUS: INFO	DATE: 12/02/2013 16:31:33	Internal request received: [u'10', u'test1', u'8816']
+STATUS: INFO	DATE: 12/02/2013 16:31:34	Internal request received: [u'9', u'test1', u'8816']
+STATUS: INFO	DATE: 12/02/2013 16:31:36	Internal request received: [u'10', u'test1', u'6580']
+STATUS: INFO	DATE: 12/02/2013 16:31:37	Internal request received: [u'9', u'test1', u'6580']
+STATUS: INFO	DATE: 12/02/2013 16:31:38	Internal request received: [u'10', u'test1', u'9036']
+STATUS: INFO	DATE: 12/02/2013 16:31:39	Internal request received: [u'9', u'test1', u'9036']
+STATUS: INFO	DATE: 12/02/2013 16:31:40	Internal request received: [u'10', u'test1', u'7096']
+STATUS: INFO	DATE: 12/02/2013 16:31:41	Internal request received: [u'9', u'test1', u'7096']
+STATUS: INFO	DATE: 12/02/2013 16:31:42	Internal request received: [u'10', u'test1', u'7736']
+STATUS: INFO	DATE: 12/02/2013 16:31:43	Internal request received: [u'9', u'test1', u'7736']
+STATUS: INFO	DATE: 12/02/2013 16:31:44	Internal request received: [u'10', u'test1', u'6264']
+STATUS: INFO	DATE: 12/02/2013 16:31:45	Internal request received: [u'9', u'test1', u'6264']
+STATUS: INFO	DATE: 12/02/2013 16:31:46	Internal request received: [u'10', u'test1', u'8916']
+STATUS: INFO	DATE: 12/02/2013 16:31:47	Internal request received: [u'9', u'test1', u'8916']
+STATUS: INFO	DATE: 12/02/2013 16:31:48	Internal request received: [u'10', u'test1', u'7604']
+STATUS: INFO	DATE: 12/02/2013 16:31:49	Internal request received: [u'9', u'test1', u'7604']

@@ -71,3 +71,53 @@ STATUS: INFO	DATE: 12/01/2013 23:25:24	Sync Directive received: [u'1', u'test.tx
 STATUS: INFO	DATE: 12/01/2013 23:25:25	Updating file at F:\Test1\OneDir\test.txt
 STATUS: INFO	DATE: 12/01/2013 23:25:25	Sync Directive received: [u'1', u'test.txt', '<contents omitted from log>']
 STATUS: INFO	DATE: 12/01/2013 23:25:26	Updating file at F:\Test1\OneDir\test.txt
+============================Mon Dec 02 16:28:54 2013============================
+STATUS: INFO	DATE: 12/02/2013 16:28:54	Connecting responder to internal client controller over tcp port 3246...
+STATUS: INFO	DATE: 12/02/2013 16:28:54	Subscribed to sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/02/2013 16:28:54	Responder is listening for sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/02/2013 16:28:54	Sync Directive received: [u'2', u'.']
+STATUS: INFO	DATE: 12/02/2013 16:28:54	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:28:55	Directory already exists, ignoring make command: [u'2', u'.']
+STATUS: INFO	DATE: 12/02/2013 16:28:55	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:28:55	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:28:56	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:28:56	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:28:57	Updating file at C:\Test1\OneDir\TEST.txt
+============================Mon Dec 02 16:31:18 2013============================
+STATUS: INFO	DATE: 12/02/2013 16:31:18	Connecting responder to internal client controller over tcp port 3246...
+STATUS: INFO	DATE: 12/02/2013 16:31:18	Subscribed to sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/02/2013 16:31:18	Responder is listening for sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/02/2013 16:31:18	Sync Directive received: [u'2', u'.']
+STATUS: INFO	DATE: 12/02/2013 16:31:18	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:19	Directory already exists, ignoring make command: [u'2', u'.']
+STATUS: INFO	DATE: 12/02/2013 16:31:19	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:20	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:21	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:22	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:23	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:24	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:25	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:26	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:27	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:28	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:29	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:30	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:31	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:32	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:33	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:35	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:36	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:37	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:38	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:39	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:40	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:41	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:42	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:43	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:44	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:45	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:46	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:47	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:48	Updating file at C:\Test1\OneDir\TEST.txt
+STATUS: INFO	DATE: 12/02/2013 16:31:49	Sync Directive received: [u'1', u'TEST.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/02/2013 16:31:50	Updating file at C:\Test1\OneDir\TEST.txt
