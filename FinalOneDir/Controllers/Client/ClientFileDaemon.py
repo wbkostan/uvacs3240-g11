@@ -70,7 +70,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
             for sub_dir in sub_dirs:
                 self.print_files((parent+sub_dir))
 
-        print ("Total number of files: " + self.counter)
+        print ("Total number of files: " + str(self.counter))
 
         #Restore saved values for src and dest paths
         self._event_src_path_ = copy_src_path
@@ -213,7 +213,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
             return
 
         with open(self._event_src_path_, 'rb') as user_file:
-            print("File size: " + str(os.path.getsize(user_file)))
+            print("File size: " + str(os.path.getsize(self._event_src_path_)))
 
     def _finish_(self):
         """
