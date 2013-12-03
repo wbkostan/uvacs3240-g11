@@ -1,16 +1,19 @@
 __author__ = 'wbk3zd'
 
-from Controllers.Client.Controller import ClientController
 import time
 import sys
 import threading
+
 import zmq
+
+from Controllers.Client.Controller import ClientController
 from Helpers.Encodings import *
+
 
 def get_config():
     config = {
-        #"SERVER_ADDR":"172.25.108.164",
-        "SERVER_ADDR":"localhost",
+        "SERVER_ADDR":"172.25.203.214",
+        #"SERVER_ADDR":"localhost",
         "ONEDIRSERVER":"3239",
         "PATH_BASE":"C:\Test1\OneDir\\",
         "INTERNAL_REQUEST_PORT":"3246",

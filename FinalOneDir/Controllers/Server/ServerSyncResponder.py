@@ -1,13 +1,16 @@
 __author__ = 'wbk3zd'
 
-import zmq
 import os
 import shutil
 import threading
 import time
 from copy import deepcopy
+
+import zmq
+
 from Helpers.Encodings import *
 from Helpers.Logging.OneDirLogger import EventLogger
+
 
 class SyncResponder():
     def __init__(self, msg_identifier, rec_config):

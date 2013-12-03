@@ -1,14 +1,15 @@
 __author__ = 'wbk3zd'
 
-import zmq
 import threading
+import os
+
+import zmq
+
 from Helpers.Encodings import *
 from ClientFileDaemon import FileDaemon
 from ClientSyncResponder import SyncResponder
 from Helpers.Logging.OneDirLogger import EventLogger
-from Tkinter import *
-import tkMessageBox
-import os
+
 
 """
     Sample of config dictionary which initializes controller:

@@ -1,15 +1,18 @@
 __author__ = 'wbk3zd'
 
-from Controllers.Server.Controller import ServerController
 import time
-import zmq
 import os
 import threading
 from shutil import rmtree
-from Helpers.Encodings import *
+
+import zmq
 from django.db import connection
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+
+from Controllers.Server.Controller import ServerController
+from Helpers.Encodings import *
+
 
 def get_config():
     config = {

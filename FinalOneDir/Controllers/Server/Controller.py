@@ -1,13 +1,16 @@
 __author__ = 'wbk3zd'
 
+import threading
+from copy import deepcopy
+
+import zmq
+from django.contrib.auth import authenticate
+
 from ServerFileDaemon import FileDaemon
 from ServerSyncResponder import SyncResponder
-import threading
-import zmq
-from copy import deepcopy
 from Helpers.Encodings import *
 from Helpers.Logging.OneDirLogger import EventLogger
-from django.contrib.auth import authenticate
+
 
 """
     Sample of config dictionary which initializes controller

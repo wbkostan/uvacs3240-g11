@@ -1,13 +1,16 @@
 __author__ = 'wbk3zd'
 
 import time
+import threading
+import os
+
 import zmq
 from watchdog.observers import Observer
-import threading
 import watchdog.events
-import os
+
 from Helpers.Encodings import *
 from Helpers.Logging.OneDirLogger import EventLogger
+
 
 class SyncEventHandler(watchdog.events.FileSystemEventHandler):
     def __init__(self, msg_identifier):
