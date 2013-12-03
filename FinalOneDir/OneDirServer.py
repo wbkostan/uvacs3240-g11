@@ -66,7 +66,7 @@ class OneDirServer:
                 msg = self._gfiles_(msg)
             elif msg[0] == self.msg_identifier["REMOVE"]:
                 msg = self._remove_(msg)
-            elif msg[0] == self.msg_identifier["CHANGE_PASS"]:
+            elif msg[0] == self.msg_identifier["CHANGE_T_PASS"]:
                 msg = self._tchange_(msg)
             elif msg[0] == self.msg_identifier["LOG"]:
                 msg = self._log_(msg)

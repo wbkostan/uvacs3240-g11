@@ -197,3 +197,38 @@ STATUS: INFO	DATE: 12/02/2013 23:51:56	Client controller connected to server at 
 ============================Mon Dec 02 23:52:45 2013============================
 STATUS: INFO	DATE: 12/02/2013 23:52:45	Client controller listening for internal requests over tcp port 3246...
 STATUS: INFO	DATE: 12/02/2013 23:52:45	Client controller connected to server at localhost:3240...
+============================Tue Dec 03 00:27:05 2013============================
+STATUS: INFO	DATE: 12/03/2013 00:27:05	Client controller listening for internal requests over tcp port 3246...
+STATUS: INFO	DATE: 12/03/2013 00:27:05	Client controller connected to server at localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 00:27:21	Successfully authenticated user test1. Going online
+STATUS: INFO	DATE: 12/03/2013 00:27:21	Client responder going online
+STATUS: INFO	DATE: 12/03/2013 00:27:21	Awaiting full directory sync from server
+STATUS: INFO	DATE: 12/03/2013 00:27:21	Internal request received: [u'10', u'3196']
+STATUS: INFO	DATE: 12/03/2013 00:27:21	Internal request received: [u'10', u'6436']
+STATUS: INFO	DATE: 12/03/2013 00:27:21	Server has successfully synced entire directory
+STATUS: INFO	DATE: 12/03/2013 00:27:21	Client daemon going online
+STATUS: INFO	DATE: 12/03/2013 00:27:21	Internal request received: [u'10', u'6284']
+STATUS: INFO	DATE: 12/03/2013 00:27:21	Client executing full directory sync in server direction
+STATUS: INFO	DATE: 12/03/2013 00:27:22	Internal request received: [u'9', u'3196']
+STATUS: INFO	DATE: 12/03/2013 00:27:22	Internal request received: [u'9', u'6284']
+STATUS: INFO	DATE: 12/03/2013 00:27:22	Internal request received: [u'9', u'6436']
+STATUS: INFO	DATE: 12/03/2013 00:27:23	Internal request received: [u'10', u'5776']
+STATUS: INFO	DATE: 12/03/2013 00:27:24	Internal request received: [u'9', u'5776']
+STATUS: INFO	DATE: 12/03/2013 00:27:25	Internal request received: [u'10', u'5136']
+STATUS: INFO	DATE: 12/03/2013 00:27:26	Internal request received: [u'9', u'5136']
+STATUS: INFO	DATE: 12/03/2013 00:27:27	Internal request received: [u'10', u'4160']
+STATUS: INFO	DATE: 12/03/2013 00:27:28	Internal request received: [u'9', u'4160']
+STATUS: INFO	DATE: 12/03/2013 00:27:55	Internal request received: [u'10', u'1504']
+STATUS: INFO	DATE: 12/03/2013 00:27:56	Internal request received: [u'9', u'1504']
+STATUS: INFO	DATE: 12/03/2013 00:27:57	Internal request received: [u'10', u'5448']
+STATUS: INFO	DATE: 12/03/2013 00:27:58	Internal request received: [u'9', u'5448']
+STATUS: INFO	DATE: 12/03/2013 00:27:59	Internal request received: [u'10', u'7032']
+STATUS: INFO	DATE: 12/03/2013 00:28:00	Internal request received: [u'9', u'7032']
+STATUS: INFO	DATE: 12/03/2013 00:28:01	Internal request received: [u'10', u'6808']
+STATUS: INFO	DATE: 12/03/2013 00:28:02	Internal request received: [u'9', u'6808']
+STATUS: INFO	DATE: 12/03/2013 00:28:03	Internal request received: [u'10', u'5304']
+STATUS: INFO	DATE: 12/03/2013 00:28:04	Internal request received: [u'9', u'5304']
+STATUS: INFO	DATE: 12/03/2013 00:28:05	Internal request received: [u'10', u'6536']
+STATUS: INFO	DATE: 12/03/2013 00:28:06	Internal request received: [u'9', u'6536']
+STATUS: INFO	DATE: 12/03/2013 00:28:49	Internal request received: [u'10', u'2972']
+STATUS: INFO	DATE: 12/03/2013 00:28:49	Client stopped listening for internal requests

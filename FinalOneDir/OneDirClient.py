@@ -22,7 +22,7 @@ def get_config():
 
 def get_msg_ids():
     msg_ids = {
-        "AUTH":"1", "CREATE_USER":"5", "CHANGE_PASS":"6", "ALL_USERS":"8", "GET_FILES":"9", "REMOVE":"10", "CHANGE_PASS":"11", "LOG":"12",
+        "AUTH":"1", "CREATE_USER":"5", "CHANGE_PASS":"6", "ALL_USERS":"8", "GET_FILES":"9", "REMOVE":"10", "CHANGE_T_PASS":"11", "LOG":"12",
         "ACK":"2", "TRUE":"3", "FALSE":"4", "NACK":"7",
     }
     return msg_ids
@@ -102,8 +102,6 @@ class OneDirClient:
 
     #Turns automatic syncing on
     def _sync(self):
-        config = get_config()
-        self.controller.configure(config)
         self.controller.start()
         while self.sync_flag.is_set():
             time.sleep(1)
@@ -217,7 +215,7 @@ class OneDirClient:
         username = raw_input("Enter target username: ")
         newPassword = raw_input("Enter new password: ")
 
-        msg = [self.msg_identifiers["CHANGE_PASS"], self.credentials[0], self.credentials[1], username, newPassword]
+        msg = [self.msg_identifiers["CHANGE_T_PASS"], self.credentials[0], self.credentials[1], username, newPassword]
         self.socket.send_multipart(encode(msg))
         rep = decode(self.socket.recv_multipart())
 
