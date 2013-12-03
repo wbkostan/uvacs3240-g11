@@ -26,6 +26,12 @@ def get_config():
         "SERVER_SYNC_THROW_PORT":"3241",
         "SERVER_CONTACT_PORT":"3240"
     }
+    rep = raw_input("Would you like to overwrite server address (y/n): ")
+    if(rep.lower() == "y" or rep.lower == "yes"):
+        config["SERVER_ADDR"] = raw_input("Server Address: ")
+    rep = raw_input("Would you like to overwrite OneDir directory location (y/n): ")
+    if(rep.lower() == "y" or rep.lower == "yes"):
+        config["PATH_BASE"] = raw_input("OneDir Directory: ")
     return config
 
 def get_msg_ids():

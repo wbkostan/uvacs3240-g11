@@ -5,6 +5,8 @@ import os
 import threading
 from shutil import rmtree
 
+os.environ["DJANGO_SETTINGS_MODULE"] = "FinalOneDir.settings"
+
 import zmq
 from django.db import connection
 from django.contrib.auth.models import User
