@@ -63,8 +63,6 @@ class ClientController:
         self._listen_flag_ = threading.Event()
         self._login_flag_ = threading.Condition()
 
-        self.print_flag = False
-
     """
         Public Methods for Controller Interface
     """

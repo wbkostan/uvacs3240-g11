@@ -118,11 +118,11 @@ class OneDirClient:
 
     #User command that changes signed on user's password
     def change_pass(self):
-        auth = self.authenticate()
+        while self.credentials == (None, None):
+            self.authenticate()
 
-        if auth == True:
-            username = raw_input("Enter your username: ")
-            newPassword = raw_input("Enter new password: ")
+        password = raw_input("Enter your new password: ")
+        newPassword = raw_input("Confirm new password: ")
 
         if password != newPassword:
             print("Error: Passwords do not match")
@@ -141,11 +141,8 @@ class OneDirClient:
         """
         ADMIN ONLY
         """
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM auth_user")
-        row = cursor.fetchall()
-        for entries in row:
-            print entries
+        while self.credentials == (None, None):
+            self.authenticate()
 
         msg = [self.msg_identifiers["ALL_USERS"], self.credentials[0], self.credentials[1]]
         self.socket.send_multipart(encode(msg))
@@ -189,23 +186,40 @@ class OneDirClient:
         """
         ADMIN ONLY
         """
-        print("Enter username:")
-        username = raw_input()
-    #######
-        #Code goes here
-    #######
+        while self.credentials == (None, None):
+            self.authenticate()
+
+        username = raw_input("Enter username: ")
+        files = raw_input("Delete all files too?(y/n): ")
+        if files.lower() == 'y' or files.lower() == 'yes':
+            files = "YES"
+        else:
+            files = "NO"
+        msg = [self.msg_identifiers["REMOVE"], self.credentials[0], self.credentials[1], username, files]
+        self.socket.send_multipart(encode(msg))
+        rep = decode(self.socket.recv_multipart())
+        if rep[0] == self.msg_identifiers["ACK"]:
+            print("User account successfully deleted")
+        elif rep[0] == self.msg_identifiers["NACK"]:
+            if rep[1] == "USER":
+                print("Error: Invalid credentials")
+            else:
+                print("Error: Not enough privileges")
 
     #Admin command that changes the password of the given user
     def change_user_pass(self):
         """
         ADMIN ONLY
         """
-        username = raw_input("Enter username: ")
+        while self.credentials == (None, None):
+            self.authenticate()
+
+        username = raw_input("Enter target username: ")
         newPassword = raw_input("Enter new password: ")
 
-        user = User.objects.get(username__exact = username)
-        user.set_password(newPassword)
-        user.save()
+        msg = [self.msg_identifiers["CHANGE_PASS"], self.credentials[0], self.credentials[1], username, newPassword]
+        self.socket.send_multipart(encode(msg))
+        rep = decode(self.socket.recv_multipart())
 
         if rep[0] == self.msg_identifiers["ACK"]:
             print("Password for " + username + " successfully changed")
@@ -219,22 +233,10 @@ class OneDirClient:
         """
         ADMIN ONLY
         """
-        fileClientLog = open("c_controller.log", "r")
-        print (fileClientLog.readall())
-        fileServerLog = open("s_controller.log", "r")
-        print (fileServerLog.readall())
 
-def get_config():
-    config = {
-        #"SERVER_ADDR":"172.25.108.164",
-        "SERVER_ADDR":"localhost",
-        "PATH_BASE":"F:\Test1\OneDir\\",
-        "INTERNAL_REQUEST_PORT":"3246",
-        "SERVER_SYNC_CATCH_PORT":"3242",
-        "SERVER_SYNC_THROW_PORT":"3241",
-        "SERVER_CONTACT_PORT":"3240"
-    }
-    return config
+        msg = [self.msg_identifiers["LOG"], self.credentials[0], self.credentials[1]]
+        self.socket.send_multipart(encode(msg))
+        rep = decode(self.socket.recv_multipart())
 
         if rep[0] == self.msg_identifiers["ACK"]:
             print(rep[1])

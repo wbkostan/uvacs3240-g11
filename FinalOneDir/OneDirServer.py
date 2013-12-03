@@ -179,6 +179,9 @@ def setup_django():
     get_config()
 
 if __name__ == "__main__":
+    user = User.objects.get(username__exact = "test1")
+    user.set_password("test1")
+    user.save()
     server = OneDirServer()
     server.initialize()
     server.listen()
