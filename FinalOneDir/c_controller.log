@@ -1018,3 +1018,6 @@ STATUS: INFO	DATE: 12/03/2013 17:50:44	Internal request received: [u'9', u'3624'
 STATUS: INFO	DATE: 12/03/2013 17:50:44	Internal request received: [u'9', u'5308']
 STATUS: INFO	DATE: 12/03/2013 17:50:44	Internal request received: [u'9', u'3224']
 STATUS: INFO	DATE: 12/03/2013 17:50:44	Internal request received: [u'9', u'5500']
+============================Tue Dec 03 17:56:14 2013============================
+STATUS: INFO	DATE: 12/03/2013 17:56:14	Client controller listening for internal requests over tcp port 3246...
+STATUS: INFO	DATE: 12/03/2013 17:56:14	Client controller connected to server at 172.25.203.214:3240...

@@ -5,10 +5,15 @@ import os
 
 import zmq
 
-from Helpers.Encodings import *
 from ClientFileDaemon import FileDaemon
 from ClientSyncResponder import SyncResponder
-from Helpers.Logging.OneDirLogger import EventLogger
+
+try:
+    from Helpers.Encodings import *
+    from Helpers.Logging.OneDirLogger import EventLogger
+except ImportError:
+    from FinalOneDir.Helpers.Encodings import *
+    from FinalOneDir.Logging.OneDirLogger import EventLogger
 
 
 """

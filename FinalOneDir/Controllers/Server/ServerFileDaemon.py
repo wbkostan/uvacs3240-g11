@@ -8,8 +8,12 @@ import zmq
 from watchdog.observers import Observer
 import watchdog.events
 
-from Helpers.Encodings import *
-from Helpers.Logging.OneDirLogger import EventLogger
+try:
+    from Helpers.Encodings import *
+    from Helpers.Logging.OneDirLogger import EventLogger
+except ImportError:
+    from FinalOneDir.Helpers.Encodings import *
+    from FinalOneDir.Logging.OneDirLogger import EventLogger
 
 
 class SyncEventHandler(watchdog.events.FileSystemEventHandler):

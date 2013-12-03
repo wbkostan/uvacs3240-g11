@@ -8,8 +8,12 @@ from django.contrib.auth import authenticate
 
 from ServerFileDaemon import FileDaemon
 from ServerSyncResponder import SyncResponder
-from Helpers.Encodings import *
-from Helpers.Logging.OneDirLogger import EventLogger
+try:
+    from Helpers.Encodings import *
+    from Helpers.Logging.OneDirLogger import EventLogger
+except ImportError:
+    from FinalOneDir.Helpers.Encodings import *
+    from FinalOneDir.Logging.OneDirLogger import EventLogger
 
 
 """

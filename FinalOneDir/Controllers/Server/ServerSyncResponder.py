@@ -8,9 +8,12 @@ from copy import deepcopy
 
 import zmq
 
-from Helpers.Encodings import *
-from Helpers.Logging.OneDirLogger import EventLogger
-
+try:
+    from Helpers.Encodings import *
+    from Helpers.Logging.OneDirLogger import EventLogger
+except ImportError:
+    from FinalOneDir.Helpers.Encodings import *
+    from FinalOneDir.Logging.OneDirLogger import EventLogger
 
 class SyncResponder():
     def __init__(self, msg_identifier, rec_config):

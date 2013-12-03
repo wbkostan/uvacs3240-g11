@@ -11,7 +11,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
 from Controllers.Server.Controller import ServerController
-from Helpers.Encodings import *
+try:
+    from Helpers.Encodings import *
+    from Helpers.Logging.OneDirLogger import EventLogger
+except ImportError:
+    from FinalOneDir.Helpers.Encodings import *
+    from FinalOneDir.Logging.OneDirLogger import EventLogger
 
 
 def get_config():
