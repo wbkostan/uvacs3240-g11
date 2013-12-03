@@ -26,7 +26,7 @@ def get_config():
 
 def get_msg_ids():
     msg_ids = {
-        "AUTH":"1", "CREATE_USER":"5", "CHANGE_PASS":"6", "ALL_USERS":"8", "GET_FILES":"9", "REMOVE":"10", "CHANGE_PASS":"11", "LOG":"12",
+        "AUTH":"1", "CREATE_USER":"5", "CHANGE_PASS":"6", "ALL_USERS":"8", "GET_FILES":"9", "REMOVE":"10", "CHANGE_T_PASS":"11", "LOG":"12",
         "ACK":"2", "TRUE":"3", "FALSE":"4", "NACK":"7",
     }
     return msg_ids

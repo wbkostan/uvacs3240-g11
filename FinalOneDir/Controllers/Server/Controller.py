@@ -101,14 +101,17 @@ class ServerController:
             by clients or child components respectively
         """
 
-        #Tell all threads we are good to go
-        self.listen_flag.set()
+        if self.listen_flag.is_set():
+            return
+        else:
+            #Tell all threads we are good to go
+            self.listen_flag.set()
 
-        #Kick off threads
-        threading.Thread(target=self._listen_internal_).start() #listening for internal requests
-        threading.Thread(target=self._listen_client_).start() #client requests
-        threading.Thread(target=self._listen_sync_catch_).start() #sync directives thrown by client
-        threading.Thread(target=self._listen_sync_passup_).start() #sync directives meant for clients passed up internally
+            #Kick off threads
+            threading.Thread(target=self._listen_internal_).start() #listening for internal requests
+            threading.Thread(target=self._listen_client_).start() #client requests
+            threading.Thread(target=self._listen_sync_catch_).start() #sync directives thrown by client
+            threading.Thread(target=self._listen_sync_passup_).start() #sync directives meant for clients passed up internally
 
     def stop(self):
         self.__teardown__()

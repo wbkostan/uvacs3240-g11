@@ -44,7 +44,8 @@ class OneDirClient:
 
     def launch(self):
         #Starts command line prompt
-        print "List of commands: CreateAccount, SyncOn, SyncOff, ChangePassword, UserInfo, PrintUserFiles, RemoveUser, ChangeUserPassword, History, Exit"
+        print "List of commands: Logon, CreateAccount, SyncOn, SyncOff, ChangePassword, "
+        print "UserInfo, PrintUserFiles, RemoveUser, ChangeUserPassword, History, Exit, "
         sys.stdout.flush()
         response = raw_input(">>")
         while (response != "Exit"):
@@ -231,6 +232,8 @@ class OneDirClient:
         """
         ADMIN ONLY
         """
+        while self.credentials == (None, None):
+            self.authenticate()
 
         msg = [self.msg_identifiers["LOG"], self.credentials[0], self.credentials[1]]
         self.socket.send_multipart(encode(msg))
@@ -247,7 +250,5 @@ class OneDirClient:
 if __name__ == "__main__":
     client = OneDirClient()
     client.initialize()
-    while client.credentials == (None, None):
-        client.authenticate()
     client.launch()
 

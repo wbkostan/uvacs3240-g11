@@ -52,8 +52,11 @@ class SyncResponder():
         """
             Public facing handle to start sync responder on new thread
         """
-        self.listen_flag.set()
-        threading.Thread(target=self._listen_).start()
+        if self.listen_flag.is_set():
+            return
+        else:
+            self.listen_flag.set()
+            threading.Thread(target=self._listen_).start()
 
     def pause(self):
         """

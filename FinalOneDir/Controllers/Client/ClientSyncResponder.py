@@ -52,9 +52,12 @@ class SyncResponder():
             Spawns a new thread with target _listen_ to listen for sync
             directives published by server.
         """
-        self.listen_flag.set()
-        threading.Thread(target=self._listen_).start()
-        self.logger.log("INFO","Responder is listening for sync directives at tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"] + " for user " + self.config["USERNAME"] + "...")
+        if self.listen_flag.is_set():
+            return
+        else:
+            self.listen_flag.set()
+            threading.Thread(target=self._listen_).start()
+            self.logger.log("INFO","Responder is listening for sync directives at tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["SERVER_SYNC_THROW_PORT"] + " for user " + self.config["USERNAME"] + "...")
 
     def pause(self):
         """
