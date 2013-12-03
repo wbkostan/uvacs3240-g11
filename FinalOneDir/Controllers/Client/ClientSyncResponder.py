@@ -23,6 +23,7 @@ class SyncResponder():
 
         #Networking
         self.internal_request_socket = self.context.socket(zmq.PUSH)
+        self.server_sync_throw_lock = threading.RLock()
         self.server_sync_throw_socket = self.context.socket(zmq.SUB)
 
     """
@@ -215,5 +216,6 @@ class SyncResponder():
             Asks controller to restore daemon operation. Other cleanup can go here
             as well.
         """
-        msg = [self.msg_identifier["START_MONITORING"],str(threading.current_thread().ident)]
-        self.internal_request_socket.send_multipart(encode(msg))
+        with self.server_sync_throw_lock:
+            msg = [self.msg_identifier["START_MONITORING"],str(threading.current_thread().ident)]
+            self.internal_request_socket.send_multipart(encode(msg))

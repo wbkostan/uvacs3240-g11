@@ -36,6 +36,7 @@ class OneDirClient:
         self.credentials = (None, None)
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REQ)
+        self.child_threads = []
 
     def initialize(self):
         self.socket.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["ONEDIRSERVER"])
@@ -49,7 +50,7 @@ class OneDirClient:
         sys.stdout.flush()
         response = raw_input(">>")
         response = response.lower()
-        while (response != "Exit"):
+        while (response != "Exit".lower()):
             if (response == "CreateAccount".lower()):
                 self.create_account()
             elif (response == "Logon".lower()):
@@ -112,7 +113,10 @@ class OneDirClient:
 
     def syncon(self):
         self.sync_flag.set()
-        threading.Thread(target=self._sync).start()
+        self.child_threads.append(threading.Thread(target=self._sync))
+        for thread in self.child_threads:
+            thread.daemon = True
+            thread.start()
 
     def syncoff(self):
         self.sync_flag.clear()

@@ -40,6 +40,7 @@ class OneDirServer:
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REP)
         self.listen_flag = threading.Event()
+        self.child_threads = []
     def initialize(self):
         self.socket.bind("tcp://*:" + self.config["ONEDIRSERVER"])
         self.listen_flag.clear()
@@ -47,7 +48,10 @@ class OneDirServer:
         self.controller.start()
     def listen(self):
         self.listen_flag.set()
-        threading.Thread(target=self._listen_).start()
+        self.child_threads.append(threading.Thread(target=self._listen_))
+        for thread in self.child_threads:
+            thread.daemon = True
+            thread.start()
     def stop(self):
         self.listen_flag.clear()
         self.controller.stop()

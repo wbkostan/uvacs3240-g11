@@ -34,6 +34,7 @@ class ServerController:
         #Components
         self.client_components = {}
         self._logger_ = EventLogger()
+        self.child_threads = []
 
         #Networking
         self.context = zmq.Context()
@@ -108,10 +109,13 @@ class ServerController:
             self.listen_flag.set()
 
             #Kick off threads
-            threading.Thread(target=self._listen_internal_).start() #listening for internal requests
-            threading.Thread(target=self._listen_client_).start() #client requests
-            threading.Thread(target=self._listen_sync_catch_).start() #sync directives thrown by client
-            threading.Thread(target=self._listen_sync_passup_).start() #sync directives meant for clients passed up internally
+            self.child_threads.append(threading.Thread(target=self._listen_internal_)) #listening for internal requests
+            self.child_threads.append(threading.Thread(target=self._listen_client_)) #client requests
+            self.child_threads.append(threading.Thread(target=self._listen_sync_catch_)) #sync directives thrown by client
+            self.child_threads.append(threading.Thread(target=self._listen_sync_passup_)) #sync directives meant for clients passed up internally
+            for thread in self.child_threads:
+                thread.daemon = True
+                thread.start()
 
     def stop(self):
         self.__teardown__()
@@ -169,10 +173,7 @@ class ServerController:
                 blocking_threads[msg[1]].append(int(msg[2]))
                 self.client_components[msg[1]][0].pause()
             elif msg[0] == self.msg_identifier["START_MONITORING"]:
-                try:
-                    blocking_threads[msg[1]].remove(int(msg[2]))
-                except ValueError:
-                    self._logger_.log("WARNING", "Thread never told controller to block, but asked for unblock")
+                blocking_threads[msg[1]].remove(int(msg[2]))
                 if not blocking_threads[msg[1]]:
                     self.client_components[msg[1]][0].start()
             else:

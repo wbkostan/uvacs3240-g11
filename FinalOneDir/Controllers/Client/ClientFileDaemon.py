@@ -61,6 +61,9 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
 
         #Recurse over objects in this directory
         for parent, sub_dirs, files in os.walk(top):
+            if parent[:-1] != SLASH:
+                parent += SLASH
+
             #Synchronize all files
             for user_file in files:
                 self._event_src_path_ = parent + user_file
@@ -235,8 +238,9 @@ class FileDaemon:
             End observation with no intent to resume
         """
         self._monitor_flag_.clear()
-        self._observer_.join() #wait for all threads to be done
+        time.sleep(2)
         self._observer_.stop() #stop observing
+        self._observer_.join() #wait for all threads to be done
 
     """
         Protected methods

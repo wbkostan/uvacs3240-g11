@@ -22,6 +22,7 @@ class SyncResponder():
         #Networking
         self.context = zmq.Context()
         self.internal_request_socket = self.context.socket(zmq.PUSH)
+        self.sync_passthru_lock = threading.RLock()
         self.sync_passthru_socket = self.context.socket(zmq.SUB)
 
     """
@@ -219,5 +220,6 @@ class SyncResponder():
             os.remove(src_path)
 
     def __on_finish__(self):
-        msg = [self.msg_identifier["START_MONITORING"], self.config["USERNAME"], str(threading.current_thread().ident)]
-        self.internal_request_socket.send_multipart(encode(msg))
+        with self.sync_passthru_lock:
+            msg = [self.msg_identifier["START_MONITORING"], self.config["USERNAME"], str(threading.current_thread().ident)]
+            self.internal_request_socket.send_multipart(encode(msg))
