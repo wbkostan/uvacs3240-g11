@@ -17,8 +17,8 @@ except ImportError:
 
 def get_config():
     config = {
-        "SERVER_ADDR":"172.25.203.214",
-        #"SERVER_ADDR":"localhost",
+        #"SERVER_ADDR":"172.25.203.214",
+        "SERVER_ADDR":"localhost",
         "ONEDIRSERVER":"3239",
         "PATH_BASE":"C:\Test1\OneDir\\",
         "INTERNAL_REQUEST_PORT":"3246",

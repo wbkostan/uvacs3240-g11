@@ -117,9 +117,11 @@ class SyncResponder():
             return #Error recovery
 
         #Ask controller to bring the file daemon offline before any writing is done
+        """
         out = [self.msg_identifier["STOP_MONITORING"], self.config["USERNAME"], str(threading.current_thread().ident)]
         self.internal_request_socket.send_multipart(encode(out))
         time.sleep(1) #wait for local activity to settle
+        """
 
         #Dispatch by header
         if msg[0] == self.msg_identifier["FILESYNC"]:
@@ -226,6 +228,8 @@ class SyncResponder():
             os.remove(src_path)
 
     def __on_finish__(self):
+        """
         with self.sync_passthru_lock:
             msg = [self.msg_identifier["START_MONITORING"], self.config["USERNAME"], str(threading.current_thread().ident)]
             self.internal_request_socket.send_multipart(encode(msg))
+        """
