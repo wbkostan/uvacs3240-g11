@@ -266,13 +266,9 @@ class ClientController:
         self._logger_.log("INFO","Client daemon going online")
         self._daemon_.start()
 
-        if (self.print_flag == True):
-            self.print_user_files()
-
-        else:
-            #Execute full sync back to server
-            self._logger_.log("INFO","Client executing full directory sync in server direction")
-            self._daemon_.full_sync()
+        #Execute full sync back to server
+        self._logger_.log("INFO","Client executing full directory sync in server direction")
+        self._daemon_.full_sync()
 
     def __listen__(self):
         """
