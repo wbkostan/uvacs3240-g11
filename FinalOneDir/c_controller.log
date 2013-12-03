@@ -894,3 +894,60 @@ STATUS: INFO	DATE: 12/03/2013 13:37:35	Internal request received: [u'9', u'7788'
 STATUS: INFO	DATE: 12/03/2013 13:37:35	Internal request received: [u'9', u'3360']
 STATUS: INFO	DATE: 12/03/2013 13:37:57	Disconnected from server, going down peacefully
 ============================Tue Dec 03 13:38:00 2013============================
+============================Tue Dec 03 16:35:41 2013============================
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Client controller listening for internal requests over tcp port 3246...
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Client controller connected to server at localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Successfully authenticated user test1. Going online
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Client responder going online
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Awaiting full directory sync from server
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Internal request received: [u'10', u'960']
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Internal request received: [u'10', u'7176']
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Internal request received: [u'10', u'7404']
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Internal request received: [u'10', u'3752']
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Server has successfully synced entire directory
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Internal request received: [u'10', u'7876']
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Client daemon going online
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Client executing full directory sync in server direction
+STATUS: INFO	DATE: 12/03/2013 16:35:42	Internal request received: [u'9', u'960']
+STATUS: INFO	DATE: 12/03/2013 16:35:42	Internal request received: [u'9', u'7404']
+STATUS: INFO	DATE: 12/03/2013 16:35:42	Internal request received: [u'9', u'7176']
+STATUS: INFO	DATE: 12/03/2013 16:35:42	Internal request received: [u'9', u'3752']
+STATUS: INFO	DATE: 12/03/2013 16:35:42	Internal request received: [u'9', u'7876']
+STATUS: INFO	DATE: 12/03/2013 16:35:50	Disconnected from server, going down peacefully
+============================Tue Dec 03 16:35:54 2013============================
+============================Tue Dec 03 16:40:12 2013============================
+STATUS: INFO	DATE: 12/03/2013 16:40:12	Client controller listening for internal requests over tcp port 3246...
+STATUS: INFO	DATE: 12/03/2013 16:40:12	Client controller connected to server at localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Successfully authenticated user test1. Going online
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Client responder going online
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Awaiting full directory sync from server
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Internal request received: [u'10', u'6736']
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Internal request received: [u'10', u'7136']
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Internal request received: [u'10', u'5292']
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Internal request received: [u'10', u'5568']
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Server has successfully synced entire directory
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Internal request received: [u'10', u'7392']
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Client daemon going online
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Client executing full directory sync in server direction
+STATUS: INFO	DATE: 12/03/2013 16:40:19	Internal request received: [u'9', u'6736']
+STATUS: INFO	DATE: 12/03/2013 16:40:19	Internal request received: [u'9', u'5292']
+STATUS: INFO	DATE: 12/03/2013 16:40:20	Internal request received: [u'9', u'7136']
+STATUS: INFO	DATE: 12/03/2013 16:40:20	Internal request received: [u'9', u'5568']
+STATUS: INFO	DATE: 12/03/2013 16:40:20	Internal request received: [u'9', u'7392']
+STATUS: INFO	DATE: 12/03/2013 16:40:25	Disconnected from server, going down peacefully
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Successfully authenticated user test1. Going online
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Client responder going online
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Awaiting full directory sync from server
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Internal request received: [u'10', u'7376']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Internal request received: [u'10', u'6948']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Internal request received: [u'10', u'7700']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Internal request received: [u'10', u'6764']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Internal request received: [u'10', u'6088']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Internal request received: [u'10', u'7172']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Internal request received: [u'10', u'6924']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Internal request received: [u'10', u'2036']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Server has successfully synced entire directory
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Internal request received: [u'10', u'1492']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Client daemon going online
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Client executing full directory sync in server direction
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Internal request received: [u'10', u'7240']

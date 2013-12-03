@@ -414,3 +414,25 @@ STATUS: INFO	DATE: 12/03/2013 13:37:34	Sending filesync command to server for fi
 STATUS: INFO	DATE: 12/03/2013 13:37:34	Sending filesync command to server for file at Hello\test2.txt
 STATUS: INFO	DATE: 12/03/2013 13:37:35	Sending filesync command to server for file at Hello\test2.txt
 STATUS: INFO	DATE: 12/03/2013 13:37:35	Sending filesync command to server for file at UserStuff.txt
+============================Tue Dec 03 16:35:41 2013============================
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Daemon connected to server at localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Scheduling observation of C:\Test1\OneDir\ tree...
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Sending filesync command to server for file at UserStuff.txt
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Sending filesync command to server for file at Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Sending filesync command to server for file at Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 16:35:42	Sending filesync command to server for file at UserStuff.txt
+STATUS: INFO	DATE: 12/03/2013 16:35:42	Sending filesync command to server for file at Hello\test2.txt
+============================Tue Dec 03 16:40:18 2013============================
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Daemon connected to server at localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Scheduling observation of C:\Test1\OneDir\ tree...
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Sending filesync command to server for file at UserStuff.txt
+STATUS: INFO	DATE: 12/03/2013 16:40:19	Sending filesync command to server for file at Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 16:40:19	Sending filesync command to server for file at Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 16:40:20	Sending filesync command to server for file at UserStuff.txt
+STATUS: INFO	DATE: 12/03/2013 16:40:20	Sending filesync command to server for file at Hello\test2.txt
+============================Tue Dec 03 16:40:27 2013============================
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Daemon connected to server at localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Scheduling observation of C:\Test1\OneDir\ tree...
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Sending filesync command to server for file at UserStuff.txt
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Sending filesync command to server for file at Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Sending filesync command to server for file at Hello\test2.txt

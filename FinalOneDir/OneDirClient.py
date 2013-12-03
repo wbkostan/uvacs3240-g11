@@ -37,6 +37,8 @@ class OneDirClient:
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REQ)
         self.child_threads = []
+        self.controller = ClientController()
+        self.controller.configure(self.config)
 
     def initialize(self):
         self.socket.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["ONEDIRSERVER"])
@@ -112,14 +114,11 @@ class OneDirClient:
 
     #Turns automatic syncing on
     def _sync(self):
-        self.controller = ClientController()
-        self.controller.configure(self.config)
         self.controller.set_credentials(self.credentials)
         self.controller.start()
         while self.sync_flag.is_set():
             time.sleep(1)
         self.controller.stop()
-        self.controller = None
 
     def syncon(self):
         while self.credentials == (None, None):

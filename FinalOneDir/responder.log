@@ -719,3 +719,47 @@ STATUS: INFO	DATE: 12/03/2013 13:37:35	Directory already exists, ignoring make c
 STATUS: INFO	DATE: 12/03/2013 13:37:35	Updating file at C:\Test1\OneDir\Hello\test2.txt
 STATUS: INFO	DATE: 12/03/2013 13:37:35	Updating file at C:\Test1\OneDir\Hello\test2.txt
 STATUS: INFO	DATE: 12/03/2013 13:37:57	Responder is being killed. Going down permanently.
+============================Tue Dec 03 16:35:41 2013============================
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Connecting responder to internal client controller over tcp port 3246...
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Subscribed to sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Responder is listening for sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Sync Directive received: [u'2', u'.']
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Sync Directive received: [u'1', u'UserStuff.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Sync Directive received: [u'2', u'Hello']
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 16:35:41	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 16:35:42	Directory already exists, ignoring make command: [u'2', u'.']
+STATUS: INFO	DATE: 12/03/2013 16:35:42	Updating file at C:\Test1\OneDir\UserStuff.txt
+STATUS: INFO	DATE: 12/03/2013 16:35:42	Directory already exists, ignoring make command: [u'2', u'Hello']
+STATUS: INFO	DATE: 12/03/2013 16:35:42	Updating file at C:\Test1\OneDir\Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 16:35:42	Updating file at C:\Test1\OneDir\Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 16:35:50	Responder is being killed. Going down permanently.
+============================Tue Dec 03 16:40:18 2013============================
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Connecting responder to internal client controller over tcp port 3246...
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Subscribed to sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Responder is listening for sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Sync Directive received: [u'2', u'.']
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Sync Directive received: [u'1', u'UserStuff.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Sync Directive received: [u'2', u'Hello']
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 16:40:18	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 16:40:19	Directory already exists, ignoring make command: [u'2', u'.']
+STATUS: INFO	DATE: 12/03/2013 16:40:19	Updating file at C:\Test1\OneDir\UserStuff.txt
+STATUS: INFO	DATE: 12/03/2013 16:40:19	Directory already exists, ignoring make command: [u'2', u'Hello']
+STATUS: INFO	DATE: 12/03/2013 16:40:19	Updating file at C:\Test1\OneDir\Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 16:40:19	Updating file at C:\Test1\OneDir\Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 16:40:25	Responder is being killed. Going down permanently.
+============================Tue Dec 03 16:40:27 2013============================
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Connecting responder to internal client controller over tcp port 3246...
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Subscribed to sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Responder is listening for sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Sync Directive received: [u'2', u'.']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Sync Directive received: [u'2', u'.']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Sync Directive received: [u'1', u'UserStuff.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Sync Directive received: [u'2', u'Hello']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Sync Directive received: [u'1', u'UserStuff.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Sync Directive received: [u'2', u'Hello']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 16:40:27	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']

@@ -23,6 +23,7 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self._logger_ = EventLogger()
 
         #Networking
+        self._socket_lock_ = threading.RLock()
         self._socket_ = self._context_.socket(zmq.PUSH)
 
         #Counter number of files
@@ -57,7 +58,8 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
 
         #Tell server this top level directory should exist
         msg = [self.config["USERNAME"], self.msg_identifier["MKDIR"], os.path.relpath(top, self.config["PATH_BASE"])]
-        self._socket_.send_multipart(encode(msg))
+        with self._socket_lock_:
+            self._socket_.send_multipart(encode(msg))
 
         #Recurse over objects in this directory
         for parent, sub_dirs, files in os.walk(top):
@@ -101,7 +103,8 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         if os.path.isdir(self._event_src_path_):
             self._logger_.log("INFO","Sending mkdir command to server for directory at " + self._event_rel_path_)
             msg = [self.config["USERNAME"], self.msg_identifier["MKDIR"], self._event_rel_path_]
-            self._socket_.send_multipart(encode(msg))
+            with self._socket_lock_:
+                self._socket_.send_multipart(encode(msg))
         else:
             #Synchronizing a file will also create if file doesn't exist
             self._file_sync_()
@@ -114,7 +117,8 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         """
         self._logger_.log("INFO","Sending delete command to server for file system object at " + self._event_rel_path_)
         msg = [self.config["USERNAME"], self.msg_identifier["DELETE"], self._event_rel_path_]
-        self._socket_.send_multipart(encode(msg))
+        with self._socket_lock_:
+            self._socket_.send_multipart(encode(msg))
         self._finish_()
     def on_modified(self, event):
         """
@@ -141,7 +145,8 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         #Log and send
         self._logger_.log("INFO","Sending move command to server from " + self._event_rel_path_ + " to " + rel_dest_path)
         msg = [self.config["USERNAME"], self.msg_identifier["MOVE"], self._event_rel_path_, rel_dest_path]
-        self._socket_.send_multipart(encode(msg))
+        with self._socket_lock_:
+            self._socket_.send_multipart(encode(msg))
         self._finish_()
 
     """
@@ -166,7 +171,8 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         #Log and send
         self._logger_.log("INFO","Sending filesync command to server for file at " + self._event_rel_path_)
         msg = [self.config["USERNAME"], self.msg_identifier["FILESYNC"], self._event_rel_path_, content]
-        self._socket_.send_multipart(encode(msg))
+        with self._socket_lock_:
+            self._socket_.send_multipart(encode(msg))
 
     def _finish_(self):
         """
