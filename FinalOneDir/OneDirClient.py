@@ -40,7 +40,6 @@ class OneDirClient:
 
     def initialize(self):
         self.socket.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["ONEDIRSERVER"])
-        self.controller.configure(self.config)
         self.sync_flag.clear()
 
     def launch(self):
@@ -79,6 +78,8 @@ class OneDirClient:
             except KeyboardInterrupt:
                 response = raw_input(">>")
                 response = response.lower()
+            except EOFError:
+                return
 
 
     def authenticate(self):
@@ -111,15 +112,18 @@ class OneDirClient:
 
     #Turns automatic syncing on
     def _sync(self):
+        self.controller = ClientController()
+        self.controller.configure(self.config)
+        self.controller.set_credentials(self.credentials)
         self.controller.start()
         while self.sync_flag.is_set():
             time.sleep(1)
         self.controller.stop()
+        self.controller = None
 
     def syncon(self):
         while self.credentials == (None, None):
             self.authenticate()
-        self.controller.set_credentials(self.credentials)
         self.sync_flag.set()
         self.child_threads.append(threading.Thread(target=self._sync))
         for thread in self.child_threads:

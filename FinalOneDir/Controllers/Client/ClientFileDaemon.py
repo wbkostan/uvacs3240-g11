@@ -181,7 +181,7 @@ class FileDaemon:
     def __init__(self, msg_identifier):
         #Components
         self._event_handler_ = SyncEventHandler(msg_identifier)
-        self._observer_ = Observer()
+        self._observer_ = None
         self._logger_ = EventLogger()
 
         #Attributes
@@ -197,6 +197,7 @@ class FileDaemon:
         """
             Sets up configuration values, initializes components
         """
+        self._observer_ = Observer()
         self.config = config
         self.target_dir = self.config["PATH_BASE"]
 
@@ -241,6 +242,7 @@ class FileDaemon:
         time.sleep(2)
         self._observer_.stop() #stop observing
         self._observer_.join() #wait for all threads to be done
+        self._observer_ = None
 
     """
         Protected methods

@@ -4,6 +4,7 @@ from ServerFileDaemon import FileDaemon
 from ServerSyncResponder import SyncResponder
 import threading
 import zmq
+from copy import deepcopy
 from Helpers.Encodings import *
 from Helpers.Logging.OneDirLogger import EventLogger
 from django.contrib.auth import authenticate
@@ -244,7 +245,7 @@ class ServerController:
         """
         if not username in self.client_components:
             #Set up configuration values
-            daemon_config = responder_config = self.config
+            daemon_config = responder_config = deepcopy(self.config)
             daemon_config["USERNAME"] = responder_config["USERNAME"] = username
             daemon_config["PATH_BASE"] = responder_config["PATH_BASE"] = self.config["PATH_BASE"] + username + SLASH + "OneDir" + SLASH
 

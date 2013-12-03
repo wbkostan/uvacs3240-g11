@@ -22,6 +22,7 @@ class SyncResponder():
         self.listen_flag.clear()
 
         #Networking
+        self.internal_request_lock = threading.RLock()
         self.internal_request_socket = self.context.socket(zmq.PUSH)
         self.server_sync_throw_lock = threading.RLock()
         self.server_sync_throw_socket = self.context.socket(zmq.SUB)
@@ -117,7 +118,8 @@ class SyncResponder():
 
         #Send internal request to controller to stop daemon monitoring of directory, we are about to write
         out = [self.msg_identifier["STOP_MONITORING"], str(threading.current_thread().ident)]
-        self.internal_request_socket.send_multipart(encode(out))
+        with self.internal_request_lock:
+            self.internal_request_socket.send_multipart(encode(out))
 
         #Give controller and daemon a moment to get their affairs in order
         time.sleep(1)

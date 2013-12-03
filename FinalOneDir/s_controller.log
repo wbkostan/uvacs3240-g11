@@ -716,3 +716,331 @@ STATUS: INFO	DATE: 12/03/2013 12:51:17	Internal request received: [u'9', u'test1
 STATUS: INFO	DATE: 12/03/2013 12:51:17	Internal request received: [u'9', u'test1', u'6484']
 STATUS: INFO	DATE: 12/03/2013 12:51:22	Client request received: [u'15', u'test1']
 STATUS: INFO	DATE: 12/03/2013 12:51:34	Client request received: [u'12', u'test1', u'test1']
+============================Tue Dec 03 13:02:15 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:02:15	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:02:15	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:02:15	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:02:15	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:02:15	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:02:15	Server controller listening for client sync directives at tcp://localhost:3242...
+============================Tue Dec 03 13:02:43 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:02:43	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:02:43	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:02:43	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:02:43	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:02:43	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:02:43	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 13:02:57	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:02:57	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:02:57	Internal request received: [u'10', u'test1', u'5404']
+STATUS: INFO	DATE: 12/03/2013 13:02:57	Internal request received: [u'10', u'test1', u'2364']
+STATUS: INFO	DATE: 12/03/2013 13:02:57	Internal request received: [u'10', u'test1', u'5472']
+STATUS: INFO	DATE: 12/03/2013 13:02:57	Internal request received: [u'10', u'test1', u'4544']
+STATUS: INFO	DATE: 12/03/2013 13:02:57	Internal request received: [u'10', u'test1', u'5972']
+STATUS: INFO	DATE: 12/03/2013 13:02:58	Internal request received: [u'9', u'test1', u'5404']
+STATUS: INFO	DATE: 12/03/2013 13:02:58	Internal request received: [u'9', u'test1', u'5472']
+STATUS: INFO	DATE: 12/03/2013 13:02:58	Internal request received: [u'9', u'test1', u'2364']
+STATUS: INFO	DATE: 12/03/2013 13:02:58	Internal request received: [u'9', u'test1', u'4544']
+STATUS: INFO	DATE: 12/03/2013 13:02:58	Internal request received: [u'9', u'test1', u'5972']
+STATUS: INFO	DATE: 12/03/2013 13:03:02	Client request received: [u'15', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:03:06	Client request received: [u'12', u'test1', u'test1']
+============================Tue Dec 03 13:03:49 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:03:49	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:03:49	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:03:49	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:03:49	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:03:49	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:03:49	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 13:03:56	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:03:57	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:03:57	Internal request received: [u'10', u'test1', u'5804']
+STATUS: INFO	DATE: 12/03/2013 13:03:57	Internal request received: [u'10', u'test1', u'1908']
+STATUS: INFO	DATE: 12/03/2013 13:03:57	Internal request received: [u'10', u'test1', u'5940']
+STATUS: INFO	DATE: 12/03/2013 13:03:57	Internal request received: [u'10', u'test1', u'2172']
+STATUS: INFO	DATE: 12/03/2013 13:03:57	Internal request received: [u'10', u'test1', u'3164']
+STATUS: INFO	DATE: 12/03/2013 13:03:58	Internal request received: [u'10', u'test1', u'7140']
+STATUS: INFO	DATE: 12/03/2013 13:03:58	Internal request received: [u'9', u'test1', u'5804']
+STATUS: INFO	DATE: 12/03/2013 13:03:58	Internal request received: [u'10', u'test1', u'4012']
+STATUS: INFO	DATE: 12/03/2013 13:03:58	Internal request received: [u'9', u'test1', u'5940']
+STATUS: INFO	DATE: 12/03/2013 13:03:58	Internal request received: [u'9', u'test1', u'2172']
+STATUS: INFO	DATE: 12/03/2013 13:03:58	Internal request received: [u'9', u'test1', u'1908']
+STATUS: INFO	DATE: 12/03/2013 13:03:58	Internal request received: [u'9', u'test1', u'3164']
+STATUS: INFO	DATE: 12/03/2013 13:03:59	Internal request received: [u'9', u'test1', u'7140']
+STATUS: INFO	DATE: 12/03/2013 13:03:59	Internal request received: [u'9', u'test1', u'4012']
+STATUS: INFO	DATE: 12/03/2013 13:04:07	Client request received: [u'15', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:04:12	Client request received: [u'12', u'test1', u'test1']
+============================Tue Dec 03 13:06:03 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:06:03	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:06:03	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:06:03	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:06:03	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:06:03	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:06:03	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 13:06:17	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:06:17	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:06:17	Internal request received: [u'10', u'test1', u'1884']
+STATUS: INFO	DATE: 12/03/2013 13:06:17	Internal request received: [u'10', u'test1', u'7936']
+STATUS: INFO	DATE: 12/03/2013 13:06:17	Internal request received: [u'10', u'test1', u'5916']
+STATUS: INFO	DATE: 12/03/2013 13:06:17	Internal request received: [u'10', u'test1', u'4032']
+STATUS: INFO	DATE: 12/03/2013 13:06:17	Internal request received: [u'10', u'test1', u'7368']
+STATUS: INFO	DATE: 12/03/2013 13:06:18	Internal request received: [u'9', u'test1', u'1884']
+STATUS: INFO	DATE: 12/03/2013 13:06:18	Internal request received: [u'9', u'test1', u'5916']
+STATUS: INFO	DATE: 12/03/2013 13:06:18	Internal request received: [u'9', u'test1', u'7936']
+STATUS: INFO	DATE: 12/03/2013 13:06:18	Internal request received: [u'9', u'test1', u'4032']
+STATUS: INFO	DATE: 12/03/2013 13:06:18	Internal request received: [u'9', u'test1', u'7368']
+STATUS: INFO	DATE: 12/03/2013 13:06:21	Client request received: [u'15', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:06:25	Client request received: [u'12', u'test1', u'test1']
+============================Tue Dec 03 13:08:02 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:08:02	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:08:02	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:08:02	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:08:02	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:08:02	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:08:02	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 13:08:45	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:08:45	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:08:45	Internal request received: [u'10', u'test1', u'8024']
+STATUS: INFO	DATE: 12/03/2013 13:08:45	Internal request received: [u'10', u'test1', u'1420']
+STATUS: INFO	DATE: 12/03/2013 13:08:45	Internal request received: [u'10', u'test1', u'5080']
+STATUS: INFO	DATE: 12/03/2013 13:08:45	Internal request received: [u'10', u'test1', u'3760']
+STATUS: INFO	DATE: 12/03/2013 13:08:45	Internal request received: [u'10', u'test1', u'7336']
+STATUS: INFO	DATE: 12/03/2013 13:08:46	Internal request received: [u'9', u'test1', u'8024']
+STATUS: INFO	DATE: 12/03/2013 13:08:46	Internal request received: [u'10', u'test1', u'7228']
+STATUS: INFO	DATE: 12/03/2013 13:08:46	Internal request received: [u'9', u'test1', u'7336']
+STATUS: INFO	DATE: 12/03/2013 13:08:46	Internal request received: [u'9', u'test1', u'3760']
+STATUS: INFO	DATE: 12/03/2013 13:08:46	Internal request received: [u'9', u'test1', u'5080']
+STATUS: INFO	DATE: 12/03/2013 13:08:46	Internal request received: [u'9', u'test1', u'1420']
+STATUS: INFO	DATE: 12/03/2013 13:08:46	Internal request received: [u'10', u'test1', u'7704']
+STATUS: INFO	DATE: 12/03/2013 13:08:47	Internal request received: [u'9', u'test1', u'7228']
+STATUS: INFO	DATE: 12/03/2013 13:08:47	Internal request received: [u'9', u'test1', u'7704']
+STATUS: INFO	DATE: 12/03/2013 13:08:51	Client request received: [u'15', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:08:56	Client request received: [u'12', u'test1', u'test1']
+============================Tue Dec 03 13:13:26 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:13:26	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:13:26	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:13:26	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:13:26	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:13:26	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:13:26	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 13:13:35	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:13:36	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:13:36	Internal request received: [u'10', u'test1', u'8072']
+STATUS: INFO	DATE: 12/03/2013 13:13:36	Internal request received: [u'10', u'test1', u'7864']
+STATUS: INFO	DATE: 12/03/2013 13:13:36	Internal request received: [u'10', u'test1', u'4416']
+STATUS: INFO	DATE: 12/03/2013 13:13:36	Internal request received: [u'10', u'test1', u'6896']
+STATUS: INFO	DATE: 12/03/2013 13:13:36	Internal request received: [u'10', u'test1', u'788']
+STATUS: INFO	DATE: 12/03/2013 13:13:37	Internal request received: [u'9', u'test1', u'8072']
+STATUS: INFO	DATE: 12/03/2013 13:13:37	Internal request received: [u'9', u'test1', u'7864']
+STATUS: INFO	DATE: 12/03/2013 13:13:37	Internal request received: [u'9', u'test1', u'4416']
+STATUS: INFO	DATE: 12/03/2013 13:13:37	Internal request received: [u'9', u'test1', u'6896']
+STATUS: INFO	DATE: 12/03/2013 13:13:37	Internal request received: [u'9', u'test1', u'788']
+============================Tue Dec 03 13:15:17 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:15:17	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:15:17	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:15:17	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:15:17	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:15:17	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:15:17	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 13:15:28	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:15:28	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:15:28	Internal request received: [u'10', u'test1', u'2468']
+STATUS: INFO	DATE: 12/03/2013 13:15:28	Internal request received: [u'10', u'test1', u'5780']
+STATUS: INFO	DATE: 12/03/2013 13:15:28	Internal request received: [u'10', u'test1', u'2428']
+STATUS: INFO	DATE: 12/03/2013 13:15:28	Internal request received: [u'10', u'test1', u'3788']
+STATUS: INFO	DATE: 12/03/2013 13:15:28	Internal request received: [u'10', u'test1', u'7212']
+STATUS: INFO	DATE: 12/03/2013 13:15:29	Internal request received: [u'9', u'test1', u'2468']
+STATUS: INFO	DATE: 12/03/2013 13:15:29	Internal request received: [u'9', u'test1', u'2428']
+STATUS: INFO	DATE: 12/03/2013 13:15:29	Internal request received: [u'9', u'test1', u'5780']
+STATUS: INFO	DATE: 12/03/2013 13:15:29	Internal request received: [u'10', u'test1', u'6180']
+STATUS: INFO	DATE: 12/03/2013 13:15:29	Internal request received: [u'9', u'test1', u'3788']
+STATUS: INFO	DATE: 12/03/2013 13:15:29	Internal request received: [u'10', u'test1', u'5808']
+STATUS: INFO	DATE: 12/03/2013 13:15:29	Internal request received: [u'9', u'test1', u'7212']
+STATUS: INFO	DATE: 12/03/2013 13:15:30	Internal request received: [u'9', u'test1', u'6180']
+STATUS: INFO	DATE: 12/03/2013 13:15:30	Internal request received: [u'9', u'test1', u'5808']
+============================Tue Dec 03 13:16:45 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:16:45	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:16:45	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:16:45	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:16:45	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:16:45	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:16:45	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 13:17:14	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:17:15	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:17:15	Internal request received: [u'10', u'test1', u'8068']
+STATUS: INFO	DATE: 12/03/2013 13:17:15	Internal request received: [u'10', u'test1', u'3508']
+STATUS: INFO	DATE: 12/03/2013 13:17:15	Internal request received: [u'10', u'test1', u'6712']
+STATUS: INFO	DATE: 12/03/2013 13:17:15	Internal request received: [u'10', u'test1', u'7072']
+STATUS: INFO	DATE: 12/03/2013 13:17:15	Internal request received: [u'10', u'test1', u'7296']
+STATUS: INFO	DATE: 12/03/2013 13:17:16	Internal request received: [u'9', u'test1', u'8068']
+STATUS: INFO	DATE: 12/03/2013 13:17:16	Internal request received: [u'9', u'test1', u'3508']
+STATUS: INFO	DATE: 12/03/2013 13:17:16	Internal request received: [u'9', u'test1', u'6712']
+STATUS: INFO	DATE: 12/03/2013 13:17:16	Internal request received: [u'10', u'test1', u'3000']
+STATUS: INFO	DATE: 12/03/2013 13:17:16	Internal request received: [u'9', u'test1', u'7072']
+STATUS: INFO	DATE: 12/03/2013 13:17:16	Internal request received: [u'9', u'test1', u'7296']
+STATUS: INFO	DATE: 12/03/2013 13:17:16	Internal request received: [u'10', u'test1', u'4860']
+STATUS: INFO	DATE: 12/03/2013 13:17:17	Internal request received: [u'9', u'test1', u'3000']
+STATUS: INFO	DATE: 12/03/2013 13:17:17	Internal request received: [u'9', u'test1', u'4860']
+============================Tue Dec 03 13:21:08 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:21:08	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:21:08	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:21:08	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:21:08	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:21:08	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:21:08	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 13:21:17	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:21:17	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:21:17	Internal request received: [u'10', u'test1', u'1028']
+STATUS: INFO	DATE: 12/03/2013 13:21:17	Internal request received: [u'10', u'test1', u'1292']
+STATUS: INFO	DATE: 12/03/2013 13:21:17	Internal request received: [u'10', u'test1', u'1040']
+STATUS: INFO	DATE: 12/03/2013 13:21:17	Internal request received: [u'10', u'test1', u'3168']
+STATUS: INFO	DATE: 12/03/2013 13:21:17	Internal request received: [u'10', u'test1', u'2924']
+STATUS: INFO	DATE: 12/03/2013 13:21:18	Internal request received: [u'9', u'test1', u'1028']
+STATUS: INFO	DATE: 12/03/2013 13:21:18	Internal request received: [u'9', u'test1', u'1040']
+STATUS: INFO	DATE: 12/03/2013 13:21:18	Internal request received: [u'9', u'test1', u'3168']
+STATUS: INFO	DATE: 12/03/2013 13:21:18	Internal request received: [u'9', u'test1', u'1292']
+STATUS: INFO	DATE: 12/03/2013 13:21:18	Internal request received: [u'10', u'test1', u'4864']
+STATUS: INFO	DATE: 12/03/2013 13:21:18	Internal request received: [u'9', u'test1', u'2924']
+STATUS: INFO	DATE: 12/03/2013 13:21:18	Internal request received: [u'10', u'test1', u'2644']
+STATUS: INFO	DATE: 12/03/2013 13:21:19	Internal request received: [u'9', u'test1', u'4864']
+STATUS: INFO	DATE: 12/03/2013 13:21:19	Internal request received: [u'9', u'test1', u'2644']
+============================Tue Dec 03 13:22:02 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:22:02	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:22:02	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:22:02	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:22:02	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:22:02	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:22:02	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 13:22:14	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:22:14	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:22:14	Internal request received: [u'10', u'test1', u'3448']
+STATUS: INFO	DATE: 12/03/2013 13:22:14	Internal request received: [u'10', u'test1', u'7436']
+STATUS: INFO	DATE: 12/03/2013 13:22:14	Internal request received: [u'10', u'test1', u'3592']
+STATUS: INFO	DATE: 12/03/2013 13:22:14	Internal request received: [u'10', u'test1', u'5532']
+STATUS: INFO	DATE: 12/03/2013 13:22:14	Internal request received: [u'10', u'test1', u'8040']
+STATUS: INFO	DATE: 12/03/2013 13:22:15	Internal request received: [u'9', u'test1', u'3448']
+STATUS: INFO	DATE: 12/03/2013 13:22:15	Internal request received: [u'9', u'test1', u'3592']
+STATUS: INFO	DATE: 12/03/2013 13:22:15	Internal request received: [u'9', u'test1', u'7436']
+STATUS: INFO	DATE: 12/03/2013 13:22:15	Internal request received: [u'9', u'test1', u'8040']
+STATUS: INFO	DATE: 12/03/2013 13:22:15	Internal request received: [u'9', u'test1', u'5532']
+STATUS: INFO	DATE: 12/03/2013 13:22:22	Client request received: [u'15', u'test1']
+============================Tue Dec 03 13:23:25 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:23:25	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:23:25	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:23:25	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:23:25	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:23:25	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:23:25	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 13:23:39	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:23:39	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:23:39	Internal request received: [u'10', u'test1', u'8168']
+STATUS: INFO	DATE: 12/03/2013 13:23:39	Internal request received: [u'10', u'test1', u'7064']
+STATUS: INFO	DATE: 12/03/2013 13:23:39	Internal request received: [u'10', u'test1', u'7784']
+STATUS: INFO	DATE: 12/03/2013 13:23:39	Internal request received: [u'10', u'test1', u'7624']
+STATUS: INFO	DATE: 12/03/2013 13:23:39	Internal request received: [u'10', u'test1', u'6056']
+STATUS: INFO	DATE: 12/03/2013 13:23:40	Internal request received: [u'10', u'test1', u'2416']
+STATUS: INFO	DATE: 12/03/2013 13:23:40	Internal request received: [u'10', u'test1', u'7556']
+STATUS: INFO	DATE: 12/03/2013 13:23:40	Internal request received: [u'9', u'test1', u'8168']
+STATUS: INFO	DATE: 12/03/2013 13:23:40	Internal request received: [u'9', u'test1', u'7064']
+STATUS: INFO	DATE: 12/03/2013 13:23:40	Internal request received: [u'10', u'test1', u'4484']
+STATUS: INFO	DATE: 12/03/2013 13:23:40	Internal request received: [u'9', u'test1', u'7784']
+STATUS: INFO	DATE: 12/03/2013 13:23:40	Internal request received: [u'9', u'test1', u'7624']
+STATUS: INFO	DATE: 12/03/2013 13:23:40	Internal request received: [u'9', u'test1', u'6056']
+STATUS: INFO	DATE: 12/03/2013 13:23:41	Internal request received: [u'9', u'test1', u'2416']
+STATUS: INFO	DATE: 12/03/2013 13:23:41	Internal request received: [u'9', u'test1', u'7556']
+STATUS: INFO	DATE: 12/03/2013 13:23:41	Internal request received: [u'9', u'test1', u'4484']
+STATUS: INFO	DATE: 12/03/2013 13:23:46	Client request received: [u'15', u'test1']
+============================Tue Dec 03 13:25:43 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:25:43	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:25:43	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:25:43	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:25:43	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:25:43	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:25:43	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 13:26:01	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:26:02	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:26:02	Internal request received: [u'10', u'test1', u'7212']
+STATUS: INFO	DATE: 12/03/2013 13:26:02	Internal request received: [u'10', u'test1', u'8180']
+STATUS: INFO	DATE: 12/03/2013 13:26:02	Internal request received: [u'10', u'test1', u'5780']
+STATUS: INFO	DATE: 12/03/2013 13:26:02	Internal request received: [u'10', u'test1', u'3788']
+STATUS: INFO	DATE: 12/03/2013 13:26:02	Internal request received: [u'10', u'test1', u'5808']
+STATUS: INFO	DATE: 12/03/2013 13:26:03	Internal request received: [u'10', u'test1', u'4864']
+STATUS: INFO	DATE: 12/03/2013 13:26:03	Internal request received: [u'9', u'test1', u'7212']
+STATUS: INFO	DATE: 12/03/2013 13:26:03	Internal request received: [u'9', u'test1', u'5780']
+STATUS: INFO	DATE: 12/03/2013 13:26:03	Internal request received: [u'9', u'test1', u'8180']
+STATUS: INFO	DATE: 12/03/2013 13:26:03	Internal request received: [u'10', u'test1', u'2644']
+STATUS: INFO	DATE: 12/03/2013 13:26:03	Internal request received: [u'9', u'test1', u'3788']
+STATUS: INFO	DATE: 12/03/2013 13:26:03	Internal request received: [u'9', u'test1', u'5808']
+STATUS: INFO	DATE: 12/03/2013 13:26:04	Internal request received: [u'9', u'test1', u'4864']
+STATUS: INFO	DATE: 12/03/2013 13:26:04	Internal request received: [u'9', u'test1', u'2644']
+STATUS: INFO	DATE: 12/03/2013 13:26:08	Client request received: [u'15', u'test1']
+============================Tue Dec 03 13:30:07 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:30:07	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:30:07	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:30:07	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:30:07	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:30:07	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:30:07	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 13:30:24	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:30:24	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:30:24	Internal request received: [u'10', u'test1', u'8076']
+STATUS: INFO	DATE: 12/03/2013 13:30:24	Internal request received: [u'10', u'test1', u'5208']
+STATUS: INFO	DATE: 12/03/2013 13:30:24	Internal request received: [u'10', u'test1', u'6560']
+STATUS: INFO	DATE: 12/03/2013 13:30:24	Internal request received: [u'10', u'test1', u'3332']
+STATUS: INFO	DATE: 12/03/2013 13:30:24	Internal request received: [u'10', u'test1', u'7568']
+STATUS: INFO	DATE: 12/03/2013 13:30:25	Internal request received: [u'9', u'test1', u'8076']
+STATUS: INFO	DATE: 12/03/2013 13:30:25	Internal request received: [u'9', u'test1', u'6560']
+STATUS: INFO	DATE: 12/03/2013 13:30:25	Internal request received: [u'9', u'test1', u'5208']
+STATUS: INFO	DATE: 12/03/2013 13:30:25	Internal request received: [u'9', u'test1', u'3332']
+STATUS: INFO	DATE: 12/03/2013 13:30:25	Internal request received: [u'9', u'test1', u'7568']
+STATUS: INFO	DATE: 12/03/2013 13:30:25	Internal request received: [u'10', u'test1', u'2472']
+STATUS: INFO	DATE: 12/03/2013 13:30:25	Internal request received: [u'10', u'test1', u'7368']
+STATUS: INFO	DATE: 12/03/2013 13:30:26	Internal request received: [u'9', u'test1', u'2472']
+STATUS: INFO	DATE: 12/03/2013 13:30:26	Internal request received: [u'9', u'test1', u'7368']
+STATUS: INFO	DATE: 12/03/2013 13:30:29	Client request received: [u'15', u'test1']
+============================Tue Dec 03 13:33:58 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:33:58	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:33:58	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:33:58	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:33:58	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:33:58	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:33:58	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 13:34:27	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:34:27	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:34:27	Internal request received: [u'10', u'test1', u'2548']
+STATUS: INFO	DATE: 12/03/2013 13:34:27	Internal request received: [u'10', u'test1', u'7992']
+STATUS: INFO	DATE: 12/03/2013 13:34:27	Internal request received: [u'10', u'test1', u'7940']
+STATUS: INFO	DATE: 12/03/2013 13:34:27	Internal request received: [u'10', u'test1', u'1176']
+STATUS: INFO	DATE: 12/03/2013 13:34:27	Internal request received: [u'10', u'test1', u'1572']
+STATUS: INFO	DATE: 12/03/2013 13:34:28	Internal request received: [u'9', u'10', u'test1', u'test1', u'2548']
+STATUS: INFO	DATE: 12/03/2013 13:34:33	Client request received: [u'15', u'test1']
+============================Tue Dec 03 13:36:33 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:36:33	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:36:33	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:36:33	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:36:33	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:36:33	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:36:33	Server controller listening for client sync directives at tcp://localhost:3242...
+STATUS: INFO	DATE: 12/03/2013 13:37:33	Client request received: [u'12', u'test1', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:37:34	Client request received: [u'7', u'test1']
+STATUS: INFO	DATE: 12/03/2013 13:37:34	Internal request received: [u'10', u'test1', u'7828']
+STATUS: INFO	DATE: 12/03/2013 13:37:34	Internal request received: [u'10', u'test1', u'8180']
+STATUS: INFO	DATE: 12/03/2013 13:37:34	Internal request received: [u'10', u'test1', u'5808']
+STATUS: INFO	DATE: 12/03/2013 13:37:34	Internal request received: [u'10', u'test1', u'6104']
+STATUS: INFO	DATE: 12/03/2013 13:37:34	Internal request received: [u'10', u'test1', u'5436']
+STATUS: INFO	DATE: 12/03/2013 13:37:35	Internal request received: [u'9', u'test1', u'7828']
+STATUS: INFO	DATE: 12/03/2013 13:37:35	Internal request received: [u'9', u'test1', u'5808']
+STATUS: INFO	DATE: 12/03/2013 13:37:35	Internal request received: [u'9', u'test1', u'8180']
+STATUS: INFO	DATE: 12/03/2013 13:37:35	Internal request received: [u'9', u'test1', u'5436']
+STATUS: INFO	DATE: 12/03/2013 13:37:35	Internal request received: [u'9', u'test1', u'6104']
+STATUS: INFO	DATE: 12/03/2013 13:37:35	Internal request received: [u'10', u'test1', u'7236']
+STATUS: INFO	DATE: 12/03/2013 13:37:35	Internal request received: [u'10', u'test1', u'4100']
+STATUS: INFO	DATE: 12/03/2013 13:37:36	Internal request received: [u'9', u'test1', u'7236']
+STATUS: INFO	DATE: 12/03/2013 13:37:36	Internal request received: [u'9', u'test1', u'4100']
+STATUS: INFO	DATE: 12/03/2013 13:37:55	Client request received: [u'15', u'test1']
+============================Tue Dec 03 13:39:16 2013============================
+STATUS: INFO	DATE: 12/03/2013 13:39:16	Server controller listening for internal requests at tcp://localhost:3244...
+STATUS: INFO	DATE: 12/03/2013 13:39:16	Server controller ready to pass client sync directives to responders at tcp://localhost:3243...
+STATUS: INFO	DATE: 12/03/2013 13:39:16	Server controller listening for daemon component sync directives at tcp://localhost:3245...
+STATUS: INFO	DATE: 12/03/2013 13:39:16	Server controller listening for client requests at tcp://localhost:3240...
+STATUS: INFO	DATE: 12/03/2013 13:39:16	Server controller ready to publish sync directives at tcp://localhost:3241...
+STATUS: INFO	DATE: 12/03/2013 13:39:16	Server controller listening for client sync directives at tcp://localhost:3242...
