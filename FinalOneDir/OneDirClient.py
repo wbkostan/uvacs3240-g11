@@ -48,30 +48,32 @@ class OneDirClient:
         print "UserInfo, PrintUserFiles, RemoveUser, ChangeUserPassword, History, Exit, "
         sys.stdout.flush()
         response = raw_input(">>")
+        response = response.lower()
         while (response != "Exit"):
-            if (response == "CreateAccount"):
+            if (response == "CreateAccount".lower()):
                 self.create_account()
-            elif (response == "Logon"):
+            elif (response == "Logon".lower()):
                 self.authenticate()
-            elif (response == "SyncOn"):
+            elif (response == "SyncOn".lower()):
                 self.syncon()
-            elif (response == "SyncOff"):
+            elif (response == "SyncOff".lower()):
                 self.syncoff()
-            elif (response == "ChangePassword"):
+            elif (response == "ChangePassword".lower()):
                 self.change_pass()
-            elif (response == "UserInfo"):
+            elif (response == "UserInfo".lower()):
                 self.all_users()
-            elif (response == "PrintUserFiles"):
+            elif (response == "PrintUserFiles".lower()):
                 self.print_user_files()
-            elif (response == "RemoveUser"):
+            elif (response == "RemoveUser".lower()):
                 self.remove()
-            elif (response == "ChangeUserPassword"):
+            elif (response == "ChangeUserPassword".lower()):
                 self.change_user_pass()
-            elif (response == "History"):
+            elif (response == "History".lower()):
                 self.history()
             else:
                 print("Invalid Command")
             response = raw_input(">>")
+            response = response.lower()
 
     def authenticate(self):
         username = raw_input("Enter username: ")
