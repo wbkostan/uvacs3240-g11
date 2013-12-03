@@ -44,14 +44,8 @@ class ClientController:
         self._logger_ = EventLogger()
 
         #For Tkinter login
-        self.username = ""
-        self.password = ""
-        self.root = Tk()
-        self.L1 = Label(self.root, text="User Name")
-        self.E1 = Entry(self.root, bd=5)
-        self.L2 = Label(self.root, text="Password")
-        self.E2 = Entry(self.root, bd=5, show="*")
-        self.B1 = Button(self.root, text="Login", command=self._authenticate_)
+        self.username = None
+        self.password = None
 
         #Networking
         self._context_ = zmq.Context()
@@ -113,6 +107,10 @@ class ClientController:
         #Open connection to server
         self._connect_()
 
+    def set_credentials(self, creds):
+        self.username = creds[0]
+        self.password = creds[1]
+
     def stop(self):
         """
             Wrapper for protected disconnect function
@@ -138,56 +136,33 @@ class ClientController:
         self._listen_flag_.set()
         threading.Thread(target=self.__listen__).start()
 
-    def _authenticate_(self):
-        """
-            Responsible for authenticating client with server. Successful authentication
-            starts the pair daemon/responder components server side. With authentication,
-            there will be no components server side listening for this clients requests
-        """
-        self.username = self.E1.get()
-        self.password = self.E2.get()
-
-        #Package credentials, send to server, await response
-        msg = [self.msg_identifier["LOGIN"], self.username, self.password]
-        self._server_contact_socket_.send_multipart(encode(msg))
-        rep = decode(self._server_contact_socket_.recv_multipart())
-
-        #Parse response, decide whether or not credentials were approved
-        if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.msg_identifier["TRUE"]: #Golden case
-            self.config["USERNAME"] = self.username #Set the active user at this controller
-            self.root.destroy()
-            return True
-        elif rep[1] == self.msg_identifier["FALSE"]: #Bad username/password combination
-            tkMessageBox.showinfo("Failure", "Bad username/password combination. Try again.")
-            return False
-        elif rep[0] != self.msg_identifier["ACK"]: #Unknown message received
-            self._logger_.log("ERROR","Unknown response from server received during logon: " + str(rep))
-            self.root.destroy()
-            self.__teardown__() #Kill everything!
-            return False
-
     def _connect_(self):
         """
             Opens a connection to the server (which establishes a responder/daemon component set in this
             clients name). When connection is acked, starts the clients own components
         """
-
-        #Authenticate current user
-        #Server starts pair components when user successfully authenticates
-        self.L1.grid(row=0, column=0)
-        self.E1.grid(row=0, column=1)
-        self.L2.grid(row=1, column=0)
-        self.E2.grid(row=1, column=1)
-        self.B1.grid(row=1, column=2)
-        self.root.mainloop()
-        if(self.username == ""):
+        if(self.username == None):
+            print("Error: No credentials were given. Please login")
             self.__teardown__()
             return
         else:
-            self._logger_.log("INFO","Successfully authenticated user " + self.config["USERNAME"] + ". Going online")
+            msg = [self.msg_identifier["LOGIN"], self.username, self.password]
+            self._server_contact_socket_.send_multipart(encode(msg))
+            rep = decode(self._server_contact_socket_.recv_multipart())
 
-        #Start up the client responder and daemon
-        self.__start_components__() #start a responder
+            #Parse response, decide whether or not credentials were approved
+            if rep[0] == self.msg_identifier["ACK"] and rep[1] == self.msg_identifier["TRUE"]: #Golden case
+                self.config["USERNAME"] = self.username #Set the active user at this controller
+                self._logger_.log("INFO","Successfully authenticated user " + self.config["USERNAME"] + ". Going online")
+                #Start up the client responder and daemon
+                self.__start_components__() #start a responder
+            elif rep[1] == self.msg_identifier["FALSE"]: #Bad username/password combination
+                print("Error: Invalid credentials. Please logon, then try again.")
+                self.__teardown__()
+            elif rep[0] != self.msg_identifier["ACK"]: #Unknown message received
+                self._logger_.log("ERROR","Unknown response from server received during logon: " + str(rep))
+                self.__teardown__() #Kill everything!
+
 
     def _disconnect_(self):
         """

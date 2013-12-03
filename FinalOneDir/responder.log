@@ -449,3 +449,58 @@ STATUS: INFO	DATE: 12/03/2013 11:00:20	Updating file at C:\Test1\OneDir\Hello\te
 STATUS: INFO	DATE: 12/03/2013 11:00:20	Sync Directive received: [u'1', u'UserStuff.txt', '<contents omitted from log>']
 STATUS: INFO	DATE: 12/03/2013 11:00:21	Updating file at C:\Test1\OneDir\UserStuff.txt
 STATUS: INFO	DATE: 12/03/2013 11:00:29	Responder is being killed. Going down permanently.
+============================Tue Dec 03 12:25:22 2013============================
+STATUS: INFO	DATE: 12/03/2013 12:25:22	Connecting responder to internal client controller over tcp port 3246...
+STATUS: INFO	DATE: 12/03/2013 12:25:22	Subscribed to sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/03/2013 12:25:22	Responder is listening for sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/03/2013 12:25:22	Sync Directive received: [u'2', u'.']
+STATUS: INFO	DATE: 12/03/2013 12:25:22	Sync Directive received: [u'1', u'UserStuff.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 12:25:22	Sync Directive received: [u'2', u'Hello']
+STATUS: INFO	DATE: 12/03/2013 12:25:22	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 12:25:22	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 12:25:23	Directory already exists, ignoring make command: [u'2', u'.']
+STATUS: INFO	DATE: 12/03/2013 12:25:23	Updating file at C:\Test1\OneDir\UserStuff.txt
+STATUS: INFO	DATE: 12/03/2013 12:25:23	Directory already exists, ignoring make command: [u'2', u'Hello']
+STATUS: INFO	DATE: 12/03/2013 12:25:23	Updating file at C:\Test1\OneDir\Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 12:25:23	Updating file at C:\Test1\OneDir\Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 12:25:40	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 12:25:41	Updating file at C:\Test1\OneDir\Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 12:26:03	Responder is being killed. Going down permanently.
+============================Tue Dec 03 12:31:02 2013============================
+STATUS: INFO	DATE: 12/03/2013 12:31:02	Connecting responder to internal client controller over tcp port 3246...
+STATUS: INFO	DATE: 12/03/2013 12:31:02	Subscribed to sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/03/2013 12:31:02	Responder is listening for sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/03/2013 12:31:02	Sync Directive received: [u'2', u'.']
+STATUS: INFO	DATE: 12/03/2013 12:31:02	Sync Directive received: [u'1', u'UserStuff.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 12:31:02	Sync Directive received: [u'2', u'Hello']
+STATUS: INFO	DATE: 12/03/2013 12:31:02	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 12:31:02	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 12:31:03	Directory already exists, ignoring make command: [u'2', u'.']
+STATUS: INFO	DATE: 12/03/2013 12:31:03	Updating file at C:\Test1\OneDir\UserStuff.txt
+STATUS: INFO	DATE: 12/03/2013 12:31:03	Directory already exists, ignoring make command: [u'2', u'Hello']
+STATUS: INFO	DATE: 12/03/2013 12:31:03	Updating file at C:\Test1\OneDir\Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 12:31:03	Updating file at C:\Test1\OneDir\Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 12:31:11	Responder is being killed. Going down permanently.
+============================Tue Dec 03 12:44:13 2013============================
+STATUS: INFO	DATE: 12/03/2013 12:44:13	Connecting responder to internal client controller over tcp port 3246...
+STATUS: INFO	DATE: 12/03/2013 12:44:13	Subscribed to sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/03/2013 12:44:13	Responder is listening for sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/03/2013 12:44:30	Responder is being killed. Going down permanently.
+============================Tue Dec 03 12:44:36 2013============================
+STATUS: INFO	DATE: 12/03/2013 12:44:36	Connecting responder to internal client controller over tcp port 3246...
+STATUS: INFO	DATE: 12/03/2013 12:44:36	Subscribed to sync directives at tcp://localhost:3241 for user test1...
+============================Tue Dec 03 12:51:15 2013============================
+STATUS: INFO	DATE: 12/03/2013 12:51:15	Connecting responder to internal client controller over tcp port 3246...
+STATUS: INFO	DATE: 12/03/2013 12:51:15	Subscribed to sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/03/2013 12:51:15	Responder is listening for sync directives at tcp://localhost:3241 for user test1...
+STATUS: INFO	DATE: 12/03/2013 12:51:15	Sync Directive received: [u'2', u'.']
+STATUS: INFO	DATE: 12/03/2013 12:51:15	Sync Directive received: [u'1', u'UserStuff.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 12:51:15	Sync Directive received: [u'2', u'Hello']
+STATUS: INFO	DATE: 12/03/2013 12:51:15	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 12:51:15	Sync Directive received: [u'1', u'Hello\\test2.txt', '<contents omitted from log>']
+STATUS: INFO	DATE: 12/03/2013 12:51:16	Directory already exists, ignoring make command: [u'2', u'.']
+STATUS: INFO	DATE: 12/03/2013 12:51:16	Updating file at C:\Test1\OneDir\UserStuff.txt
+STATUS: INFO	DATE: 12/03/2013 12:51:16	Directory already exists, ignoring make command: [u'2', u'Hello']
+STATUS: INFO	DATE: 12/03/2013 12:51:16	Updating file at C:\Test1\OneDir\Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 12:51:16	Updating file at C:\Test1\OneDir\Hello\test2.txt
+STATUS: INFO	DATE: 12/03/2013 12:51:24	Responder is being killed. Going down permanently.

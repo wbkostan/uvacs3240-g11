@@ -51,30 +51,35 @@ class OneDirClient:
         response = raw_input(">>")
         response = response.lower()
         while (response != "Exit".lower()):
-            if (response == "CreateAccount".lower()):
-                self.create_account()
-            elif (response == "Logon".lower()):
-                self.authenticate()
-            elif (response == "SyncOn".lower()):
-                self.syncon()
-            elif (response == "SyncOff".lower()):
-                self.syncoff()
-            elif (response == "ChangePassword".lower()):
-                self.change_pass()
-            elif (response == "UserInfo".lower()):
-                self.all_users()
-            elif (response == "PrintUserFiles".lower()):
-                self.print_user_files()
-            elif (response == "RemoveUser".lower()):
-                self.remove()
-            elif (response == "ChangeUserPassword".lower()):
-                self.change_user_pass()
-            elif (response == "History".lower()):
-                self.history()
-            else:
-                print("Invalid Command")
-            response = raw_input(">>")
-            response = response.lower()
+            try:
+                if (response == "CreateAccount".lower()):
+                    self.create_account()
+                elif (response == "Logon".lower()):
+                    self.authenticate()
+                elif (response == "SyncOn".lower()):
+                    self.syncon()
+                elif (response == "SyncOff".lower()):
+                    self.syncoff()
+                elif (response == "ChangePassword".lower()):
+                    self.change_pass()
+                elif (response == "UserInfo".lower()):
+                    self.all_users()
+                elif (response == "PrintUserFiles".lower()):
+                    self.print_user_files()
+                elif (response == "RemoveUser".lower()):
+                    self.remove()
+                elif (response == "ChangeUserPassword".lower()):
+                    self.change_user_pass()
+                elif (response == "History".lower()):
+                    self.history()
+                else:
+                    print("Invalid Command")
+                response = raw_input(">>")
+                response = response.lower()
+            except KeyboardInterrupt:
+                response = raw_input(">>")
+                response = response.lower()
+
 
     def authenticate(self):
         username = raw_input("Enter username: ")
@@ -112,6 +117,9 @@ class OneDirClient:
         self.controller.stop()
 
     def syncon(self):
+        while self.credentials == (None, None):
+            self.authenticate()
+        self.controller.set_credentials(self.credentials)
         self.sync_flag.set()
         self.child_threads.append(threading.Thread(target=self._sync))
         for thread in self.child_threads:
@@ -120,6 +128,8 @@ class OneDirClient:
 
     def syncoff(self):
         self.sync_flag.clear()
+        for thread in self.child_threads:
+            self.child_threads.remove(thread)
 
     #User command that changes signed on user's password
     def change_pass(self):
