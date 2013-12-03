@@ -41,12 +41,6 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self._socket_.connect("tcp://localhost:" + self.config["SYNC_PASSUP_PORT"])
         self._logger_.log("INFO", "Daemon connected to server at tcp://localhost:" + self.config["SYNC_PASSUP_PORT"] + "...")
 
-    def print_files(self, top):
-        self.__lock__.acquire()
-        self._logger_.log("INFO", "Printing files belonging to " + top)
-        for parent, sub_dirs, files in os.walk(top):
-            self._logger_.log("INFO", "Containing " + parent + "including " + str(sub_dirs) + " and " + str(files))
-
     def dir_sync(self, top):
         """
             Recursively synchronizes a directory on the client side. Creates any structure which does not
@@ -170,19 +164,6 @@ class SyncEventHandler(watchdog.events.FileSystemEventHandler):
         self._logger_.log("INFO","Sending filesync command to client for file at " + self._event_rel_path_)
         msg = [self.config["USERNAME"], self.msg_identifier["FILESYNC"], self._event_rel_path_, content]
         self._socket_.send_multipart(encode(msg))
-
-    def _print_contents_(self):
-        """
-            Prints size of each file
-        """
-
-        #If someone tries to call this method without setting a path
-        if self._event_src_path_ == None:
-            self._logger_.log("ERROR","File daemon attempted to execute a print without a source directory")
-            return
-
-        with open(self._event_src_path_, 'rb') as user_file:
-            print("File size: " + os.path.getsize(user_file))
 
     def _finish_(self):
         """

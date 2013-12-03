@@ -110,6 +110,9 @@ class ServerController:
         threading.Thread(target=self._listen_sync_catch_).start() #sync directives thrown by client
         threading.Thread(target=self._listen_sync_passup_).start() #sync directives meant for clients passed up internally
 
+    def stop(self):
+        self.__teardown__()
+
     """
         Protected methods
     """
@@ -193,10 +196,6 @@ class ServerController:
             elif msg[0] == self.msg_identifier["LOGOUT"]:
                 self._disconnect_client_(msg[1])
                 msg = [self.msg_identifier["ACK"], msg[1]]
-
-            elif msg[0] == self.msg_identifier["REGISTER"]:
-                self._register_client_(msg[1], msg[2], msg[3])
-                msg = [self.msg_identifier["ACK"], self.msg_identifier["TRUE"]]
 
             #Client has started responder, requesting full directory sync
             elif msg[0] == self.msg_identifier["LISTENING"]:

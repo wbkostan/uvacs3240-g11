@@ -4,29 +4,87 @@ from Controllers.Client.Controller import ClientController
 import time
 import sys
 import threading
-from django.db import connection
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+import zmq
+from Helpers.Encodings import *
+
+def get_config():
+    config = {
+        #"SERVER_ADDR":"172.25.108.164",
+        "SERVER_ADDR":"localhost",
+        "ONEDIRSERVER":"3239",
+        "PATH_BASE":"C:\Test1\OneDir\\",
+        "INTERNAL_REQUEST_PORT":"3246",
+        "SERVER_SYNC_CATCH_PORT":"3242",
+        "SERVER_SYNC_THROW_PORT":"3241",
+        "SERVER_CONTACT_PORT":"3240"
+    }
+    return config
+
+def get_msg_ids():
+    msg_ids = {
+        "AUTH":"1", "CREATE_USER":"5", "CHANGE_PASS":"6", "ALL_USERS":"8", "GET_FILES":"9", "REMOVE":"10", "CHANGE_PASS":"11", "LOG":"12",
+        "ACK":"2", "TRUE":"3", "FALSE":"4", "NACK":"7",
+    }
+    return msg_ids
 
 class OneDirClient:
     def __init__(self):
+        self.config = get_config()
+        self.msg_identifiers = get_msg_ids()
         self.controller = ClientController()
         self.sync_flag = threading.Event()
+        self.credentials = (None, None)
+        self.context = zmq.Context()
+        self.socket = self.context.socket(zmq.REQ)
+
+    def initialize(self):
+        self.socket.connect("tcp://" + self.config["SERVER_ADDR"] + ":" + self.config["ONEDIRSERVER"])
+        self.controller.configure(self.config)
         self.sync_flag.clear()
+
+    def launch(self):
+        #Starts command line prompt
+        print "List of commands: CreateAccount, SyncOn, SyncOff, ChangePassword, UserInfo, PrintUserFiles, RemoveUser, ChangeUserPassword, History, Exit"
+        sys.stdout.flush()
+        response = raw_input(">>")
+        while (response != "Exit"):
+            if (response == "CreateAccount"):
+                self.create_account()
+            elif (response == "Logon"):
+                self.authenticate()
+            elif (response == "SyncOn"):
+                self.syncon()
+            elif (response == "SyncOff"):
+                self.syncoff()
+            elif (response == "ChangePassword"):
+                self.change_pass()
+            elif (response == "UserInfo"):
+                self.all_users()
+            elif (response == "PrintUserFiles"):
+                self.print_user_files()
+            elif (response == "RemoveUser"):
+                self.remove()
+            elif (response == "ChangeUserPassword"):
+                self.change_user_pass()
+            elif (response == "History"):
+                self.history()
+            else:
+                print("Invalid Command")
+            response = raw_input(">>")
 
     def authenticate(self):
         username = raw_input("Enter username: ")
         password = raw_input("Enter password: ")
-        user = authenticate(username = username, password = password)
-        if user is not None:
-            if user.is_active:
-                return True #Always authenticate until actual authentication is added.
-            else:
-                #Disabled account
-                return False
+        msg = [self.msg_identifiers["AUTH"], username, password]
+        self.socket.send_multipart(encode(msg))
+        rep = decode(self.socket.recv_multipart())
+        if rep[0] == self.msg_identifiers["ACK"] and rep[1] == self.msg_identifiers["TRUE"]:
+            self.credentials = (username, password)
+            print("Successfully authenticated as " + username)
+        elif rep[1] == self.msg_identifiers["FALSE"]:
+            print("Failure. Bad username/password combination")
         else:
-            #Bad user/pass combo
-            return False
+            print("Error: Unknown response from server")
 
     #Creates account
     def create_account(self):
@@ -34,7 +92,13 @@ class OneDirClient:
         password = raw_input("Enter new password: ")
         email = raw_input("Enter new e-mail: ")
 
-        user = User.objects.create_user(username,email,password)
+        msg = [self.msg_identifiers["CREATE_USER"], username, password, email]
+        self.socket.send_multipart(encode(msg))
+        rep = decode(self.socket.recv_multipart())
+        if(rep[0] == self.msg_identifiers["ACK"] and rep[1] == self.msg_identifiers["TRUE"]):
+            print("Account successfully created")
+        else:
+            print("Error: Could not create account")
 
     #Turns automatic syncing on
     def _sync(self):
@@ -52,136 +116,140 @@ class OneDirClient:
     def syncoff(self):
         self.sync_flag.clear()
 
-    """
-    def sync(self):
-        config = get_config()
-        self.controller.configure(config)
-        self.controller.start()
-        try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            self.controller.__teardown__()
-        print ("Command to stop sync: Quit")
-        sync_response = raw_input(">>")
-        if (sync_response == "Quit"):
-            self.controller.stop()
-    """
-
     #User command that changes signed on user's password
     def change_pass(self):
-        auth = self.authenticate()
+        while self.credentials == (None, None):
+            self.authenticate()
 
-        if auth == True:
-            username = raw_input("Enter your username: ")
-            newPassword = raw_input("Enter new password: ")
+        password = raw_input("Enter your new password: ")
+        newPassword = raw_input("Confirm new password: ")
 
-            user = User.objects.get(username__exact = username)
-            user.set_password(newPassword)
-            user.save()
-        elif auth == False:
-            print ("Incorrect username and/or password")
+        if password != newPassword:
+            print("Error: Passwords do not match")
+            return
+
+        msg = [self.msg_identifiers["CHANGE_PASS"], self.credentials[0], self.credentials[1], password]
+        self.socket.send_multipart(encode(msg))
+        rep = decode(self.socket.recv_multipart())
+        if rep[0] == self.msg_identifiers["ACK"] and rep[1] == self.msg_identifiers["TRUE"]:
+            print("Password changed successfully")
+        else:
+            print("Error: Could not change password")
 
     #Prints user database
     def all_users(self):
         """
         ADMIN ONLY
         """
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM auth_user")
-        row = cursor.fetchall()
-        for entries in row:
-            print entries
+        while self.credentials == (None, None):
+            self.authenticate()
+
+        msg = [self.msg_identifiers["ALL_USERS"], self.credentials[0], self.credentials[1]]
+        self.socket.send_multipart(encode(msg))
+        rep = decode(self.socket.recv_multipart())
+
+        if rep[0] == self.msg_identifiers["ACK"]:
+            for entries in rep[1:]:
+                print entries
+        elif rep[0] == self.msg_identifiers["NACK"]:
+            if rep[1] == "USER":
+                print("Error: Invalid credentials")
+            else:
+                print("Error: Not enough privileges")
 
     #Prints files associated with a user
     def print_user_files(self):
         """
         ADMIN ONLY
         """
-        config = get_config()
-        self.controller.configure(config)
-        self.controller.print_flag = True
-        self.controller.start()
-        try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            self.controller.__teardown__()
+        while self.credentials == (None, None):
+            self.authenticate()
+
+        user = raw_input("Enter target username: ")
+        msg = [self.msg_identifiers["GET_FILES"], self.credentials[0], self.credentials[1], user]
+        self.socket.send_multipart(encode(msg))
+        rep = decode(self.socket.recv_multipart())
+        if(rep[0] == self.msg_identifiers["ACK"]):
+            print("Total files for " + user + ": " + rep[1])
+            print("Listed file name/size pairs (in bytes):")
+            for obj in rep[2:]:
+                info = obj.split("$$")
+                print(str(info))
+        elif rep[0] == self.msg_identifiers["NACK"]:
+            if rep[1] == "USER":
+                print("Error: Invalid credentials")
+            else:
+                print("Error: Not enough privileges")
 
     #Removes user
     def remove(self):
         """
         ADMIN ONLY
         """
-        print("Enter username:")
-        username = raw_input()
-    #######
-        #Code goes here
-    #######
+        while self.credentials == (None, None):
+            self.authenticate()
+
+        username = raw_input("Enter username: ")
+        files = raw_input("Delete all files too?(y/n): ")
+        if files.lower() == 'y' or files.lower() == 'yes':
+            files = "YES"
+        else:
+            files = "NO"
+        msg = [self.msg_identifiers["REMOVE"], self.credentials[0], self.credentials[1], username, files]
+        self.socket.send_multipart(encode(msg))
+        rep = decode(self.socket.recv_multipart())
+        if rep[0] == self.msg_identifiers["ACK"]:
+            print("User account successfully deleted")
+        elif rep[0] == self.msg_identifiers["NACK"]:
+            if rep[1] == "USER":
+                print("Error: Invalid credentials")
+            else:
+                print("Error: Not enough privileges")
 
     #Admin command that changes the password of the given user
     def change_user_pass(self):
         """
         ADMIN ONLY
         """
-        username = raw_input("Enter username: ")
+        while self.credentials == (None, None):
+            self.authenticate()
+
+        username = raw_input("Enter target username: ")
         newPassword = raw_input("Enter new password: ")
 
-        user = User.objects.get(username__exact = username)
-        user.set_password(newPassword)
-        user.save()
+        msg = [self.msg_identifiers["CHANGE_PASS"], self.credentials[0], self.credentials[1], username, newPassword]
+        self.socket.send_multipart(encode(msg))
+        rep = decode(self.socket.recv_multipart())
+
+        if rep[0] == self.msg_identifiers["ACK"]:
+            print("Password for " + username + " successfully changed")
+        elif rep[0] == self.msg_identifiers["NACK"]:
+            if rep[1] == "USER":
+                print("Error: Invalid credentials")
+            else:
+                print("Error: Not enough privileges")
 
     def history(self):
         """
         ADMIN ONLY
         """
-        fileClientLog = open("c_controller.log", "r")
-        print (fileClientLog.readall())
-        fileServerLog = open("s_controller.log", "r")
-        print (fileServerLog.readall())
 
-def get_config():
-    config = {
-        #"SERVER_ADDR":"172.25.108.164",
-        "SERVER_ADDR":"localhost",
-        "PATH_BASE":"F:\Test1\OneDir\\",
-        "INTERNAL_REQUEST_PORT":"3246",
-        "SERVER_SYNC_CATCH_PORT":"3242",
-        "SERVER_SYNC_THROW_PORT":"3241",
-        "SERVER_CONTACT_PORT":"3240"
-    }
-    return config
+        msg = [self.msg_identifiers["LOG"], self.credentials[0], self.credentials[1]]
+        self.socket.send_multipart(encode(msg))
+        rep = decode(self.socket.recv_multipart())
 
-def launch():
-    client = OneDirClient()
-    #Starts command line prompt
-    print "List of commands: CreateAccount, SyncOn, SyncOff, ChangePassword, UserInfo, PrintUserFiles, RemoveUser, ChangeUserPassword, History, Exit"
-    sys.stdout.flush()
-    response = raw_input(">>")
-    while (response != "Exit"):
-        if (response == "CreateAccount"):
-            client.create_account()
-        elif (response == "SyncOn"):
-            client.syncon()
-        elif (response == "SyncOff"):
-            client.syncoff()
-        elif (response == "ChangePassword"):
-            client.change_pass()
-        elif (response == "UserInfo"):
-            client.all_users()
-        elif (response == "PrintUserFiles"):
-            client.print_user_files()
-        elif (response == "RemoveUser"):
-            client.remove()
-        elif (response == "ChangeUserPassword"):
-            client.change_user_pass()
-        elif (response == "History"):
-            client.history()
-        else:
-            print("Invalid Command")
-        response = raw_input(">>")
-    print("Exited")
+        if rep[0] == self.msg_identifiers["ACK"]:
+            print(rep[1])
+        elif rep[0] == self.msg_identifiers["NACK"]:
+            if rep[1] == "USER":
+                print("Error: Invalid credentials")
+            else:
+                print("Error: Not enough privileges")
 
 if __name__ == "__main__":
-    launch()
+    client = OneDirClient()
+    client.initialize()
+    while client.credentials == (None, None):
+        client.authenticate()
+    client.launch()
 
